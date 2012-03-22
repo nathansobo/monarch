@@ -33,7 +33,7 @@ column's type as a value. Every table is given an integer-typed `id` column as
 its primary key by default. This will return a constructor function that you can
 assign to a global variable.
 
-== Loading Data
+## Loading Data
 
 Once you've defined some tables, you can load data into the client-side database
 by calling `Monarch.Repository.update` with a hash of records.
@@ -70,6 +70,6 @@ Monarch.Repository.update([
 ])
 ```
 
-== Working with Records
+## Working with Records
 
 
