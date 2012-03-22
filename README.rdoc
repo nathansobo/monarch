@@ -12,7 +12,7 @@ Monarch associates model constructors with tables in an in-memory relational
 database, similar to how ActiveRecord associates a Ruby class with a table in
 MySQL.
 
-```js
+```javascript
 Blog = Monarch('Blog', {
   userId: 'integer',
   title: 'string',
@@ -38,7 +38,7 @@ assign to a global variable.
 Once you've defined some tables, you can load data into the client-side database
 by calling `Monarch.Repository.update` with a hash of records.
 
-```js
+```javascript
 Monarch.Repository.update({
   blogs: {
     1: { user_id: 1, title: "Blog I Never Update", created_at: 1332433460811 },
@@ -62,7 +62,7 @@ You can also call `Monarch.Repository.update` with an array of CRUD operations.
 This is useful, for example, when you are handling update events delivered via a
 web socket.
 
-```js
+```javascript
 Monarch.Repository.update([
   ['create', 'blog_posts', { id: 3, blog_id: 2, title: "I Love Star Wars!" }],
   ['update', 'blog_posts', 2, { title: "I Can't Decide on a Title'" }],
