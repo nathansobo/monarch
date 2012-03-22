@@ -1,4 +1,4 @@
-= Monarch
+# Monarch
 
 Monarch is a relational modeling framework for client-heavy web applications.
 It's similar to Backbone.js, but based on the powerful abstractions of
@@ -6,14 +6,13 @@ relational algebra, offering a declarative and compositional language for
 querying data and subscribing to events.
 
 
-== Defining Models
+## Defining Models
 
 Monarch associates model constructors with tables in an in-memory relational
 database, similar to how ActiveRecord associates a Ruby class with a table in
 MySQL.
 
 ```javascript
-
 Blog = Monarch('Blog', {
   userId: 'integer',
   title: 'string',
@@ -25,7 +24,6 @@ BlogPost = Monarch('BlogPost', {
   title: 'string',
   body: 'string',
 });
-
 ```
 
 To define a constructor/table pair, call the global `Monarch` function
