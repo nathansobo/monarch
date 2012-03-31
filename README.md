@@ -26,11 +26,11 @@ BlogPost = Monarch('BlogPost', {
 });
 ```
 
-To define a constructor/table pair, call the global `Monarch` function
-with the constructor's name (for debugging purposes) and a hash of column
-declarations. The columns hash contains each column's name as a key and each
-column's type as a value. Every table is given an integer-typed `id` column as
-its primary key by default. This will return a constructor function that you can
+To define a constructor/table pair, call the global `Monarch` function with the
+constructor's name (for debugging purposes) and a hash of column declarations.
+The columns hash contains each column's name as a key and each column's type as
+a value. Every table is given an integer-typed `id` column as its primary key by
+default. The `Monarch` function returns an anonymous constructor that you can
 assign to a global variable.
 
 ## Loading Data
@@ -53,7 +53,7 @@ Monarch.Repository.update({
 ```
 
 As you can see above, the hash can contain records for multiple tables, and is
-structured as follows: `table_name -> record_id-> column_name -> field_value.`
+structured as follows: `table_name -> record_id-> column_name -> field_value`.
 Note that the keys are in underscore format rather than camel case. If a record
 for a given (table name, id) pair already exists, it will be updated with the
 new values. Otherwise a new record will be created.
