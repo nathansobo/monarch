@@ -17,8 +17,6 @@ module Dummy
 
     # Enable the asset pipeline
     config.assets.enabled = true
-
-    config.assets.paths.unshift("../spec/assets/javascripts")
   end
 end
 

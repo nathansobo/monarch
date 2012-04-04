@@ -1,0 +1,3 @@
+[submodule "vendor/princess"]
+	path = vendor/princess
+	url = git@github.com:nathansobo/princess.git
