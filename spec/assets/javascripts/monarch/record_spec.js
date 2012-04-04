@@ -7,7 +7,7 @@ describe("Monarch.Record", function() {
     describe(".inherited(subclass)", function() {
       it("associates subclasses with a table in the repository", function() {
         expect(BlogPost.displayName).toBe('BlogPost');
-        expect(BlogPost.table.isA(Monarch.Relations.Table)).toBeTruthy();
+        expect(BlogPost.table instanceof Monarch.Relations.Table).toBeTruthy();
         expect(BlogPost.table.name).toBe('BlogPost');
         expect(BlogPost.table.remoteName).toBe('blog_posts');
         expect(BlogPost.table).toEqual(Monarch.Repository.tables.BlogPost);
@@ -17,13 +17,13 @@ describe("Monarch.Record", function() {
         expect(BlogPost.table.getColumn('id').type).toBe('integer');
       });
     });
-    
+
     describe(".column(name, type)", function() {
       it("defines a column on the table", function() {
         BlogPost.column('title', 'string');
 
         var column = BlogPost.table.getColumn('title');
-        expect(column.isA(Monarch.Expressions.Column)).toBeTruthy();
+        expect(column instanceof Monarch.Expressions.Column).toBeTruthy();
         expect(column.type).toBe('string');
       });
     });
@@ -37,7 +37,7 @@ describe("Monarch.Record", function() {
 
         expect(BlogPost.getColumn('title')).not.toBeUndefined();
         expect(BlogPost.getColumn('title').type).toBe('string');
-        
+
         expect(BlogPost.getColumn('body')).not.toBeUndefined();
         expect(BlogPost.getColumn('body').type).toBe('string');
       });
@@ -124,7 +124,7 @@ describe("Monarch.Record", function() {
 
         var post = BlogPost.created({id: 1});
         // conditions are turned into an 'and' tree, and may be order sensitive. chrome seems to respect lexical order
-        expect(post.comments()).toEqual(Comment.where({ public: true, 'score >': 3, blogPostId: 1 })); 
+        expect(post.comments()).toEqual(Comment.where({ public: true, 'score >': 3, blogPostId: 1 }));
       });
 
       it("supports a 'through' option", function() {
@@ -239,7 +239,7 @@ describe("Monarch.Record", function() {
 
           expect(onSuccessCallback).toHaveBeenCalled();
           var post = onSuccessCallback.mostRecentCall.args[0];
-          expect(post.isA(Monarch.Record)).toBeTruthy();
+          expect(post instanceof Monarch.Record).toBeTruthy();
           expect(post.id()).toBe(23);
           expect(post.title()).toBe("Testing +");
           expect(post.body()).toBe("1 2 3 +");
@@ -261,10 +261,10 @@ describe("Monarch.Record", function() {
               body: ["Error message 3"]
             })
           });
-          
+
           expect(onInvalidCallback).toHaveBeenCalled();
           var post = onInvalidCallback.mostRecentCall.args[0];
-          expect(post.isA(Monarch.Record)).toBeTruthy();
+          expect(post instanceof Monarch.Record).toBeTruthy();
           expect(post.isValid()).toBeFalsy();
           expect(post.errors.on('title')).toEqual(["Error message 1", "Error message 2"]);
           expect(post.errors.on('body')).toEqual(["Error message 3"]);
@@ -333,7 +333,7 @@ describe("Monarch.Record", function() {
             expect(onSuccessCallback).toHaveBeenCalled();
 
             expect(onSuccessCallback.mostRecentCall.args[0]).toBe(post);
-            expect(post.isA(Monarch.Record)).toBeTruthy();
+            expect(post instanceof Monarch.Record).toBeTruthy();
             expect(post.blogId()).toBe(2);
             expect(post.body()).toBe("Body+++");
             expect(post.isDirty()).toBeFalsy();
@@ -402,7 +402,7 @@ describe("Monarch.Record", function() {
 
             expect(onInvalidCallback).toHaveBeenCalled();
             var post = onInvalidCallback.mostRecentCall.args[0];
-            expect(post.isA(Monarch.Record)).toBeTruthy();
+            expect(post instanceof Monarch.Record).toBeTruthy();
             expect(post.isValid()).toBeFalsy();
             expect(post.errors.on('title')).toEqual(["Error message 1", "Error message 2"]);
             expect(post.errors.on('body')).toEqual(["Error message 3"]);
@@ -452,7 +452,7 @@ describe("Monarch.Record", function() {
 
             expect(onSuccessCallback).toHaveBeenCalled();
             var post = onSuccessCallback.mostRecentCall.args[0];
-            expect(post.isA(Monarch.Record)).toBeTruthy();
+            expect(post instanceof Monarch.Record).toBeTruthy();
             expect(post.id()).toBe(23);
             expect(post.title()).toBe("Good Title+");
             expect(post.body()).toBe("Good Body+");

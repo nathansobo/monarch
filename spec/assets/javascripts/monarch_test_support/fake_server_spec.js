@@ -26,7 +26,7 @@ describe("Monarch.Remote.FakeServer", function() {
       var createCommand = fakeServer.lastCreate();
       var record = createCommand.record;
       expect(createCommand).toBe(fakeServer.creates[0]);
-      expect(record.isA(Blog)).toBeTruthy();
+      expect(record instanceof Blog).toBeTruthy();
       expect(createCommand.fieldValues).toEqual({title: "Alpha", created_at: 12345});
 
       var successCallback = jasmine.createSpy("successCallback");
