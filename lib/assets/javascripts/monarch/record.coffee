@@ -85,7 +85,7 @@ class Monarch.Record
     @localFields = {}
     @remoteFields = {}
 
-    @table.eachColumn (column) ->
+    @table.eachColumn (column) =>
       @localFields[column.name] = column.buildLocalField(this)
       @remoteFields[column.name] = column.buildRemoteField(this)
 
@@ -199,8 +199,7 @@ class Monarch.Record
 
   signal: (fieldNames..., transformer) ->
     fieldNames.push(transformer) unless _.isFunction(transformer)
-
-    fields = for fieldName in fieldNames
+    fields = for name in fieldNames
       if @remoteSignals
         @getRemoteField(name)
       else
