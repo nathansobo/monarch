@@ -198,7 +198,10 @@ class Monarch.Record
     Monarch.Remote.Server.destroy(this)
 
   signal: (fieldNames..., transformer) ->
-    fieldNames.push(transformer) unless _.isFunction(transformer)
+    unless _.isFunction(transformer)
+      fieldNames.push(transformer)
+      transformer = undefined
+
     fields = for name in fieldNames
       if @remoteSignals
         @getRemoteField(name)
