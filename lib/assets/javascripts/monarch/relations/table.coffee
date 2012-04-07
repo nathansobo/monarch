@@ -38,7 +38,7 @@ class Monarch.Relations.Table extends Monarch.Relations.Relation
       name = column.name
       match = name.match(/^(.+)Id$/)
       if match and _.camelize(match[1]) == @name
-        return [@getColumn('id'), columns[i]]
+        return [@getColumn('id'), column]
 
   deactivateIfNeeded: -> # no-op
 
