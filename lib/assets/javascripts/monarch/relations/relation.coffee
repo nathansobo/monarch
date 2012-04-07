@@ -1,4 +1,4 @@
-class Monarch.Relations.Relation
+class Monarch.Relations.Relation extends Monarch.Base
   contents: ->
     if @isActive
       unless @_contents
@@ -49,7 +49,7 @@ class Monarch.Relations.Relation
     @contents().indexOf(@buildKey(tuple))
 
   containsKey: (keys...) ->
-    _.any keys, (key) -> @contents().indexOf(key) != -1
+    _.any keys, (key) => @contents().indexOf(key) != -1
 
   findByKey: (key) ->
     @contents().find(key)
