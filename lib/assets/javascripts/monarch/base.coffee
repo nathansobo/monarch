@@ -5,3 +5,8 @@ class Monarch.Base
       for property in properties
         return false unless _.isEqual(this[property], other[property])
       true
+
+  @delegate: (methodNames..., {to}) ->
+    for methodName in methodNames
+      do (methodName) =>
+        @prototype[methodName] = (args...) -> this[to][methodName](args...)
