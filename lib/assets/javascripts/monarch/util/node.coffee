@@ -3,22 +3,23 @@ class Monarch.Util.Node
     @clear()
 
   clear: ->
-    @subscriptions = new JS.Set()
+    @subscriptions = []
 
   publish: ->
     @publishArgs(arguments)
 
   publishArgs: (args) ->
-    @subscriptions.forEach (subscription) ->
+    for subscription in @subscriptions
       subscription.publish(args)
 
   subscribe: (callback, context) ->
     subscription = new Monarch.Util.Subscription(callback, context, this)
-    @subscriptions.add(subscription)
+    @subscriptions.push(subscription)
     subscription
 
   unsubscribe: (subscription) ->
-    @subscriptions.remove(subscription)
+    index = @subscriptions.indexOf(subscription)
+    @subscriptions.splice(index, 1) unless index == -1
     @emptyNode?.publish() if @size() == 0
 
   onEmpty: (callback, context) ->
@@ -29,4 +30,4 @@ class Monarch.Util.Node
     @subscriptions.length
 
   size: ->
-    @subscriptions.size
+    @subscriptions.length
