@@ -4,8 +4,7 @@ class Monarch.Relations.Projection extends Monarch.Relations.Relation
   constructor: (@operand, table) ->
     @table = if _.isFunction(table) then table.table else table
     @buildOrderByExpressions()
-    @recordCounts = new JS.Hash()
-    @recordCounts.setDefault(0)
+    @recordCounts = {}
 
   all: ->
     if @_contents
@@ -34,8 +33,8 @@ class Monarch.Relations.Projection extends Monarch.Relations.Relation
       @remove(tuple.getRecord(@table.name), newKey, oldKey)
 
   insert: (record, newKey) ->
-    rc = @recordCounts
-    count = rc.put(record, rc.get(record) + 1)
+    @recordCounts[record.id()] ?= 0
+    count = (@recordCounts[record.id()] += 1)
     super(record, newKey) if count == 1
 
   tupleUpdated: (tuple, changeset, newKey, oldKey) ->
@@ -45,10 +44,9 @@ class Monarch.Relations.Projection extends Monarch.Relations.Relation
     super(tuple.getRecord(@table.name), changeset, newKey, oldKey)
 
   remove: (record, newKey, oldKey) ->
-    rc = @recordCounts
-    count = rc.put(record, rc.get(record) - 1)
+    count = (@recordCounts[record.id()] -= 1)
     if count == 0
-      rc.remove(record)
+      delete @recordCounts[record.id()]
       super(record, newKey, oldKey)
 
   changesetInProjection: (changeset) ->

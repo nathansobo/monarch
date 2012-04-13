@@ -130,8 +130,8 @@ describe "Monarch.Relations.Projection", ->
       projection.activate()
 
       expect(projection.all()).toEqual([blog1, blog2])
-      expect(projection.recordCounts.get(blog1)).toBe(2)
-      expect(projection.recordCounts.get(blog2)).toBe(1)
+      expect(projection.recordCounts[blog1.id()]).toBe(2)
+      expect(projection.recordCounts[blog2.id()]).toBe(1)
 
   describe ".getColumn(name)", ->
     it "only returns columns from the projected table", ->
