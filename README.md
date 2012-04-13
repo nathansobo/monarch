@@ -1,10 +1,10 @@
 # Monarch
 
 Monarch is a relational modeling framework for client-centric web applications.
-It's similar to Backbone.js, but based on the powerful abstractions of
-relational algebra, offering a declarative and compositional language for
-querying data and subscribing to events. Monarch is written in CoffeeScript, but
-can also be used from JavaScript.
+It's superficially similar to Backbone.js, but it uses the relational algebra as
+a declarative, compositional language for querying data and subscribing to
+events. Monarch is written in CoffeeScript, but can also be used from
+JavaScript.
 
 ## Defining Models
 
@@ -68,9 +68,10 @@ Monarch.Repository.update(
 
 As you can see above, the hash can contain records for multiple tables, and is
 structured as follows: `table_name -> record_id-> column_name -> field_value`.
-Note that the keys are in underscore format rather than camel case. If a record
-for a given (table name, id) pair already exists, it will be updated with the
-new values. Otherwise a new record will be created.
+Note that the keys are in underscore format rather than camel case. This is in
+the process of changin. If a record for a given (table name, id) pair already
+exists, it will be updated with the new values. Otherwise a new record will be
+created.
 
 You can also call `Monarch.Repository.update` with an array of CRUD operations.
 This is useful, for example, when you are handling update events delivered via a
