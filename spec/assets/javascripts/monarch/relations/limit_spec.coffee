@@ -3,7 +3,7 @@ describe "Monarch.Relations.Limit", ->
 
   beforeEach ->
     class BlogPost extends Monarch.Record
-      @inherited(this)
+      @extended(this)
       @columns title: "string"
       @defaultOrderBy('title')
 

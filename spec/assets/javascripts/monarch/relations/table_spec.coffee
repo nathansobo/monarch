@@ -3,7 +3,7 @@ describe "Monarch.Relations.Table", ->
 
   beforeEach ->
     class BlogPost extends Monarch.Record
-      @inherited(this)
+      @extended(this)
 
   describe "events", ->
     [subscriptions, insertCallback, updateCallback, removeCallback] = []

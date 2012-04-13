@@ -3,7 +3,7 @@ describe "Monarch.Relations.OrderBy", ->
 
   beforeEach ->
     class User extends Monarch.Record
-      @inherited(this)
+      @extended(this)
       @columns
         firstName: 'firstName'
         lastName: 'lastName'

@@ -2,7 +2,7 @@ describe "Monarch.Util.Signal", ->
   describe "multiple signals combined", ->
     it "applies the transformer to all the input sources", ->
       class User extends Monarch.Record
-        @inherited(this)
+        @extended(this)
         @columns
           firstName: 'string',
           middleName: 'string',

@@ -2,7 +2,7 @@ describe "Monarch.Remote.Server", ->
   Blog = null
   beforeEach ->
     class Blog extends Monarch.Record
-      @inherited(this)
+      @extended(this)
       @columns(userId: "integer")
 
   describe ".fetch", ->

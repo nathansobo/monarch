@@ -3,7 +3,7 @@ describe "Monarch.Relations.Selection", ->
 
   beforeEach ->
     class BlogPost extends Monarch.Record
-      @inherited(this)
+      @extended(this)
       @columns
         blogId: 'integer',
         title: 'string'

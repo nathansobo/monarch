@@ -3,7 +3,7 @@ describe "Monarch.Relations.Union", ->
 
   beforeEach ->
     class BlogPost extends Monarch.Record
-      @inherited(this)
+      @extended(this)
       @columns
         blogId: 'integer'
         public: 'boolean'

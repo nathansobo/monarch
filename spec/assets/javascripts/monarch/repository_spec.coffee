@@ -3,13 +3,13 @@ describe "Monarch.Repository", ->
 
   beforeEach ->
     class Blog extends Monarch.Record
-      @inherited(this)
+      @extended(this)
       @columns
         userId: 'integer'
         title: 'string'
 
     class BlogPost extends Monarch.Record
-      @inherited(this)
+      @extended(this)
       @columns
         blogId: 'integer'
         title: 'string'

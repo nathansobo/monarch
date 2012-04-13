@@ -5,7 +5,7 @@
 
 window.Monarch = (constructor, columnDefinitions) ->
   constructor extends Monarch.Record
-  constructor.inherited(constructor)
+  constructor.extended(constructor)
   constructor.columns(columnDefinitions) if columnDefinitions
 
 _.extend Monarch,

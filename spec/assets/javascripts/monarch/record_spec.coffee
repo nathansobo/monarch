@@ -4,9 +4,9 @@ describe "Monarch.Record", ->
 
     beforeEach ->
       class BlogPost extends Monarch.Record
-        @inherited(this)
+        @extended(this)
 
-    describe "@inherited(subclass)", ->
+    describe "@extended(subclass)", ->
       it "associates subclasses with a table in the repository", ->
         expect(BlogPost.name).toBe('BlogPost')
         expect(BlogPost.table instanceof Monarch.Relations.Table).toBeTruthy()
@@ -68,7 +68,7 @@ describe "Monarch.Record", ->
         expect(BlogPost.hasMany('comments')).toBe(BlogPost)
 
         class Comment extends Monarch.Record
-          @inherited(this)
+          @extended(this)
           @columns(blogPostId: 'integer')
 
         post = BlogPost.created(id: 1)
@@ -76,7 +76,7 @@ describe "Monarch.Record", ->
 
       it "supports a 'className' option", ->
         class PostComment extends Monarch.Record
-          @inherited(this)
+          @extended(this)
           @columns(blogPostId: 'integer')
 
         BlogPost.hasMany('comments', className: 'PostComment')
@@ -86,7 +86,7 @@ describe "Monarch.Record", ->
 
       it "supports a 'foreignKey' option", ->
         class Comment extends Monarch.Record
-          @inherited(this)
+          @extended(this)
           @columns(postId: 'integer')
 
         BlogPost.hasMany('comments', foreignKey: 'postId')
@@ -96,7 +96,7 @@ describe "Monarch.Record", ->
 
       it "supports an 'orderBy' option", ->
         class Comment extends Monarch.Record
-          @inherited(this)
+          @extended(this)
           @columns(blogPostId: 'integer', body: 'string', createdAt: 'datetime')
 
         BlogPost.hasMany('comments', orderBy: 'body desc')
@@ -109,7 +109,7 @@ describe "Monarch.Record", ->
 
       it "supports a 'conditions' option", ->
         class Comment extends Monarch.Record
-          @inherited(this)
+          @extended(this)
           @columns(blogPostId: 'integer', public: 'boolean', score: 'integer')
 
         BlogPost.hasMany('comments', conditions: { public: true, 'score >': 3 })
@@ -119,12 +119,12 @@ describe "Monarch.Record", ->
 
       it "supports a 'through' option", ->
         class Blog extends Monarch.Record
-          @inherited(this)
+          @extended(this)
           @hasMany('posts', className: 'BlogPost')
           @hasMany('comments', through: 'posts')
 
         class Comment extends Monarch.Record
-          @inherited(this)
+          @extended(this)
           @columns(blogPostId: 'integer')
 
         BlogPost.columns(blogId: 'integer')
@@ -135,7 +135,7 @@ describe "Monarch.Record", ->
     describe "@relatesTo(name, definition)", ->
       it "defines a method that returns a memoized relation given by the definition", ->
         class Comment extends Monarch.Record
-          @inherited(this)
+          @extended(this)
           @columns(postId: 'integer', public: 'boolean')
 
         BlogPost.relatesTo 'comments', ->
@@ -155,13 +155,13 @@ describe "Monarch.Record", ->
       it "sets up a belongs to relationship", ->
         expect(window.User).toBeUndefined()
         class Blog extends Monarch.Record
-          @inherited(this)
+          @extended(this)
           @columns(userId: 'integer')
 
         expect(Blog.belongsTo('user')).toBe(Blog)
 
         class User extends Monarch.Record
-          @inherited(this)
+          @extended(this)
 
         user = User.created(id: 1)
         blog = Blog.created(id: 1, userId: 1)
@@ -169,7 +169,7 @@ describe "Monarch.Record", ->
 
       it "supports a 'className' option", ->
         class Comment extends Monarch.Record
-          @inherited(this)
+          @extended(this)
           @columns(postId: 'integer')
           @belongsTo('post', className: 'BlogPost')
 
@@ -179,7 +179,7 @@ describe "Monarch.Record", ->
 
       it "supports a 'foreignKey' option", ->
         class Comment extends Monarch.Record
-          @inherited(this)
+          @extended(this)
           @columns(blogPostId: 'integer')
           @belongsTo('post', className: 'BlogPost', foreignKey: 'blogPostId')
 
@@ -258,7 +258,7 @@ describe "Monarch.Record", ->
 
     beforeEach ->
       class BlogPost extends Monarch.Record
-        @inherited(this)
+        @extended(this)
         @columns
           blogId: 'integer',
           title: 'string',
@@ -606,7 +606,7 @@ describe "Monarch.Record", ->
 
       it "returns false for records of different classes", ->
         class BlogReview extends Monarch.Record
-          @inherited(this)
+          @extended(this)
           @columns
             blogId: 'integer'
             title: 'string'

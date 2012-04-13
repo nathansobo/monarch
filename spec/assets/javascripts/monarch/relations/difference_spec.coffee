@@ -3,7 +3,7 @@ describe "Monarch.Relations.Difference", ->
 
   beforeEach ->
     class BlogPost extends Monarch.Record
-      @inherited(this)
+      @extended(this)
       @columns
         public: 'boolean'
         blogId: 'integer'

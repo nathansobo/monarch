@@ -3,7 +3,7 @@ describe "Monarch.Remote.FakeServer", ->
 
   beforeEach ->
     class Blog extends Monarch.Record
-      @inherited(this)
+      @extended(this)
       @columns
         title: 'string',
         createdAt: 'datetime'

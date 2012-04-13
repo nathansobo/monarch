@@ -1,5 +1,5 @@
 class Monarch.Record
-  @inherited: (subclass) ->
+  @extended: (subclass) ->
     subclass.table = Monarch.Repository.buildTable(subclass)
     subclass.defineColumnAccessor('id')
 

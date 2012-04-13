@@ -4,11 +4,11 @@ describe "custom ajax dataType converters", ->
     mockLowLevelXhr()
 
     class User extends Monarch.Record
-      @inherited(this)
+      @extended(this)
       @columns(fullName: 'string')
 
     class Blog extends Monarch.Record
-      @inherited(this)
+      @extended(this)
       @columns(title: 'string')
 
   describe "handling requests with the 'records' dataType", ->
