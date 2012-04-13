@@ -3,11 +3,10 @@
 #= require_tree ./monarch/util
 #= require_tree ./monarch
 
-window.Monarch = (recordClassName, columnDefinitions) ->
-  class extends Monarch.Record
-    @tableName = recordClassName
-    @inherited(this)
-    @columns(columnDefinitions) if columnDefinitions
+window.Monarch = (constructor, columnDefinitions) ->
+  constructor extends Monarch.Record
+  constructor.inherited(constructor)
+  constructor.columns(columnDefinitions) if columnDefinitions
 
 _.extend Monarch,
   sandboxUrl: '/sandbox'
