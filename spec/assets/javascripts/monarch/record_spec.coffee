@@ -226,11 +226,11 @@ describe "Monarch.Record", ->
           post = onSuccessCallback.mostRecentCall.args[0]
           expect(post instanceof Monarch.Record).toBeTruthy()
           expect(post.id()).toBe(23)
-          # expect(post.title()).toBe("Testing +")
-          # expect(post.body()).toBe("1 2 3 +")
-          # expect(post.blogId()).toBe(1)
-          # expect(BlogPost.contains(post)).toBeTruthy()
-          # expect(Monarch.Repository.isPaused()).toBeFalsy()
+          expect(post.title()).toBe("Testing +")
+          expect(post.body()).toBe("1 2 3 +")
+          expect(post.blogId()).toBe(1)
+          expect(BlogPost.contains(post)).toBeTruthy()
+          expect(Monarch.Repository.isPaused()).toBeFalsy()
 
       describe "when the server responds with validation errors", ->
         it "assigns validation errors on the record and marks it invalid", ->
