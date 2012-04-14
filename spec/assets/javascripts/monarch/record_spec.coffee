@@ -199,14 +199,14 @@ describe "Monarch.Record", ->
         expect(Monarch.Repository.isPaused()).toBeTruthy()
 
       it "sends a create command to the server", ->
-        expect(lastAjaxRequest.url).toBe('/sandbox/blog-posts')
+        expect(lastAjaxRequest.url).toBe('/blog-posts')
         expect(lastAjaxRequest.type).toBe('post')
         expect(lastAjaxRequest.data).toEqual(fieldValues: { title: "Testing", body: "1 2 3", blogId: 1 })
 
       describe "when no field values are passed", ->
         it "does not send a fieldValues param to the server", ->
           BlogPost.create()
-          expect(lastAjaxRequest.url).toBe('/sandbox/blog-posts')
+          expect(lastAjaxRequest.url).toBe('/blog-posts')
           expect(lastAjaxRequest.type).toBe('post')
           expect(lastAjaxRequest.data).toBeUndefined()
 
@@ -290,7 +290,7 @@ describe "Monarch.Record", ->
           expect(Monarch.Repository.isPaused()).toBeTruthy()
 
         it "sends the dirty fields to the server in a put to the record's url", ->
-          expect(lastAjaxRequest.url).toBe('/sandbox/blog-posts/1')
+          expect(lastAjaxRequest.url).toBe('/blog-posts/1')
           expect(lastAjaxRequest.type).toBe('put')
           expect(lastAjaxRequest.data).toEqual(fieldValues: { blogId: 2,body : "Body++"})
 
@@ -389,7 +389,7 @@ describe "Monarch.Record", ->
           promise = record.save()
 
         it "sends a create command to the server", ->
-          expect(lastAjaxRequest.url).toBe('/sandbox/blog-posts')
+          expect(lastAjaxRequest.url).toBe('/blog-posts')
           expect(lastAjaxRequest.type).toBe('post')
           expect(lastAjaxRequest.data).toEqual(fieldValues: { title: "Good Title", body: "Good Body" })
 
@@ -461,7 +461,7 @@ describe "Monarch.Record", ->
         promise = post.destroy()
         expect(BlogPost.contains(post)).toBeTruthy(); # waits for server
 
-        expect(lastAjaxRequest.url).toBe('/sandbox/blog-posts/44')
+        expect(lastAjaxRequest.url).toBe('/blog-posts/44')
         expect(lastAjaxRequest.type).toBe('delete')
 
         expect(Monarch.Repository.isPaused()).toBeTruthy()

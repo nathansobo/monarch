@@ -2,7 +2,7 @@ class Monarch.Remote.UpdateRequest extends Monarch.Remote.MutateRequest
   requestType: 'put'
 
   requestUrl: ->
-    Monarch.sandboxUrl + '/' + @record.table.urlName() + '/' + @record.id()
+    @record.table.resourceUrl() + '/' + @record.id()
 
   requestData: ->
     { @fieldValues }

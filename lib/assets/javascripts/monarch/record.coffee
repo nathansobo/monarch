@@ -1,9 +1,12 @@
 class Monarch.Record
-  { singularize, capitalize, uncapitalize } = Monarch.Util.Inflection
+  { singularize, capitalize, uncapitalize, underscoreAndPluralize } = Monarch.Util.Inflection
 
   @extended: (subclass) ->
     subclass.table = Monarch.Repository.buildTable(subclass)
     subclass.defineColumnAccessor('id')
+
+  @resourceUrl: (name) ->
+    Monarch.resourceUrlRoot + underscoreAndPluralize(uncapitalize(name)).replace(/_/g, Monarch.resourceUrlSeparator)
 
   @column: (name, type) ->
     @table.column(name, type)

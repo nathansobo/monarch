@@ -7,7 +7,7 @@ class Monarch.Remote.FetchRequest extends Monarch.Util.Deferrable
   perform: ->
     relationsJson = JSON.stringify(relation.wireRepresentation() for relation in @relations)
     jQuery.ajax
-      url: Monarch.sandboxUrl
+      url: Monarch.fetchUrl
       type: 'get'
       data: { relations: relationsJson }
       dataType: 'records'

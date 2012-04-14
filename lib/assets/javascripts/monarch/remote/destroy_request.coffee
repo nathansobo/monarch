@@ -2,7 +2,7 @@ class Monarch.Remote.DestroyRequest extends Monarch.Remote.MutateRequest
   requestType: 'delete',
 
   requestUrl: ->
-    Monarch.sandboxUrl + '/' + @record.table.urlName() + '/' + @record.id()
+    @record.table.resourceUrl() + '/' + @record.id()
 
   requestData: ->
 

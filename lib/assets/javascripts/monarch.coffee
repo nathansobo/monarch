@@ -9,7 +9,9 @@ window.Monarch = (constructor, columnDefinitions) ->
   constructor.columns(columnDefinitions) if columnDefinitions
 
 _.extend Monarch,
-  sandboxUrl: '/sandbox'
+  fetchUrl: '/sandbox'
+  resourceUrlRoot: '/'
+  resourceUrlSeparator: '-'
 
   Expressions: {}
   Relations: {}

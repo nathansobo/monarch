@@ -4,7 +4,7 @@ class Monarch.Remote.CreateRequest extends Monarch.Remote.MutateRequest
   requestType: 'post',
 
   requestUrl: ->
-    Monarch.sandboxUrl + '/' + @record.table.urlName()
+    @record.table.resourceUrl()
 
   requestData: ->
     return { @fieldValues } unless _.isEmpty(@fieldValues)

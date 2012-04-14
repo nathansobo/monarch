@@ -1,5 +1,5 @@
 class Monarch.Relations.Table extends Monarch.Relations.Relation
-  { capitalize, uncapitalize, underscoreAndPluralize } = Monarch.Util.Inflection
+  { capitalize, uncapitalize } = Monarch.Util.Inflection
 
   constructor: (@recordClass) ->
     @name = recordClass.tableName or recordClass.name
@@ -63,8 +63,8 @@ class Monarch.Relations.Table extends Monarch.Relations.Relation
     @_removeNode.clear()
     @_contents = new Monarch.Util.SkipList(@buildComparator())
 
-  urlName: ->
-    underscoreAndPluralize(uncapitalize(@name)).replace(/_/g, '-')
+  resourceUrl: ->
+    @recordClass.resourceUrl(@name)
 
   wireRepresentation: ->
     type: 'Table'
