@@ -65,7 +65,7 @@ rules =
     "equipment"
   ]
 
-_.mixin
+Monarch.Util.Inflection =
   pluralize: (word) ->
     for i in [0...rules.uncountable.length]
       uncountable = rules.uncountable[i]
@@ -106,32 +106,7 @@ _.mixin
     word.replace(/([a-zA-Z\d])([A-Z])/g,'$1_$2').toLowerCase()
 
   underscoreAndPluralize: (word) ->
-    this.underscore(this.pluralize(word))
-
-  camelize: (word, lowFirstLetter) ->
-    parts = word.split('_')
-    len = parts.length
-    camelized = ""
-    for i in [0...len]
-      firstLetter =
-        if lowFirstLetter && i == 0
-          parts[i].charAt(0)
-        else
-          parts[i].charAt(0).toUpperCase()
-      camelized += firstLetter + parts[i].substring(1)
-    camelized
-
-  underscoreKeys: (hash) ->
-    newHash = {}
-    for key, value of hash
-      newHash[_.underscore(key)] = value
-    newHash
-
-  camelizeKeys: (hash) ->
-    newHash = {}
-    for key, value of hash
-      newHash[_.camelize(key, true)] = value
-    newHash
+    Monarch.Util.Inflection.underscore(Monarch.Util.Inflection.pluralize(word))
 
   capitalize: (word) ->
     word.charAt(0).toUpperCase() + word.substr(1)

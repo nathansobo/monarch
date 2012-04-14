@@ -1,4 +1,6 @@
 class Monarch.Record
+  { singularize, capitalize, uncapitalize } = Monarch.Util.Inflection
+
   @extended: (subclass) ->
     subclass.table = Monarch.Repository.buildTable(subclass)
     subclass.defineColumnAccessor('id')
@@ -19,8 +21,8 @@ class Monarch.Record
     this
 
   @hasMany: (name, options={}) ->
-    targetClassName = options.className ? _.singularize(_.capitalize(name))
-    foreignKey = options.foreignKey ? _.uncapitalize(@table.name) + "Id"
+    targetClassName = options.className ? singularize(capitalize(name))
+    foreignKey = options.foreignKey ? uncapitalize(@table.name) + "Id"
 
     @relatesTo name, ->
       target = Monarch.Repository.tables[targetClassName]
@@ -43,7 +45,7 @@ class Monarch.Record
     this
 
   @belongsTo: (name, options={}) ->
-    targetClassName = options.className ? _.capitalize(name)
+    targetClassName = options.className ? capitalize(name)
     foreignKey = options.foreignKey ? name + "Id"
     @prototype[name] = ->
       target = Monarch.Repository.tables[targetClassName]

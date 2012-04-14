@@ -1,4 +1,6 @@
 class Monarch.Relations.Table extends Monarch.Relations.Relation
+  { capitalize, uncapitalize, underscoreAndPluralize } = Monarch.Util.Inflection
+
   constructor: (@recordClass) ->
     @name = recordClass.tableName or recordClass.name
     @columnsByName = {}
@@ -36,7 +38,7 @@ class Monarch.Relations.Table extends Monarch.Relations.Relation
     for column in columns
       name = column.name
       match = name.match(/^(.+)Id$/)
-      if match and _.capitalize(match[1]) == @name
+      if match and capitalize(match[1]) == @name
         return [@getColumn('id'), column]
 
   deactivateIfNeeded: -> # no-op
@@ -62,7 +64,7 @@ class Monarch.Relations.Table extends Monarch.Relations.Relation
     @_contents = new Monarch.Util.SkipList(@buildComparator())
 
   urlName: ->
-    _.underscore(_.uncapitalize(_.pluralize(@name))).replace(/_/g, '-')
+    underscoreAndPluralize(uncapitalize(@name)).replace(/_/g, '-')
 
   wireRepresentation: ->
     type: 'Table'

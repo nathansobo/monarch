@@ -1,3 +1,5 @@
+{ capitalize } = Monarch.Util.Inflection
+
 Monarch.Repository =
   tables: {}
   pauseCount: 0
@@ -16,7 +18,7 @@ Monarch.Repository =
         hashOrArray = [hashOrArray]
 
       for command in hashOrArray
-        operation = this['perform' + _.capitalize(command.shift())]
+        operation = this['perform' + capitalize(command.shift())]
         operation.apply(this, command)
     else # records hash
       for tableName, recordsHash of hashOrArray
