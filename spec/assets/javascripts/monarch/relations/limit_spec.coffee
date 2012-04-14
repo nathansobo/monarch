@@ -151,6 +151,6 @@ describe "Monarch.Relations.Limit", ->
 
     it "has a #wireRepresentation()", ->
       expect(BlogPost.limit(5).wireRepresentation()).toEqual
-        type: 'limit'
+        type: 'Limit'
         operand: BlogPost.table.wireRepresentation()
         count: 5

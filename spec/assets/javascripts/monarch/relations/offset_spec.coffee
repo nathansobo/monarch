@@ -106,6 +106,6 @@ describe "Monarch.Relations.Offset", ->
 
   it "has a #wireRepresentation()", ->
     expect(BlogPost.offset(5).wireRepresentation()).toEqual
-      type: 'offset'
+      type: 'Offset'
       operand: BlogPost.table.wireRepresentation()
       count: 5

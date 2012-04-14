@@ -4,11 +4,11 @@ class Monarch.Remote.CreateRequest extends Monarch.Remote.MutateRequest
   requestType: 'post',
 
   requestUrl: ->
-    Monarch.sandboxUrl + '/' + @record.table.remoteName
+    Monarch.sandboxUrl + '/' + @record.table.urlName()
 
   requestData: ->
-    return { field_values: @fieldValues } unless _.isEmpty(@fieldValues)
+    return { @fieldValues } unless _.isEmpty(@fieldValues)
 
   triggerSuccess: (attributes) ->
-    @record.created(_.camelizeKeys(attributes))
+    @record.created(attributes)
     super(@record)

@@ -1,7 +1,7 @@
 #= require monarch/expressions/predicate
 
 class Monarch.Expressions.And extends Monarch.Expressions.Predicate
-  wireRepresentationType: 'and'
+  wireRepresentationType: 'And'
 
   evaluate: (tuple) ->
     @left.evaluate(tuple) && @right.evaluate(tuple)

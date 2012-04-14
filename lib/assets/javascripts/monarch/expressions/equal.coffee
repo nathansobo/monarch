@@ -1,7 +1,7 @@
 #= require monarch/expressions/predicate
 
 class Monarch.Expressions.Equal extends Monarch.Expressions.Predicate
-  wireRepresentationType: 'eq'
+  wireRepresentationType: 'Equal'
 
   operator: (left, right) ->
     _.isEqual(left, right)

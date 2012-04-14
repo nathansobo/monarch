@@ -2,11 +2,11 @@ class Monarch.Remote.UpdateRequest extends Monarch.Remote.MutateRequest
   requestType: 'put'
 
   requestUrl: ->
-    Monarch.sandboxUrl + '/' + @record.table.remoteName + '/' + @record.id()
+    Monarch.sandboxUrl + '/' + @record.table.urlName() + '/' + @record.id()
 
   requestData: ->
-    { field_values: @fieldValues }
+    { @fieldValues }
 
   triggerSuccess: (attributes) ->
-    changeset = @record.updated(_.camelizeKeys(attributes))
+    changeset = @record.updated(attributes)
     super(@record, changeset)

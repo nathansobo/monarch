@@ -140,7 +140,7 @@ class Monarch.Record
     for name, field of @localFields
       if wireRepresentation
         if (allFields or field.isDirty()) and not (field instanceof Monarch.SyntheticField)
-          fieldValues[_.underscore(name)] = field.wireRepresentation()
+          fieldValues[name] = field.wireRepresentation()
       else
         fieldValues[name] = field.getValue()
     fieldValues

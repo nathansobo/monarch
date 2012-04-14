@@ -40,8 +40,8 @@ class Monarch.Relations.Offset extends Monarch.Relations.Relation
         @remove(tuple, newKey, oldKey)
 
   wireRepresentation: ->
-    type: 'offset',
-    operand: @operand.wireRepresentation(),
+    type: 'Offset'
+    operand: @operand.wireRepresentation()
     count: @count
 
   getColumn: (args...) -> @operand.getColumn(args...)

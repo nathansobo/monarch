@@ -11,7 +11,6 @@ describe "Monarch.Record", ->
         expect(BlogPost.name).toBe('BlogPost')
         expect(BlogPost.table instanceof Monarch.Relations.Table).toBeTruthy()
         expect(BlogPost.table.name).toBe('BlogPost')
-        expect(BlogPost.table.remoteName).toBe('blog_posts')
         expect(BlogPost.table).toEqual(Monarch.Repository.tables.BlogPost)
 
       it "automatically defines an integer-typed id column", ->
@@ -200,14 +199,14 @@ describe "Monarch.Record", ->
         expect(Monarch.Repository.isPaused()).toBeTruthy()
 
       it "sends a create command to the server", ->
-        expect(lastAjaxRequest.url).toBe('/sandbox/blog_posts')
+        expect(lastAjaxRequest.url).toBe('/sandbox/blog-posts')
         expect(lastAjaxRequest.type).toBe('post')
-        expect(lastAjaxRequest.data).toEqual(field_values: { title: "Testing", body: "1 2 3", blog_id: 1 })
+        expect(lastAjaxRequest.data).toEqual(fieldValues: { title: "Testing", body: "1 2 3", blogId: 1 })
 
       describe "when no field values are passed", ->
-        it "does not send a field_values param to the server", ->
+        it "does not send a fieldValues param to the server", ->
           BlogPost.create()
-          expect(lastAjaxRequest.url).toBe('/sandbox/blog_posts')
+          expect(lastAjaxRequest.url).toBe('/sandbox/blog-posts')
           expect(lastAjaxRequest.type).toBe('post')
           expect(lastAjaxRequest.data).toBeUndefined()
 
@@ -220,7 +219,7 @@ describe "Monarch.Record", ->
             id: 23,
             title: "Testing +",
             body: "1 2 3 +",
-            blog_id: 1
+            blogId: 1
           )
 
           expect(onSuccessCallback).toHaveBeenCalled()
@@ -291,9 +290,9 @@ describe "Monarch.Record", ->
           expect(Monarch.Repository.isPaused()).toBeTruthy()
 
         it "sends the dirty fields to the server in a put to the record's url", ->
-          expect(lastAjaxRequest.url).toBe('/sandbox/blog_posts/1')
+          expect(lastAjaxRequest.url).toBe('/sandbox/blog-posts/1')
           expect(lastAjaxRequest.type).toBe('put')
-          expect(lastAjaxRequest.data).toEqual(field_values: { blog_id: 2,body : "Body++"})
+          expect(lastAjaxRequest.data).toEqual(fieldValues: { blogId: 2,body : "Body++"})
 
         describe "when the server updates the record successfully", ->
           it "updates the record with the attributes returned and triggers success on the promise with the record and a change set", ->
@@ -301,7 +300,7 @@ describe "Monarch.Record", ->
             promise.onSuccess(onSuccessCallback)
 
             lastAjaxRequest.success
-              blog_id: 2,
+              blogId: 2,
               body: "Body+++"
 
             expect(onSuccessCallback).toHaveBeenCalled()
@@ -390,9 +389,9 @@ describe "Monarch.Record", ->
           promise = record.save()
 
         it "sends a create command to the server", ->
-          expect(lastAjaxRequest.url).toBe('/sandbox/blog_posts')
+          expect(lastAjaxRequest.url).toBe('/sandbox/blog-posts')
           expect(lastAjaxRequest.type).toBe('post')
-          expect(lastAjaxRequest.data).toEqual(field_values: { title: "Good Title", body: "Good Body" })
+          expect(lastAjaxRequest.data).toEqual(fieldValues: { title: "Good Title", body: "Good Body" })
 
         describe "if the server responds successfully", ->
           it "inserts the record and clears validation errors", ->
@@ -462,7 +461,7 @@ describe "Monarch.Record", ->
         promise = post.destroy()
         expect(BlogPost.contains(post)).toBeTruthy(); # waits for server
 
-        expect(lastAjaxRequest.url).toBe('/sandbox/blog_posts/44')
+        expect(lastAjaxRequest.url).toBe('/sandbox/blog-posts/44')
         expect(lastAjaxRequest.type).toBe('delete')
 
         expect(Monarch.Repository.isPaused()).toBeTruthy()
@@ -583,15 +582,15 @@ describe "Monarch.Record", ->
           post.title('Title Prime')
           expect(post.wireRepresentation(true)).toEqual
             id: 1
-            blog_id: 1
+            blogId: 1
             title: 'Title Prime'
             body: 'Body'
-            created_at: 12345
+            createdAt: 12345
 
       it "converts Date objects to epoch millisecond integers", ->
-        expect(post.wireRepresentation(true).created_at).toBe(12345)
+        expect(post.wireRepresentation(true).createdAt).toBe(12345)
         post.createdAt(null)
-        expect(post.wireRepresentation(true).created_at).toBeNull()
+        expect(post.wireRepresentation(true).createdAt).toBeNull()
 
     describe "#isEqual", ->
       post1 = null
@@ -628,7 +627,7 @@ describe "Monarch.Record", ->
         expect(lastAjaxRequest.type).toBe('get')
         relation = JSON.parse(lastAjaxRequest.data.relations)[0]
 
-        expect(relation.type).toBe('selection')
-        expect(relation.operand.name).toBe('blog_posts')
-        expect(relation.predicate.left_operand.name).toBe('id')
-        expect(relation.predicate.right_operand.value).toBe(1)
+        expect(relation.type).toBe('Selection')
+        expect(relation.operand.name).toBe('BlogPost')
+        expect(relation.predicate.leftOperand.name).toBe('id')
+        expect(relation.predicate.rightOperand.value).toBe(1)

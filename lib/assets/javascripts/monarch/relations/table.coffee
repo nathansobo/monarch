@@ -1,7 +1,6 @@
 class Monarch.Relations.Table extends Monarch.Relations.Relation
   constructor: (@recordClass) ->
     @name = recordClass.tableName or recordClass.name
-    @remoteName = _.underscoreAndPluralize(recordClass.name)
     @columnsByName = {}
     @column('id', 'integer')
     @defaultOrderBy('id')
@@ -37,7 +36,7 @@ class Monarch.Relations.Table extends Monarch.Relations.Relation
     for column in columns
       name = column.name
       match = name.match(/^(.+)Id$/)
-      if match and _.camelize(match[1]) == @name
+      if match and _.capitalize(match[1]) == @name
         return [@getColumn('id'), column]
 
   deactivateIfNeeded: -> # no-op
@@ -47,7 +46,7 @@ class Monarch.Relations.Table extends Monarch.Relations.Relation
       id = parseInt(id)
       localAttributes = {}
       for name, value of attributes
-        localAttributes[_.camelize(name, true)] = value
+        localAttributes[name] = value
 
       existingRecord = @find(id)
       if existingRecord
@@ -62,9 +61,12 @@ class Monarch.Relations.Table extends Monarch.Relations.Relation
     @_removeNode.clear()
     @_contents = new Monarch.Util.SkipList(@buildComparator())
 
+  urlName: ->
+    _.underscore(_.uncapitalize(_.pluralize(@name))).replace(/_/g, '-')
+
   wireRepresentation: ->
-    type: 'table',
-    name: @remoteName
+    type: 'Table'
+    name: @name
 
   findOrFetch: (id) ->
     record = @find(id)

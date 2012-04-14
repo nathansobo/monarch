@@ -31,9 +31,9 @@ class Monarch.Relations.Difference extends Monarch.Relations.Relation
       @remove(tuple) if @containsKey(newKey, oldKey)
 
   wireRepresentation: ->
-    type: 'difference',
-    left_operand: @left.wireRepresentation(),
-    right_operand: @right.wireRepresentation()
+    type: 'Difference',
+    leftOperand: @left.wireRepresentation(),
+    rightOperand: @right.wireRepresentation()
 
   getColumn: (args...) -> @left.getColumn(args...)
   inferJoinColumns: (args...) -> @left.inferJoinColumns(args...)

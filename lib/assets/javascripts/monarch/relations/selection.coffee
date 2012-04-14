@@ -34,8 +34,8 @@ class Monarch.Relations.Selection extends Monarch.Relations.Relation
       @remove(tuple, newKey, oldKey) if (@containsKey(oldKey))
 
   wireRepresentation: ->
-    type: 'selection',
-    predicate: @predicate.wireRepresentation(),
+    type: 'Selection'
+    predicate: @predicate.wireRepresentation()
     operand: @operand.wireRepresentation()
 
   getColumn: (args...) -> @operand.getColumn(args...)

@@ -142,5 +142,5 @@ describe "Monarch.Relations.Table", ->
 
   it "has a .wireRepresentation()", ->
     expect(BlogPost.table.wireRepresentation()).toEqual
-      type: 'table',
-      name: 'blog_posts'
+      type: 'Table',
+      name: 'BlogPost'

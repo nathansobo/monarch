@@ -101,7 +101,7 @@ class Monarch.Relations.InnerJoin extends Monarch.Relations.Relation
     if oldKey then _.extend(key, oldKey) else key
 
   wireRepresentation: ->
-    type: 'inner_join',
-    left_operand: @left.wireRepresentation(),
-    right_operand: @right.wireRepresentation(),
+    type: 'InnerJoin',
+    leftOperand: @left.wireRepresentation()
+    rightOperand: @right.wireRepresentation()
     predicate: @predicate.wireRepresentation()

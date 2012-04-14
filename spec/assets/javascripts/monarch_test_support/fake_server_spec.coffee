@@ -24,7 +24,7 @@ describe "Monarch.Remote.FakeServer", ->
       record = createCommand.record
       expect(createCommand).toBe(fakeServer.creates[0])
       expect(record instanceof Blog).toBeTruthy()
-      expect(createCommand.fieldValues).toEqual(title: "Alpha", created_at: 12345)
+      expect(createCommand.fieldValues).toEqual(title: "Alpha", createdAt: 12345)
 
       successCallback = jasmine.createSpy("successCallback")
       promise.onSuccess(successCallback)
@@ -48,7 +48,7 @@ describe "Monarch.Remote.FakeServer", ->
       createCommand.succeed
         id: 22,
         title: "Zulu",
-        created_at: 98765
+        createdAt: 98765
 
       record = createCommand.record
       expect(record.id()).toBe(22)
@@ -82,7 +82,7 @@ describe "Monarch.Remote.FakeServer", ->
       updateCommand = fakeServer.lastUpdate()
       expect(updateCommand).toBe(fakeServer.updates[0])
       expect(updateCommand.record).toBe(blog)
-      expect(updateCommand.fieldValues).toEqual(title: "Bravo", created_at: 54321)
+      expect(updateCommand.fieldValues).toEqual(title: "Bravo", createdAt: 54321)
 
       successCallback = jasmine.createSpy("successCallback")
       promise.onSuccess(successCallback)
@@ -112,7 +112,7 @@ describe "Monarch.Remote.FakeServer", ->
 
       updateCommand.succeed
         title: "Zulu",
-        created_at: 98765
+        createdAt: 98765
 
       expect(blog.title()).toBe("Zulu")
       expect(blog.createdAt().getTime()).toBe(98765)

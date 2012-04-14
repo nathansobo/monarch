@@ -49,9 +49,9 @@ class Monarch.Relations.Union extends Monarch.Relations.Relation
     if side == 'left' then @right else @left
 
   wireRepresentation: ->
-    type: 'union',
-    left_operand: @left.wireRepresentation(),
-    right_operand: @right.wireRepresentation()
+    type: 'Union'
+    leftOperand: @left.wireRepresentation()
+    rightOperand: @right.wireRepresentation()
 
   getColumn: (args...) -> @left.getColumn(args...)
   inferJoinColumns: (args...) -> @left.inferJoinColumns(args...)

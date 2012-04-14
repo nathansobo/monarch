@@ -116,6 +116,6 @@ describe "Monarch.Relations.Difference", ->
     right = BlogPost.where(public: true)
 
     expect(left.difference(right).wireRepresentation()).toEqual
-      type: 'difference'
-      left_operand: left.wireRepresentation()
-      right_operand: right.wireRepresentation()
+      type: 'Difference'
+      leftOperand: left.wireRepresentation()
+      rightOperand: right.wireRepresentation()

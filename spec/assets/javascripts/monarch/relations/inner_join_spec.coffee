@@ -270,16 +270,16 @@ describe "Monarch.Relations.InnerJoin", ->
     right = BlogPost.table
 
     expect(left.join(right).wireRepresentation()).toEqual
-      type: 'inner_join'
-      left_operand: left.wireRepresentation()
-      right_operand: right.wireRepresentation()
+      type: 'InnerJoin'
+      leftOperand: left.wireRepresentation()
+      rightOperand: right.wireRepresentation()
       predicate:
-        type: 'eq',
-        left_operand:
-          type: 'column'
-          table: 'blogs'
+        type: 'Equal',
+        leftOperand:
+          type: 'Column'
+          table: 'Blog'
           name: 'id'
-        right_operand:
-          type: 'column'
-          table: 'blog_posts'
-          name: 'blog_id'
+        rightOperand:
+          type: 'Column'
+          table: 'BlogPost'
+          name: 'blogId'

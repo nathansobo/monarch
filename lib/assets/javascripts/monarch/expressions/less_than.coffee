@@ -1,7 +1,7 @@
 #= require monarch/expressions/predicate
 
 class Monarch.Expressions.LessThan extends Monarch.Expressions.Predicate
-  wireRepresentationType: 'lt'
+  wireRepresentationType: 'LessThan'
 
   operator: (left, right) ->
     left < right

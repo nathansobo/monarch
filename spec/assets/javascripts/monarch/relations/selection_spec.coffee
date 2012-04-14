@@ -135,28 +135,28 @@ describe "Monarch.Relations.Selection", ->
   describe ".wireRepresentation()", ->
     it "works for comparison with numbers", ->
       expect(BlogPost.where(blogId: 2).wireRepresentation()).toEqual
-        type: 'selection'
+        type: 'Selection'
         predicate:
-          type: 'eq'
-          left_operand:
-            type: 'column'
-            table: 'blog_posts'
-            name: 'blog_id'
-          right_operand:
-            type: 'scalar'
+          type: 'Equal'
+          leftOperand:
+            type: 'Column'
+            table: 'BlogPost'
+            name: 'blogId'
+          rightOperand:
+            type: 'Scalar'
             value: 2
         operand: BlogPost.table.wireRepresentation()
 
     it "works for comparison with undefined", ->
       expect(BlogPost.where(blogId: null).wireRepresentation()).toEqual
-        type: 'selection'
+        type: 'Selection'
         predicate:
-          type: 'eq'
-          left_operand:
-            type: 'column'
-            table: 'blog_posts'
-            name: 'blog_id'
-          right_operand:
-            type: 'scalar'
+          type: 'Equal'
+          leftOperand:
+            type: 'Column'
+            table: 'BlogPost'
+            name: 'blogId'
+          rightOperand:
+            type: 'Scalar'
             value: null
         operand: BlogPost.table.wireRepresentation()

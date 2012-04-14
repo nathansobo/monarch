@@ -148,6 +148,6 @@ describe "Monarch.Relations.Union", ->
     right = BlogPost.where(blogId: 2)
 
     expect(left.union(right).wireRepresentation()).toEqual
-      type: 'union'
-      left_operand: left.wireRepresentation()
-      right_operand: right.wireRepresentation()
+      type: 'Union'
+      leftOperand: left.wireRepresentation()
+      rightOperand: right.wireRepresentation()

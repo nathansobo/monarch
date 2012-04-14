@@ -39,8 +39,8 @@ class Monarch.Relations.Limit extends Monarch.Relations.Relation
       @insert(newLastTuple) if newLastTuple
 
   wireRepresentation: ->
-    type: 'limit',
-    operand: @operand.wireRepresentation(),
+    type: 'Limit'
+    operand: @operand.wireRepresentation()
     count: @count
 
   getColumn: (args...) -> @operand.getColumn(args...)

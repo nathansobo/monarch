@@ -53,9 +53,9 @@ class Monarch.Relations.Projection extends Monarch.Relations.Relation
     _.values(changeset)[0].column.table.name == @table.name
 
   wireRepresentation: ->
-    type: 'table_projection',
-    operand: @operand.wireRepresentation(),
-    projected_table: @table.remoteName
+    type: 'Projection'
+    operand: @operand.wireRepresentation()
+    table: @table.name
 
   getColumn: (args...) -> @table.getColumn(args...)
   inferJoinColumns: (args...) -> @table.inferJoinColumns(args...)

@@ -38,12 +38,12 @@ Monarch.Repository =
   performCreate: (tableName, attributes) ->
     table = @tables[tableName]
     return if table.find(attributes.id)
-    table.recordClass.created(_.camelizeKeys(attributes))
+    table.recordClass.created(attributes)
 
   performUpdate: (tableName, id, attributes) ->
     table = @tables[tableName]
     record = table.find(parseInt(id))
-    record?.updated(_.camelizeKeys(attributes))
+    record?.updated(attributes)
 
   performDestroy: (tableName, id) ->
     table = @tables[tableName]

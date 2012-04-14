@@ -26,14 +26,14 @@ describe "Monarch.Repository", ->
               userId: 1
               title: "Charlie"
             33:
-              user_id: 2 # converts snake-case to camel case
+              userId: 2
               title: "Delta"
           BlogPost:
             1:
               blogId: 1
               title: "Zulu"
             22:
-              blog_id: 1 # converts snake-case to camel case
+              blogId: 1
               title: "Uniform"
 
         newBlog = Blog.find(33)

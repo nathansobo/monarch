@@ -114,9 +114,9 @@ describe "Monarch.Relations.Projection", ->
 
   it "has a .wireRepresentation()", ->
     expect(Blog.where(userId: 1).joinThrough(BlogPost).wireRepresentation()).toEqual
-      type: 'table_projection'
+      type: 'Projection'
       operand: Blog.where(userId: 1).join(BlogPost).wireRepresentation()
-      projected_table: 'blog_posts'
+      table: 'BlogPost'
 
   describe ".activate()", ->
     it "properly increments the recordCounts hash and does not hydrate the memoized contents with duplicate records", ->
