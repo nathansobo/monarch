@@ -208,7 +208,7 @@ describe "Monarch.Remote.FakeServer", ->
       expect(fakeServer.lastFetch().relations).toEqual([rel1, rel2])
 
       fakeServer.lastFetch().succeed
-        blogs:
+        Blog:
           1:
             title: "Charlie"
             createdAt: 12344

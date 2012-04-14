@@ -20,8 +20,7 @@ Monarch.Repository =
         operation.apply(this, command)
     else # records hash
       for tableName, recordsHash of hashOrArray
-        table = @tables[_.singularize(_.camelize(tableName))]
-        table.update(recordsHash)
+        @tables[tableName].update(recordsHash)
 
   isPaused: ->
     @pauseCount > 0
@@ -37,22 +36,19 @@ Monarch.Repository =
       delete @deferredUpdates
 
   performCreate: (tableName, attributes) ->
-    table = @getTableByRemoteName(tableName)
+    table = @tables[tableName]
     return if table.find(attributes.id)
     table.recordClass.created(_.camelizeKeys(attributes))
 
   performUpdate: (tableName, id, attributes) ->
-    table = @getTableByRemoteName(tableName)
+    table = @tables[tableName]
     record = table.find(parseInt(id))
     record?.updated(_.camelizeKeys(attributes))
 
   performDestroy: (tableName, id) ->
-    table = @getTableByRemoteName(tableName)
+    table = @tables[tableName]
     record = table.find(parseInt(id))
     record?.destroyed()
-
-  getTableByRemoteName: (name) ->
-    @tables[_.camelize(_.singularize(name))]
 
   clear: ->
     @pauseCount = 0
