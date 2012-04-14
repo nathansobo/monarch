@@ -1,3 +1,5 @@
+{ underscore } = Monarch.Util.Inflection
+
 class Monarch.Remote.MutateRequest extends Monarch.Util.Deferrable
   constructor: (@record, @fieldValues) ->
     super()
@@ -5,10 +7,13 @@ class Monarch.Remote.MutateRequest extends Monarch.Util.Deferrable
     @perform()
 
   perform: ->
+    data = @requestData()
+    data = @convertKeysToSnakeCase(data) if Monarch.snakeCase and data?
+
     jQuery.ajax
       url: @requestUrl()
       type: @requestType
-      data: @requestData()
+      data: data
       dataType: 'json'
       success: (args...) => @triggerSuccess(args...)
       error: (args...) => @handleError(args...)
@@ -24,3 +29,9 @@ class Monarch.Remote.MutateRequest extends Monarch.Util.Deferrable
 
   handleError: (error) ->
     @triggerInvalid(JSON.parse(error.responseText)) if error.status == 422
+
+  convertKeysToSnakeCase: (data) ->
+    fieldValues = {}
+    for key, value of data.fieldValues
+      fieldValues[underscore(key)] = value
+    { field_values: fieldValues }

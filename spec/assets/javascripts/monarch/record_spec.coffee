@@ -203,6 +203,12 @@ describe "Monarch.Record", ->
         expect(lastAjaxRequest.type).toBe('post')
         expect(lastAjaxRequest.data).toEqual(fieldValues: { title: "Testing", body: "1 2 3", blogId: 1 })
 
+      describe "when Monarch.snakeCase is true", ->
+        it "converts keys to snake case before sending them to the server", ->
+          Monarch.snakeCase = true
+          promise = BlogPost.create(title: "Testing", body: "1 2 3", blogId: 1)
+          expect(lastAjaxRequest.data).toEqual(field_values: { title: "Testing", body: "1 2 3", blog_id: 1 })
+
       describe "when no field values are passed", ->
         it "does not send a fieldValues param to the server", ->
           BlogPost.create()

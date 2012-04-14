@@ -18,6 +18,7 @@ afterEach(function() {
   });
   Monarch.Record.subclasses = [];
   Monarch.Repository.clear();
+  Monarch.snakeCase = false;
 });
 
 function unspy(object, methodName) {
