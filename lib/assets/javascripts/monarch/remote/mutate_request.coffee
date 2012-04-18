@@ -1,4 +1,4 @@
-{ underscore, camelize } = Monarch.Util.Inflection
+{ convertKeysToSnakeCase, convertKeysToCamelCase } = Monarch.Util.Inflection
 
 class Monarch.Remote.MutateRequest extends Monarch.Util.Deferrable
   constructor: (@record, @fieldValues) ->
@@ -8,7 +8,7 @@ class Monarch.Remote.MutateRequest extends Monarch.Util.Deferrable
 
   perform: ->
     data = @requestData()
-    data = @convertKeysToSnakeCase(data) if Monarch.snakeCase and data?
+    data = convertKeysToSnakeCase(data) if Monarch.snakeCase and data?
 
     jQuery.ajax
       url: @requestUrl()
@@ -19,13 +19,13 @@ class Monarch.Remote.MutateRequest extends Monarch.Util.Deferrable
       error: (data) => @handleError(data)
 
   handleSuccess: (data) ->
-    data = @convertKeysToCamelCase(data) if Monarch.snakeCase and data?
+    data = convertKeysToCamelCase(data) if Monarch.snakeCase and data?
     @triggerSuccess(data)
 
   handleError: (error) ->
     if error.status == 422
       data = JSON.parse(error.responseText)
-      data = @convertKeysToCamelCase(data) if Monarch.snakeCase
+      data = convertKeysToCamelCase(data) if Monarch.snakeCase
       @triggerInvalid(data)
 
   triggerSuccess: ->
@@ -36,17 +36,3 @@ class Monarch.Remote.MutateRequest extends Monarch.Util.Deferrable
     @record.errors.assign(errors)
     super(@record)
     Monarch.Repository.resumeUpdates()
-
-  convertKeysToSnakeCase: (data) ->
-    convertedData = {}
-    for key, value of data
-      value = @convertKeysToSnakeCase(value) if _.isObject(value)
-      convertedData[underscore(key)] = value
-    convertedData
-
-  convertKeysToCamelCase: (data) ->
-    convertedData = {}
-    for key, value of data
-      value = @convertKeysToCamelCase(value) if _.isObject(value)
-      convertedData[camelize(key, true)] = value
-    convertedData

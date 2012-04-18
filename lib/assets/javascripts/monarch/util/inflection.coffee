@@ -125,3 +125,17 @@ Monarch.Util.Inflection =
 
   uncapitalize: (word) ->
     word.charAt(0).toLowerCase() + word.substr(1)
+
+  convertKeysToSnakeCase: (data) ->
+    convertedData = {}
+    for key, value of data
+      value = Monarch.Util.Inflection.convertKeysToSnakeCase(value) if _.isObject(value)
+      convertedData[Monarch.Util.Inflection.underscore(key)] = value
+    convertedData
+
+  convertKeysToCamelCase: (data) ->
+    convertedData = {}
+    for key, value of data
+      value = Monarch.Util.Inflection.convertKeysToCamelCase(value) if _.isObject(value)
+      convertedData[Monarch.Util.Inflection.camelize(key, true)] = value
+    convertedData
