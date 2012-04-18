@@ -1,4 +1,4 @@
-{ underscore } = Monarch.Util.Inflection
+{ underscore, camelize } = Monarch.Util.Inflection
 
 class Monarch.Remote.MutateRequest extends Monarch.Util.Deferrable
   constructor: (@record, @fieldValues) ->
@@ -15,8 +15,18 @@ class Monarch.Remote.MutateRequest extends Monarch.Util.Deferrable
       type: @requestType
       data: data
       dataType: 'json'
-      success: (args...) => @triggerSuccess(args...)
-      error: (args...) => @handleError(args...)
+      success: (data) => @handleSuccess(data)
+      error: (data) => @handleError(data)
+
+  handleSuccess: (data) ->
+    data = @convertKeysToCamelCase(data) if Monarch.snakeCase and data?
+    @triggerSuccess(data)
+
+  handleError: (error) ->
+    if error.status == 422
+      data = JSON.parse(error.responseText)
+      data = @convertKeysToCamelCase(data) if Monarch.snakeCase
+      @triggerInvalid(data)
 
   triggerSuccess: ->
     super
@@ -27,11 +37,16 @@ class Monarch.Remote.MutateRequest extends Monarch.Util.Deferrable
     super(@record)
     Monarch.Repository.resumeUpdates()
 
-  handleError: (error) ->
-    @triggerInvalid(JSON.parse(error.responseText)) if error.status == 422
-
   convertKeysToSnakeCase: (data) ->
-    fieldValues = {}
-    for key, value of data.fieldValues
-      fieldValues[underscore(key)] = value
-    { field_values: fieldValues }
+    convertedData = {}
+    for key, value of data
+      value = @convertKeysToSnakeCase(value) if _.isObject(value)
+      convertedData[underscore(key)] = value
+    convertedData
+
+  convertKeysToCamelCase: (data) ->
+    convertedData = {}
+    for key, value of data
+      value = @convertKeysToCamelCase(value) if _.isObject(value)
+      convertedData[camelize(key, true)] = value
+    convertedData

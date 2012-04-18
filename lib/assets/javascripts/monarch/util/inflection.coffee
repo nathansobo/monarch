@@ -105,6 +105,18 @@ Monarch.Util.Inflection =
   underscore: (word) ->
     word.replace(/([a-zA-Z\d])([A-Z])/g,'$1_$2').toLowerCase()
 
+  camelize: (word) ->
+    camelized = []
+    parts = word.split('_')
+    for part, i in parts
+      firstLetter =
+        if i == 0
+          part.charAt(0)
+        else
+          part.charAt(0).toUpperCase()
+      parts[i] = firstLetter + part.substring(1)
+    parts.join('')
+
   underscoreAndPluralize: (word) ->
     Monarch.Util.Inflection.underscore(Monarch.Util.Inflection.pluralize(word))
 
