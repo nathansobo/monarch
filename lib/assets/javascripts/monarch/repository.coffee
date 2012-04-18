@@ -1,4 +1,4 @@
-{ capitalize } = Monarch.Util.Inflection
+{ capitalize, convertKeysToCamelCase } = Monarch.Util.Inflection
 
 Monarch.Repository =
   tables: {}
@@ -22,6 +22,7 @@ Monarch.Repository =
         operation.apply(this, command)
     else # records hash
       for tableName, recordsHash of hashOrArray
+        recordsHash = convertKeysToCamelCase(recordsHash) if Monarch.snakeCase
         @tables[tableName].update(recordsHash)
 
   isPaused: ->
@@ -38,11 +39,13 @@ Monarch.Repository =
       delete @deferredUpdates
 
   performCreate: (tableName, attributes) ->
+    attributes = convertKeysToCamelCase(attributes) if Monarch.snakeCase
     table = @tables[tableName]
     return if table.find(attributes.id)
     table.recordClass.created(attributes)
 
   performUpdate: (tableName, id, attributes) ->
+    attributes = convertKeysToCamelCase(attributes) if Monarch.snakeCase
     table = @tables[tableName]
     record = table.find(parseInt(id))
     record?.updated(attributes)

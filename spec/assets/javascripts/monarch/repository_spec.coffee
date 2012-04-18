@@ -50,6 +50,42 @@ describe "Monarch.Repository", ->
         expect(existingPost.title()).toBe("Uniform")
         expect(existingPost.blogId()).toBe(1)
 
+      describe "when Monarch.snakeCase is true", ->
+        it "converts keys to camel case before using them to update the repository", ->
+          Monarch.snakeCase = true
+          existingBlog = Blog.created(id: 1, title: "Alpha")
+          existingPost = BlogPost.created(id: 22, title: "Bravo")
+
+          Monarch.Repository.update
+            Blog:
+              1:
+                user_id: 1
+                title: "Charlie"
+              33:
+                user_id: 2
+                title: "Delta"
+            BlogPost:
+              1:
+                blog_id: 1
+                title: "Zulu"
+              22:
+                blog_id: 1
+                title: "Uniform"
+
+          newBlog = Blog.find(33)
+          expect(newBlog).toBeDefined()
+          expect(newBlog.title()).toBe("Delta")
+          expect(newBlog.userId()).toBe(2)
+
+          expect(existingBlog.title()).toBe("Charlie")
+          expect(existingBlog.userId()).toBe(1)
+
+          expect(BlogPost.find(1).title()).toBe("Zulu")
+          expect(BlogPost.find(1).blogId()).toBe(1)
+
+          expect(existingPost.title()).toBe("Uniform")
+          expect(existingPost.blogId()).toBe(1)
+
     describe "when given an array of commands", ->
       it "executes an array commands against the repository, if their effects are not redundant", ->
         blog1 = Blog.created(id: 1, title: "Charlie")
@@ -107,6 +143,20 @@ describe "Monarch.Repository", ->
 
         expect(Blog.find(2)).toBeUndefined()
         expect(BlogPost.find(2)).toBeUndefined()
+
+      describe "when Monarch.snakeCase is true", ->
+        it "converts keys to camel case", ->
+          Monarch.snakeCase = true
+          post1 = BlogPost.created(id: 1, title: "Charlie", blogId: 1)
+
+          Monarch.Repository.update([
+            ['create', 'BlogPost', id: 3, blog_id: 22, title: "Alpha" ],
+            ['update', 'BlogPost', 1, title: "Zulu", blog_id: 33],
+          ])
+
+          expect(post1.blogId()).toBe 33
+          post3 = BlogPost.find(3)
+          expect(post3.blogId()).toBe(22)
 
       it "can be called with a single command", ->
         Monarch.Repository.update(['create', 'Blog', id: 1, title: "Alpha"])
