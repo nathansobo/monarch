@@ -78,10 +78,10 @@ values.
 
 ### Updating With Operations
 
-You can also call `Monarch.Repository.update` with an array of create, update,
-and destroy operations.
-This is useful, for example, when you are handling update events delivered via a
-web socket.
+You can also call `Monarch.Repository.update` with an array of `create`,
+`update`, and `destroy` operations. This is useful, for example, when you are
+handling real-time events delivered via a web socket. Operations are performed
+in the order in which they appear in the array.
 
 ```coffeescript
 Monarch.Repository.update([
@@ -91,7 +91,16 @@ Monarch.Repository.update([
 ])
 ```
 
-### Custom jQuery Ajax Data Types
+* Create operation arrays start with `create`, then have a record class name and
+  a hash of field values.
+
+* Update operation arrays start with `update`, then have a record class name, a
+  record id, and a hash of field values.
+
+* Destroy operation arrays start with `destroy`, then have a record class name
+  and a record id.
+
+### jQuery Ajax Data Types
 
 Monarch adds 4 custom jQuery ajax data types that help you load data from your
 API endpoints. If you use `jQuery.ajax` to perform a GET request and specify a
