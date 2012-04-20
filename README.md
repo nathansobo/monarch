@@ -129,29 +129,71 @@ The following data types are supported:
 
 ## Querying the Local Repository
 
-Once you've loaded some data into the repository, you can query it with the
-standard relational operators. The result of each operation is called a
-*relation*, and can be used as input to another operation. For example, a query
-to find all posts of public blogs with more than five comments would be written
-as follows:
+Once you've loaded some data into the repository, you can query it with standard
+relational operators. For example, a query to find all posts of public blogs
+with more than five comments would be written as follows:
 
 ```coffeescript
 Blog.where(public: true).join(Post.where('commentCount >': 5))
 ```
 
-### Selection (Where)
+Every Monarch query is defined in terms of objects called relations. You can
+think of a relation as a composable, object-oriented representation of a SQL
+query. You can also think of a relation as a set of records. More precisely,
+it's a declarative recipe for constructing a set of records based on the current
+contents of the local repository.
 
-You can filter the records of any relation by calling `where` on it with a hash
-of predicates. You can express standard inequality operations by following a
-column name with the operator in the hash key. Predicates, which are expressed
-as key-value pairs of the hash are implicitly *anded* together. *Or* operations
-aren't finished yet, but will be expressed by the `whereAny` method.
+To retrieve a relation's records, call its `all` method. You can also iterate
+over every record in the relation using `each` and `map`. For example:
 
 ```coffeescript
-skilledLadies = User.where(gender: 'female', 'score >=': 500)
+# iterate over posts in blog 42
+Post.where(blogId: 42).each (post) ->
+  console.log(post.title())
 ```
 
+Tables are the most primitive relations. You compose them into more complex
+relations by applying relational operators, which are available as methods on
+every relation.
+
+### Selection (Where)
+
+As you've seen in earlier examples, you filter the contents of any relation by
+calling the `where` method with a hash of key-value pairs representing
+predicates.
+
+```coffeescript
+popularAuthors = User.where(privacy: 'public', 'reputation >=': 500)
+
+# Equivalent SQL:
+# select * from users where privacy = 'public' and reputation >= 500;
+```
+
+You can express standard inequality operations by following the
+column name with the operator in the hash key, per the above example. If the
+hash contains multiple key-value pairs, the predicates they represent are
+implicitly anded together.
+
 ### Inner Joins
+
+Join one relation to another by calling the `join` method with the target
+relation and a hash representing the predicate on which to join.
+
+```coffeescript
+# Note: Composing with the popularAuthors relation defined above
+popularAuthorsAndBlogs = popularAuthors.join(Blog, ownerId: 'Blog.id')
+
+# Equivalent SQL:
+# select *
+# from blogs
+#   inner join blogs on owner_id = blogs.id
+# where users.privacy = 'public' and users.reputation >= 500
+```
+
+If one table references the other by name in its foreign-key, Monarch will infer
+the join predicate. For example, if the Post table has a `blogId` column, then
+you could write `Blog.join(Post)` without supplying `postId: 'Blog.id'` as a
+second argument.
 
 ### Projection
 
