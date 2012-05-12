@@ -310,9 +310,21 @@ You can also call `limit` with an optional second offset argument:
 runnersUp = rankedAuthors.limit(10, 5) # limit 10, offset 5
 ```
 
+### Union
+
+Use `union` to combine the contents of two relations.
+
+```coffeescript
+authorsOfInterest = top5Authors.union(followedAuthors)
+```
+
 ### Difference
 
-### Union
+Use `difference` to subtract one relation from another.
+
+```coffeescript
+suggestToFollow = rankedAuthors.difference(followedAuthors)
+```
 
 ## Working with Records
 
