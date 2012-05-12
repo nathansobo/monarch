@@ -5,3 +5,6 @@ gem 'princess', :path => 'vendor/princess'
 gem 'thin', '1.2.11'
 gem 'coffee-rails'
 
+group :assets do
+  gem 'uglifier'
+end
