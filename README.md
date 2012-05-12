@@ -127,7 +127,7 @@ The following data types are supported:
   repository before updating it.
 
 
-## Querying the Local Repository
+## Working With Queries
 
 Once you've loaded some data into the repository, you can query it with standard
 relational operators. For example, a query to find all posts of public blogs
@@ -143,6 +143,8 @@ query. You can also think of a relation as a set of records. More precisely,
 it's a declarative recipe for constructing a set of records based on the current
 contents of the local repository.
 
+### Accessing and Iterating Over Records in a Relation
+
 To retrieve a relation's records, call its `all` method. You can also iterate
 over every record in the relation using `each` and `map`. For example:
 
@@ -151,6 +153,41 @@ over every record in the relation using `each` and `map`. For example:
 Post.where(blogId: 42).each (post) ->
   console.log(post.title())
 ```
+
+### Subscribing to a Relation
+
+One of Monarch's most powerful features is the ability to subscribe to changes
+on any relation using the `onInsert`, `onUpdate` and `onRemove` methods. Using
+these methods, you can describe a set of objects declaratively and then be
+informed whenever some operation on the repository changes the contents of that
+set.
+
+```coffeescript
+blogComments = Post.where(blogId: 5).joinThrough(Comment)
+
+blogComments.onInsert (comment) ->
+  console.log "There's a new comment on your blog by #{comment.user().fullName()}"
+  console.log comment.body()
+
+blogComments.onUpdate (comment, changeset) ->
+  if changeset.body
+    console.log "A comment by #{comment.user().fullName()} was updated:"
+    console.log "Old body: #{changset.body.oldValue}"
+    console.log "New body: #{changset.body.newValue}"
+
+blogComments.onRemove (comment) ->
+  console.log "A comment by #{comment.user().fullName()} was removed:"
+  console.log comment.body()
+```
+
+Insert and remove callbacks are called with the inserted / removed record.
+Update callbacks are passed an additional changeset hash, which includes a
+sub-hash for every changed field containing its `oldValue` and `newValue`.
+
+Event callbacks are also passed indices indicating the record's location in the
+relation. See the [order by](#order-by) operation for details.
+
+## Building Relations (i.e. Writing Queries)
 
 Tables are the most primitive relations. You compose them into more complex
 relations by applying relational operators, which are available as methods on
