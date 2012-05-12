@@ -292,6 +292,24 @@ under the covers to keep efficient track of record indices.
 
 ### Limit and Offset
 
+If you want to limit the size of a relation, use the `limit` method:
+
+```coffeescript
+top5Authors = rankedAuthors.limit(5)
+```
+
+If you want to change the relation's starting point, use the `offset` method:
+
+```coffeescript
+runnersUp = rankedAuthors.offset(5).limit(10)
+```
+
+You can also call `limit` with an optional second offset argument:
+
+```coffeescript
+runnersUp = rankedAuthors.limit(10, 5) # limit 10, offset 5
+```
+
 ### Difference
 
 ### Union
