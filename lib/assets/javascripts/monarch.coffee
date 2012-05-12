@@ -1,4 +1,3 @@
-#= require underscore
 #= require_self
 #= require_tree ./monarch/util
 #= require_tree ./monarch

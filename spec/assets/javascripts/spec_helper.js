@@ -1,4 +1,5 @@
 //= require jquery
+//= require underscore
 //= require monarch
 //= require monarch_test_support
 //= require ./support/fake_xhr
