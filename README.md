@@ -227,7 +227,7 @@ their result type, projected joins return return individual records, making them
 easier to work with in many cases.
 
 ```coffeescript
-# Note: Composing with the populareAuthorsAndBlogs relation, defined above
+# Note: Composing with the popularAuthorsAndBlogs relation, defined above
 popularPosts = popularAuthorsAndBlogs.join(Post).project(Post)
 
 # Equivalent SQL:
@@ -246,18 +246,49 @@ Because `join` operations are so often composed with `project` operations,
 Monarch offers the `joinThrough` method as a convenient shorthand. Using this
 method, the query from the projection example above could be shortened to:
 
-```
+```coffeescript
 popularPosts = popularAuthorsAndBlogs.joinThrough(Post)
 ```
 
 If the join predicate can't be inferred, you can still pass it as a second
 argument:
 
-```
+```coffeescript
 popularBlogs = popularAuthors.joinThrough(Blog, ownerId: 'User.id')
 ```
 
 ### Order By
+
+You can order a relation by one or more columns with the `orderBy` operator.
+
+```coffeescript
+# Note: Composing with the popularAuthors relation, defined above
+rankedAuthors = popularAuthors.orderBy('popularity desc', 'fullName')
+```
+
+Now iterations over your relation with `each`, `map`, etcetera respect your
+specified ordering. In addition, events that are triggered on your relation
+include indices telling you where the event's record presides in your ordering.
+
+```coffeescript
+rankedAuthors.onInsert (user, index) ->
+  console.log "#{user.fullName()} entered the ranking at position #{index}"
+
+rankedAuthors.onUpdate (user, changeset, newIndex, oldIndex) ->
+  console.log "#{user.fullName()} moved to ranking #{newIndex} from #{oldIndex}"
+```
+
+By default, all relations are ordered ascending by the `id` column. You can
+change the default ordering of an entire table by calling the `defaultOrderBy`
+class method on a record class.
+
+```coffeescript
+# order users by popularity in every relation
+User.defaultOrderBy 'popularity desc'
+```
+
+Monarch uses a probalistic, ordered data-structure called an indexed skip-list
+under the covers to keep efficient track of record indices.
 
 ### Limit and Offset
 
