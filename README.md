@@ -180,13 +180,13 @@ Join one relation to another by calling the `join` method with the target
 relation and a hash representing the predicate on which to join.
 
 ```coffeescript
-# Note: Composing with the popularAuthors relation defined above
+# Note: Composing with the popularAuthors relation, defined above
 popularAuthorsAndBlogs = popularAuthors.join(Blog, ownerId: 'Blog.id')
 
 # Equivalent SQL:
 # select *
-# from blogs
-#   inner join blogs on owner_id = blogs.id
+# from users
+#   inner join blogs on blogs.owner_id = users.id
 # where users.privacy = 'public' and users.reputation >= 500
 ```
 
@@ -195,7 +195,67 @@ the join predicate. For example, if the Post table has a `blogId` column, then
 you could write `Blog.join(Post)` without supplying `postId: 'Blog.id'` as a
 second argument.
 
+Joins return `CompositeTuples` instead of individual records in their results,
+which combine two or more records into a single object. You can pull individual
+field values or entire records out of composite tuples using the `getFieldValue`
+or `getRecord` methods.
+
+```coffeescript
+popularAuthorsAndBlogs.each (tuple) ->
+  name = tuple.getFieldValue('User.fullName')
+  blogRecord = tuple.getRecord('Blog')
+  console.log "#{blogRecord.title()} by {name} is a popular choice."
+```
+
+More often, you'll want to work with records from a single table of the join, by
+applying the `project` operator, which we discuss next...
+
 ### Projection
+
+When you join tables in SQL, you often include only a subset of the columns
+available in the join by modifying your `select` clause. For example, if you
+were selecting all a users blog posts, you would write:
+
+```sql
+select posts.* from blogs, posts where posts.blog_id = blogs.id...
+```
+
+In relational algebra, the `select posts.*` portion of this query is an
+operation called *projection*. In Monarch, you perform projection by calling the
+`project` method on any relation. Whereas raw joins return composite tuples as
+their result type, projected joins return return individual records, making them
+easier to work with in many cases.
+
+```coffeescript
+# Note: Composing with the populareAuthorsAndBlogs relation, defined above
+popularPosts = popularAuthorsAndBlogs.join(Post).project(Post)
+
+# Equivalent SQL:
+# select posts.*
+# from users
+#   inner join blogs on blogs.owner_id = users.id
+#   inner join posts on posts.blog_id = blogs.id
+# where users.privacy = 'public' and users.reputation >= 500
+
+console.log "Read this: " + popularPosts.first().body()
+```
+
+### Join-Through
+
+Because `join` operations are so often composed with `project` operations,
+Monarch offers the `joinThrough` method as a convenient shorthand. Using this
+method, the query from the projection example above could be shortened to:
+
+```
+popularPosts = popularAuthorsAndBlogs.joinThrough(Post)
+```
+
+If the join predicate can't be inferred, you can still pass it as a second
+argument:
+
+```
+popularBlogs = popularAuthors.joinThrough(Blog, ownerId: 'User.id')
+```
 
 ### Order By
 
