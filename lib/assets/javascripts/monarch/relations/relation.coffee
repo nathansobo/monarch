@@ -100,8 +100,8 @@ class Monarch.Relations.Relation extends Monarch.Base
   project: (table) ->
     new Monarch.Relations.Projection(this, table)
 
-  joinThrough: (table) ->
-    @join(table).project(table)
+  joinThrough: (table, predicate) ->
+    @join(table, predicate).project(table)
 
   union: (right) ->
     new Monarch.Relations.Union(this, right)
