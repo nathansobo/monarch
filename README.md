@@ -154,6 +154,19 @@ Post.where(blogId: 42).each (post) ->
   console.log(post.title())
 ```
 
+To retrieve a single record in a relation, use the `find` method.
+
+```coffeescript
+# Simple case: Call find on a record class with an id
+post = Post.find(22)
+
+# Call on a relation
+post = Post.where(blogId: 42).find(22)
+
+# Call find with a a predicate
+post = Post.find(title: "The Relational Model")
+```
+
 ### Subscribing to a Relation
 
 One of Monarch's most powerful features is the ability to subscribe to changes
