@@ -7,17 +7,12 @@ events. Monarch is written in CoffeeScript, but can also be used from
 JavaScript.
 
 
-## Defining Models
+## Defining Model Classes
 
 Monarch associates model constructors with tables in an in-memory relational
-database, in the same way ActiveRecord associates a Ruby class with a table on a
-database server.
+database. On the surface, the API resembles ActiveRecord.
 
-### In CoffeeScript
-
-To define a record class in CoffeeScript, create a subclass of `Monarch.Record`,
-then call the `@extended` class method with a reference to the current class and
-define the table's schema by passing a hash to the `@columns` class method.
+To define a record class in CoffeeScript, create a subclass of `Monarch.Record`.
 
 ```coffeescript
 class Blog extends Monarch.Record
@@ -27,15 +22,18 @@ class Blog extends Monarch.Record
     userId: 'integer'
     title: 'string'
     createdAt: 'datetime'
+
+  @belongsTo 'user'
+  @hasMany 'posts'
+  @hasMany 'postComments', through: 'posts', className: 'Comment'
 ```
 
-### In JavaScript
+Until CoffeeScript offers an automatic `@extended` hook, you'll need to
+call `@extended` manually at the top of the class body. Next, call `@columns`
+with a hash of field-name/type pairs, and optionally call `@hasMany` and
+`@belongsTo` association methods. More on those later...
 
-To define a record class in JavaScript, first create a constructor, then pass it
-to the top-level `Monarch` function along with a hash of column definitions. It
-will automatically be setup as a subclass of `Monarch.Record`. The `Monarch`
-function returns your constructor, so class methods like `hasMany` can be called
-immediately in a method-chaining style. More on that later.
+### In JavaScript
 
 ```javascript
 function() Blog {}
@@ -44,11 +42,18 @@ Monarch(Blog, {
   userId: 'integer',
   title: 'string',
   createdAt: 'datetime'
-});
+})
+  .belongsTo('user')
+  .hasMany('posts')
+  .hasMany('postComments', { through: 'posts', className: 'Comment' });
 ```
 
-Unless otherwise noted, examples will be shown in CoffeeScript from here on out.
-
+To define a record class in JavaScript, first create a constructor, then pass it
+to the top-level `Monarch` function along with a hash of column definitions. It
+will automatically be setup as a subclass of `Monarch.Record`. The `Monarch`
+function returns your constructor, so other class methods can be called in a
+method-chaining style. Unless otherwise noted, examples will be shown in
+CoffeeScript from here on out.
 
 ## Loading Data
 
