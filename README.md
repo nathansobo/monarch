@@ -383,4 +383,46 @@ suggestToFollow = rankedAuthors.difference(followedAuthors)
 
 ## Working with Records
 
+### Reading / Writing Field Values
+
+Field accessor methods are available on your records for every column defined
+on their class.
+
+```coffeescript
+blog = Blog.find(11)
+console.log "#{blog.title()} by #{blog.user().fullName()}
+
+# just like in jQuery, call field accessors with an argument to assign values
+blog.title("New Title")
+blog.save() # more on saving later
+```
+
+### Observing Record Updates
+
+In addition to observing collections of objects via relations, you can also
+observe individual records with `onUpdate`.
+
+```coffeescript
+blog.onUpdate (changeset) ->
+  if changeset.title
+    oldTitle = changeset.title.oldValue
+    newTitle = changeset.title.newValue
+    console.log "The blog title changed from #{oldValue} to #{newValue}"
+```
+
+`onUpdate` returns a subscription object. Call `destroy` on it when you are no
+longer interested in updates.
+
+```coffeescript
+subscription = blog.onUpdate -> ...
+
+# I don't care about updates any more
+subscription.destroy()
+```
+
+### Synthetic Columns
+
+### Associations
+
+### CRUD Operations
 
