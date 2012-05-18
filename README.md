@@ -148,7 +148,7 @@ query. You can also think of a relation as a set of records. More precisely,
 it's a declarative recipe for constructing a set of records based on the current
 contents of the local repository.
 
-### Accessing and Iterating Over Records in a Relation
+### Accessing Records in a Relation
 
 To retrieve a relation's records, call its `all` method. You can also iterate
 over every record in the relation using `each` and `map`. For example:
