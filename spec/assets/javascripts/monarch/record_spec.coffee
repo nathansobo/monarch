@@ -314,136 +314,151 @@ describe "Monarch.Record", ->
         beforeEach ->
           post = BlogPost.created(id: 1, blogId: 1, title: 'Title', body: 'Body')
           expect(post.isDirty()).toBeFalsy()
-
-          post.localUpdate(blogId: 2, body: 'Body++')
-          expect(post.isDirty()).toBeTruthy()
-          promise = post.save()
-          expect(post.isDirty()).toBeTruthy()
-          expect(Monarch.Repository.isPaused()).toBeTruthy()
-
           onSuccessCallback = jasmine.createSpy('onSuccessCallback')
-          promise.onSuccess(onSuccessCallback)
 
-        it "sends the dirty fields to the server in a put to the record's url", ->
-          expect(lastAjaxRequest.url).toBe('/blog-posts/1')
-          expect(lastAjaxRequest.type).toBe('put')
-          expect(lastAjaxRequest.data).toEqual(fieldValues: { blogId: 2, body : "Body++"})
-
-        describe "when Monarch.snakeCase is true", ->
-          it "sends snake-cased field names to the server", ->
-            Monarch.snakeCase = true
+        describe "when the record is dirty", ->
+          beforeEach ->
+            post.localUpdate(blogId: 2, body: 'Body++')
+            expect(post.isDirty()).toBeTruthy()
             promise = post.save()
-            expect(lastAjaxRequest.data).toEqual(field_values: { blog_id: 2, body : "Body++"})
+            expect(post.isDirty()).toBeTruthy()
+            expect(Monarch.Repository.isPaused()).toBeTruthy()
 
-        describe "when the server responds to the update successfully", ->
-          it "updates the record with the attributes returned and triggers success on the promise with the record and a change set", ->
-            onSuccessCallback = jasmine.createSpy('onSuccessCallback')
             promise.onSuccess(onSuccessCallback)
 
-            lastAjaxRequest.success
-              blogId: 2,
-              body: "Body+++"
-
-            expect(onSuccessCallback).toHaveBeenCalled()
-
-            expect(onSuccessCallback.mostRecentCall.args[0]).toBe(post)
-            expect(post instanceof Monarch.Record).toBeTruthy()
-            expect(post.blogId()).toBe(2)
-            expect(post.body()).toBe("Body+++")
-            expect(post.isDirty()).toBeFalsy()
-
-            expect(onSuccessCallback.mostRecentCall.args[1]).toEqual
-              blogId:
-                oldValue: 1
-                newValue: 2
-                column: BlogPost.getColumn('blogId')
-              body:
-                oldValue: "Body"
-                newValue: "Body+++"
-                column: BlogPost.getColumn('body')
-
-            expect(Monarch.Repository.isPaused()).toBeFalsy()
+          it "sends the dirty fields to the server in a put to the record's url", ->
+            expect(lastAjaxRequest.url).toBe('/blog-posts/1')
+            expect(lastAjaxRequest.type).toBe('put')
+            expect(lastAjaxRequest.data).toEqual(fieldValues: { blogId: 2, body : "Body++"})
 
           describe "when Monarch.snakeCase is true", ->
-            it "converts keys in the response to camelCase", ->
+            it "sends snake-cased field names to the server", ->
               Monarch.snakeCase = true
+              promise = post.save()
+              expect(lastAjaxRequest.data).toEqual(field_values: { blog_id: 2, body : "Body++"})
+
+          describe "when the server responds to the update successfully", ->
+            it "updates the record with the attributes returned and triggers success on the promise with the record and a change set", ->
+              onSuccessCallback = jasmine.createSpy('onSuccessCallback')
+              promise.onSuccess(onSuccessCallback)
 
               lastAjaxRequest.success
-                blog_id: 3,
+                blogId: 2,
                 body: "Body+++"
 
               expect(onSuccessCallback).toHaveBeenCalled()
 
               expect(onSuccessCallback.mostRecentCall.args[0]).toBe(post)
               expect(post instanceof Monarch.Record).toBeTruthy()
-              expect(post.blogId()).toBe(3)
+              expect(post.blogId()).toBe(2)
               expect(post.body()).toBe("Body+++")
               expect(post.isDirty()).toBeFalsy()
 
-        describe "update hooks", ->
-          it "invokes beforeUpdate and afterUpdate hooks if present on the record", ->
-            post = BlogPost.created(id: 1, title: "Alpha", body: "Bravo")
-            spyOn(post, 'beforeUpdate')
-            spyOn(post, 'afterUpdate')
+              expect(onSuccessCallback.mostRecentCall.args[1]).toEqual
+                blogId:
+                  oldValue: 1
+                  newValue: 2
+                  column: BlogPost.getColumn('blogId')
+                body:
+                  oldValue: "Body"
+                  newValue: "Body+++"
+                  column: BlogPost.getColumn('body')
 
-            post.save()
+              expect(Monarch.Repository.isPaused()).toBeFalsy()
 
-            expect(post.beforeUpdate).toHaveBeenCalled()
-            expect(post.afterUpdate).not.toHaveBeenCalled()
+            describe "when Monarch.snakeCase is true", ->
+              it "converts keys in the response to camelCase", ->
+                Monarch.snakeCase = true
 
-            lastAjaxRequest.success
-              id: 23,
-              title: "Good Title+",
-              body: "Good Body+"
+                lastAjaxRequest.success
+                  blog_id: 3,
+                  body: "Body+++"
 
-            expect(post.afterUpdate).toHaveBeenCalled()
+                expect(onSuccessCallback).toHaveBeenCalled()
 
-          it "does not proceed with the creation if beforeCreate returns 'false'", ->
-            $.ajax.reset()
-            post = BlogPost.created(id: 1, title: "Alpha", body: "Bravo")
-            spyOn(post, 'beforeUpdate').andReturn(false)
+                expect(onSuccessCallback.mostRecentCall.args[0]).toBe(post)
+                expect(post instanceof Monarch.Record).toBeTruthy()
+                expect(post.blogId()).toBe(3)
+                expect(post.body()).toBe("Body+++")
+                expect(post.isDirty()).toBeFalsy()
 
-            post.save()
+          describe "update hooks", ->
+            it "invokes beforeUpdate and afterUpdate hooks if present on the record", ->
+              post = BlogPost.created(id: 1, title: "Alpha", body: "Bravo")
+              spyOn(post, 'beforeUpdate')
+              spyOn(post, 'afterUpdate')
 
-            expect(post.beforeUpdate).toHaveBeenCalled()
-            expect($.ajax).not.toHaveBeenCalled()
+              post.title("Beta")
+              post.save()
 
-        describe "when the server responds with validation errors", ->
-          onInvalidCallback = null
+              expect(post.beforeUpdate).toHaveBeenCalled()
+              expect(post.afterUpdate).not.toHaveBeenCalled()
 
-          beforeEach ->
-            onInvalidCallback = jasmine.createSpy('onInvalidCallback')
-            promise.onInvalid(onInvalidCallback)
+              lastAjaxRequest.success
+                id: 23,
+                title: "Good Title+",
+                body: "Good Body+"
 
-          it "assigns validation errors on the record and marks it invalid", ->
-            lastAjaxRequest.error
-              status: 422,
-              responseText: JSON.stringify
-                title: ["Error message 1", "Error message 2"],
-                body: ["Error message 3"]
+              expect(post.afterUpdate).toHaveBeenCalled()
 
-            expect(onInvalidCallback).toHaveBeenCalled()
-            post = onInvalidCallback.mostRecentCall.args[0]
-            expect(post instanceof Monarch.Record).toBeTruthy()
-            expect(post.isValid()).toBeFalsy()
-            expect(post.errors.on('title')).toEqual(["Error message 1", "Error message 2"])
-            expect(post.errors.on('body')).toEqual(["Error message 3"])
+            it "does not proceed with the creation if beforeCreate returns 'false'", ->
+              $.ajax.reset()
+              post = BlogPost.created(id: 1, title: "Alpha", body: "Bravo")
+              spyOn(post, 'beforeUpdate').andReturn(false)
 
-            expect(Monarch.Repository.isPaused()).toBeFalsy()
+              post.save()
 
-          describe "when Monarch.snakeCase is true", ->
-            it "converts validation errors to camel case", ->
-              Monarch.snakeCase = true
+              expect(post.beforeUpdate).toHaveBeenCalled()
+              expect($.ajax).not.toHaveBeenCalled()
 
+          describe "when the server responds with validation errors", ->
+            onInvalidCallback = null
+
+            beforeEach ->
+              onInvalidCallback = jasmine.createSpy('onInvalidCallback')
+              promise.onInvalid(onInvalidCallback)
+
+            it "assigns validation errors on the record and marks it invalid", ->
               lastAjaxRequest.error
                 status: 422,
                 responseText: JSON.stringify
-                  blog_id: ["Error message 1", "Error message 2"]
+                  title: ["Error message 1", "Error message 2"],
+                  body: ["Error message 3"]
 
               expect(onInvalidCallback).toHaveBeenCalled()
               post = onInvalidCallback.mostRecentCall.args[0]
+              expect(post instanceof Monarch.Record).toBeTruthy()
               expect(post.isValid()).toBeFalsy()
-              expect(post.errors.on('blogId')).toEqual(["Error message 1", "Error message 2"])
+              expect(post.errors.on('title')).toEqual(["Error message 1", "Error message 2"])
+              expect(post.errors.on('body')).toEqual(["Error message 3"])
+
+              expect(Monarch.Repository.isPaused()).toBeFalsy()
+
+            describe "when Monarch.snakeCase is true", ->
+              it "converts validation errors to camel case", ->
+                Monarch.snakeCase = true
+
+                lastAjaxRequest.error
+                  status: 422,
+                  responseText: JSON.stringify
+                    blog_id: ["Error message 1", "Error message 2"]
+
+                expect(onInvalidCallback).toHaveBeenCalled()
+                post = onInvalidCallback.mostRecentCall.args[0]
+                expect(post.isValid()).toBeFalsy()
+                expect(post.errors.on('blogId')).toEqual(["Error message 1", "Error message 2"])
+
+        describe "when the record is clean", ->
+          beforeEach ->
+            expect(post.isDirty()).toBeFalsy()
+
+          it "calls the beforeCreate hook, but does not send a request to the server", ->
+            spyOn(post, 'beforeUpdate')
+            post.save().onSuccess(onSuccessCallback)
+
+            expect(post.beforeUpdate).toHaveBeenCalled()
+            expect(lastAjaxRequest).toBeUndefined()
+            expect(onSuccessCallback).toHaveBeenCalledWith(post)
 
       describe "when the record has not yet been created", ->
         beforeEach ->

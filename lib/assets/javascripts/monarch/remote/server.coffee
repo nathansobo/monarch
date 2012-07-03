@@ -4,8 +4,13 @@ Monarch.Remote.Server =
     if $.ajaxSettings.async then request else request.record
 
   update: (record, wireRepresentation) ->
-    request = new Monarch.Remote.UpdateRequest(record, wireRepresentation)
-    if $.ajaxSettings.async then request else request.record
+    if record.isDirty()
+      promise = new Monarch.Remote.UpdateRequest(record, wireRepresentation)
+    else
+      promise = new Monarch.Util.Deferrable()
+      promise.triggerSuccess(record)
+
+    if $.ajaxSettings.async then promise else record
 
   destroy: (record) ->
     new Monarch.Remote.DestroyRequest(record)
