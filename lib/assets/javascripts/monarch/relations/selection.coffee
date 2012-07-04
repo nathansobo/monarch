@@ -21,7 +21,7 @@ class Monarch.Relations.Selection extends Monarch.Relations.Relation
     @subscribe @operand, 'onInsert', (tuple, _, newKey, oldKey) ->
       @insert(tuple, newKey, oldKey) if @predicate.evaluate(tuple)
 
-    @subscribe @operand, 'onUpdate', (tuple, changeset, _, _, newKey, oldKey) ->
+    @subscribe @operand, 'onUpdate', (tuple, changeset, newIndex, oldIndex, newKey, oldKey) ->
       if @predicate.evaluate(tuple)
         if @containsKey(oldKey)
           @tupleUpdated(tuple, changeset, newKey, oldKey)

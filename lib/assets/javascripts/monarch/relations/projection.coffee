@@ -26,7 +26,7 @@ class Monarch.Relations.Projection extends Monarch.Relations.Relation
     @subscribe @operand, 'onInsert', (tuple, _, newKey, oldKey) ->
       @insert(tuple.getRecord(@table.name), newKey, oldKey)
 
-    @subscribe @operand, 'onUpdate', (tuple, changeset, _, _, newKey, oldKey) ->
+    @subscribe @operand, 'onUpdate', (tuple, changeset, newIndex, oldIndex, newKey, oldKey) ->
       @tupleUpdated(tuple, changeset, newKey, oldKey)
 
     @subscribe @operand, 'onRemove', (tuple, _, newKey, oldKey) ->
