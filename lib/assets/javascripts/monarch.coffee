@@ -9,8 +9,9 @@ window.Monarch = (constructor, columnDefinitions) ->
 
 _.extend Monarch,
   fetchUrl: '/sandbox'
-  resourceUrlRoot: '/'
+  resourceUrlRoot: ''
   resourceUrlSeparator: '-'
+  snakeCase: false
 
   Expressions: {}
   Relations: {}
