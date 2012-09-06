@@ -76,9 +76,9 @@ class Monarch.Record
       else
         field.setValue(arguments[0])
 
-  for methodName in ['table', 'contains', 'onUpdate', 'onInsert', 'onRemove', 'at', 'indexOf',
-    'where', 'join', 'union', 'difference', 'limit', 'offset', 'orderBy', 'hasSubscriptions',
-    'find', 'size', 'getColumn', 'all', 'first', 'last', 'fetch', 'clear', 'findOrFetch']
+  for methodName in ['table', 'wireRepresentation', 'contains', 'onUpdate', 'onInsert', 'onRemove',
+    'at', 'indexOf', 'where', 'join', 'union', 'difference', 'limit', 'offset', 'orderBy',
+    'hasSubscriptions', 'find', 'size', 'getColumn', 'all', 'each', 'first', 'last', 'fetch', 'clear', 'findOrFetch']
     do (methodName) =>
       this[methodName] = (args...) ->
         @table[methodName](args...)
