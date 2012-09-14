@@ -21,14 +21,14 @@ describe "Monarch.Repository", ->
         existingPost = BlogPost.created(id: 22, title: "Bravo")
 
         Monarch.Repository.update
-          Blog:
+          'blogs':
             1:
               userId: 1
               title: "Charlie"
             33:
               userId: 2
               title: "Delta"
-          BlogPost:
+          'blog-posts':
             1:
               blogId: 1
               title: "Zulu"
@@ -57,14 +57,14 @@ describe "Monarch.Repository", ->
           existingPost = BlogPost.created(id: 22, title: "Bravo")
 
           Monarch.Repository.update
-            Blog:
+            blogs:
               1:
                 user_id: 1
                 title: "Charlie"
               33:
                 user_id: 2
                 title: "Delta"
-            BlogPost:
+            blog_posts:
               1:
                 blog_id: 1
                 title: "Zulu"
@@ -110,14 +110,14 @@ describe "Monarch.Repository", ->
         BlogPost.onRemove(postRemoveCallback)
 
         Monarch.Repository.update([
-          ['create', 'Blog',  id: 3, userId: 1, title: "Alpha" ],
-          ['create', 'Blog',  id: 1, userId: 1, title: "Discarded" ],
-          ['create', 'BlogPost',  id: 3, blogId: 1, title: "Alpha" ],
-          ['update', 'Blog', 1,  title: "Uniform"],
-          ['update', 'BlogPost', 1,  title: "Zulu", blogId: 2],
-          ['destroy', 'Blog', 2],
-          ['destroy', 'Blog', 2],
-          ['destroy', 'BlogPost', 2]
+          ['create', 'blogs',  id: 3, userId: 1, title: "Alpha" ],
+          ['create', 'blogs',  id: 1, userId: 1, title: "Discarded" ],
+          ['create', 'blog-posts',  id: 3, blogId: 1, title: "Alpha" ],
+          ['update', 'blogs', 1,  title: "Uniform"],
+          ['update', 'blog-posts', 1,  title: "Zulu", blogId: 2],
+          ['destroy', 'blogs', 2],
+          ['destroy', 'blogs', 2],
+          ['destroy', 'blog-posts', 2]
         ])
 
         expect(blogInsertCallback.callCount).toBe(1)
@@ -150,8 +150,8 @@ describe "Monarch.Repository", ->
           post1 = BlogPost.created(id: 1, title: "Charlie", blogId: 1)
 
           Monarch.Repository.update([
-            ['create', 'BlogPost', id: 3, blog_id: 22, title: "Alpha" ],
-            ['update', 'BlogPost', 1, title: "Zulu", blog_id: 33],
+            ['create', 'blog_posts', id: 3, blog_id: 22, title: "Alpha" ],
+            ['update', 'blog_posts', 1, title: "Zulu", blog_id: 33],
           ])
 
           expect(post1.blogId()).toBe 33
@@ -159,23 +159,23 @@ describe "Monarch.Repository", ->
           expect(post3.blogId()).toBe(22)
 
       it "can be called with a single command", ->
-        Monarch.Repository.update(['create', 'Blog', id: 1, title: "Alpha"])
+        Monarch.Repository.update(['create', 'blogs', id: 1, title: "Alpha"])
         expect(Blog.find(1)).toBeDefined()
 
   describe ".pauseUpdates() and .resumeUpdates()", ->
     it "defers all update operations while paused, and resumes them when the last pause call is matched with a resume call", ->
       Monarch.Repository.pauseUpdates(); # first pause
 
-      Monarch.Repository.update(Blog: { 1: { title: "Alpha" }})
+      Monarch.Repository.update(blogs: { 1: { title: "Alpha" }})
 
       Monarch.Repository.pauseUpdates(); # second pause
 
       Monarch.Repository.update([
-        ['create', 'Blog',  id: 2, title: "Bravo"],
-        ['create', 'BlogPost',  id: 1, title: "Alpha", blogId: 1]
+        ['create', 'blogs',  id: 2, title: "Bravo"],
+        ['create', 'blog-posts',  id: 1, title: "Alpha", blogId: 1]
       ])
 
-      Monarch.Repository.update(['create', 'Blog',  id: 3, title: "Charlie"])
+      Monarch.Repository.update(['create', 'blogs',  id: 3, title: "Charlie"])
 
       Monarch.Repository.resumeUpdates(); # first resume
 
@@ -188,7 +188,7 @@ describe "Monarch.Repository", ->
       expect(BlogPost.size()).toBe(1)
 
       # updates no longer paused
-      Monarch.Repository.update(['create', 'Blog',  id: 4, title: "Delta"])
+      Monarch.Repository.update(['create', 'blogs', id: 4, title: "Delta"])
 
       expect(Blog.size()).toBe(4)
 

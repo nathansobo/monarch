@@ -1,4 +1,4 @@
-{ capitalize, convertKeysToCamelCase } = Monarch.Util.Inflection
+{ capitalize, convertKeysToCamelCase, camelize, singularize } = Monarch.Util.Inflection
 
 Monarch.Repository =
   tables: {}
@@ -21,9 +21,16 @@ Monarch.Repository =
         operation = this['perform' + capitalize(command.shift())]
         operation.apply(this, command)
     else # records hash
-      for tableName, recordsHash of hashOrArray
+      for resourceName, recordsHash of hashOrArray
         recordsHash = convertKeysToCamelCase(recordsHash) if Monarch.snakeCase
-        @tables[tableName].update(recordsHash)
+        @tableForResourceName(resourceName).update(recordsHash)
+
+  tableForResourceName: (resourceName) ->
+    tableName = capitalize(singularize(camelize(resourceName)))
+    if table = @tables[tableName]
+      table
+    else
+      throw new Error("No table exists for resource name '#{resourceName}'")
 
   isPaused: ->
     @pauseCount > 0
@@ -38,20 +45,20 @@ Monarch.Repository =
       @update(updateArg) for updateArg in @deferredUpdates
       delete @deferredUpdates
 
-  performCreate: (tableName, attributes) ->
+  performCreate: (resourceName, attributes) ->
     attributes = convertKeysToCamelCase(attributes) if Monarch.snakeCase
-    table = @tables[tableName]
+    table = @tableForResourceName(resourceName)
     return if table.find(attributes.id)
     table.recordClass.created(attributes)
 
-  performUpdate: (tableName, id, attributes) ->
+  performUpdate: (resourceName, id, attributes) ->
     attributes = convertKeysToCamelCase(attributes) if Monarch.snakeCase
-    table = @tables[tableName]
+    table = @tableForResourceName(resourceName)
     record = table.find(parseInt(id))
     record?.updated(attributes)
 
-  performDestroy: (tableName, id) ->
-    table = @tables[tableName]
+  performDestroy: (resourceName, id) ->
+    table = @tableForResourceName(resourceName)
     record = table.find(parseInt(id))
     record?.destroyed()
 

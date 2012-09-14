@@ -107,7 +107,7 @@ Monarch.Util.Inflection =
 
   camelize: (word) ->
     camelized = []
-    parts = word.split('_')
+    parts = word.split(/[_-]/)
     for part, i in parts
       firstLetter =
         if i == 0

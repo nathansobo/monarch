@@ -25,11 +25,11 @@ describe "custom ajax dataType converters", ->
         success: successCallback
 
       recordsHash =
-        User:
+        users:
           1:
             id: 1
             fullName: "Adam Smith"
-        Blog:
+        blogs:
           1:  id: 1, title: "Blog 1"
           2:  id: 2, title: "Blog 2"
 
@@ -59,11 +59,11 @@ describe "custom ajax dataType converters", ->
       expect(User.find(99)).not.toBeUndefined()
 
       recordsHash =
-        User:
+        users:
           1:
             id: 1
             fullName: "Adam Smith"
-        Blog:
+        blogs:
           1:  id: 1, title: "Blog 1"
           2:  id: 2, title: "Blog 2"
 
@@ -92,9 +92,9 @@ describe "custom ajax dataType converters", ->
       responseJson =
         data: data
         records:
-          User:
+          users:
             1: { id: 1, fullName: "Adam Smith" }
-          Blog:
+          blogs:
             1: { id: 1, title: "Blog 1" }
             2: { id: 2, title: "Blog 2" }
 
@@ -127,9 +127,9 @@ describe "custom ajax dataType converters", ->
       responseJson =
         data: data,
         records:
-          User:
+          users:
             1: { id: 1, fullName: "Adam Smith" }
-          Blog:
+          blogs:
             1: { id: 1, title: "Blog 1" }
             2: { id: 2, title: "Blog 2" }
 
