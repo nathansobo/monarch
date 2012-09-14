@@ -717,6 +717,6 @@ describe "Monarch.Record", ->
         relation = JSON.parse(lastAjaxRequest.data.relations)[0]
 
         expect(relation.type).toBe('Selection')
-        expect(relation.operand.name).toBe('BlogPost')
+        expect(relation.operand.name).toBe('blog-posts')
         expect(relation.predicate.leftOperand.name).toBe('id')
         expect(relation.predicate.rightOperand.value).toBe(1)

@@ -6,7 +6,10 @@ class Monarch.Record
     subclass.defineColumnAccessor('id')
 
   @resourceUrl: (name) ->
-    Monarch.resourceUrlRoot + '/' + underscoreAndPluralize(uncapitalize(name)).replace(/_/g, Monarch.resourceUrlSeparator)
+    Monarch.resourceUrlRoot + '/' + @resourceName(name)
+
+  @resourceName: (name) ->
+    underscoreAndPluralize(uncapitalize(name)).replace(/_/g, Monarch.resourceUrlSeparator)
 
   @column: (name, type) ->
     @table.column(name, type)

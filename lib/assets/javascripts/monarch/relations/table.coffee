@@ -66,9 +66,12 @@ class Monarch.Relations.Table extends Monarch.Relations.Relation
   resourceUrl: ->
     @recordClass.resourceUrl(@name)
 
+  resourceName: ->
+    @recordClass.resourceName(@name)
+
   wireRepresentation: ->
     type: 'Table'
-    name: @name
+    name: @resourceName()
 
   findOrFetch: (id) ->
     record = @find(id)
