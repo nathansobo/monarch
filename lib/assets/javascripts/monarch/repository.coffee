@@ -66,3 +66,9 @@ Monarch.Repository =
     @pauseCount = 0
     delete @deferredUpdates
     table.clear() for name, table of @tables
+
+  subscriptionCount: ->
+    count = 0
+    for name, table of @tables
+      count += table.subscriptionCount()
+    count
