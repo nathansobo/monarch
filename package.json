@@ -3,9 +3,6 @@
   "version": "0.0.1",
   "description": "A relational modeling framework for client-centric web applications",
   "main": "index.js",
-  "scripts": {
-    "test": "jasmine-node"
-  },
   "repository": {
     "type": "git",
     "url": "git://github.com/nathansobo/monarch.git"

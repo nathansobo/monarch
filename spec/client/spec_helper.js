@@ -1,4 +1,4 @@
-//= require ./support/fake_xhr
+//= require_tree ./support
 
 var lastAjaxRequest;
 
