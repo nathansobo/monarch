@@ -5,13 +5,12 @@ task "build", "compile source files", ->
 
   fs.writeFileSync(
     "monarch.js",
-    snockets.getConcatenation 'lib/monarch/index.coffee', async: false)
+    snockets.getConcatenation 'lib/client/index.coffee', async: false)
 
   fs.writeFileSync(
     "monarch_test_support.js",
-    snockets.getConcatenation 'lib/monarch_test_support/index.coffee', async: false)
-
+    snockets.getConcatenation 'lib/client_test_support/index.coffee', async: false)
 
 task "spec", "run tests", ->
-  require __dirname + "/spec/runner/server"
+  require __dirname + "/script/server"
   console.log "Spec server listening on port 8888"

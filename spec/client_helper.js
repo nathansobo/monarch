@@ -1,4 +1,8 @@
+//= require ./vendor/underscore
+//= require ./vendor/jquery
 //= require ./support/fake_xhr
+//= require ../lib/client/index
+//= require ../lib/client_test_support/index
 
 var lastAjaxRequest;
 
