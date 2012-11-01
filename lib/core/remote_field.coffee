@@ -1,5 +1,3 @@
-#= require ./field
-
 class Monarch.RemoteField extends Monarch.Field
   valueChanged: (newValue, oldValue) ->
     @record.pendingChangeset[@name] = {
