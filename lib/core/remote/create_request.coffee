@@ -1,5 +1,3 @@
-#= require ./mutate_request
-
 class Monarch.Remote.CreateRequest extends Monarch.Remote.MutateRequest
   requestType: 'post',
 

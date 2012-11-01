@@ -1,5 +1,3 @@
-#= require ./predicate
-
 class Monarch.Expressions.Equal extends Monarch.Expressions.Predicate
   wireRepresentationType: 'Equal'
 

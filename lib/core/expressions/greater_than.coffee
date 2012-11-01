@@ -1,5 +1,3 @@
-#= require ./predicate
-
 class Monarch.Expressions.GreaterThan extends Monarch.Expressions.Predicate
   wireRepresentationType: 'GreaterThan'
 

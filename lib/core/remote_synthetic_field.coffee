@@ -1,5 +1,3 @@
-#= require ./synthetic_field
-
 class Monarch.RemoteSyntheticField extends Monarch.SyntheticField
   constructor: (record, column) ->
     record.remoteSignals = true

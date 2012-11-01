@@ -1,5 +1,3 @@
-#= require ./relation
-
 class Monarch.Relations.InnerJoin extends Monarch.Relations.Relation
   @deriveEquality 'left', 'right', 'predicate'
 

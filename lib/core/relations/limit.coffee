@@ -1,5 +1,3 @@
-#= require ./relation
-
 class Monarch.Relations.Limit extends Monarch.Relations.Relation
   @deriveEquality('operand', 'count')
 

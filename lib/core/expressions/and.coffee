@@ -1,5 +1,3 @@
-#= require ./predicate
-
 class Monarch.Expressions.And extends Monarch.Expressions.Predicate
   wireRepresentationType: 'And'
 

@@ -1,5 +1,3 @@
-#= require ./field
-
 class Monarch.LocalField extends Monarch.Field
   isDirty: ->
     not _.isEqual(@getValue(), @getRemoteValue())
