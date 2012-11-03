@@ -140,8 +140,8 @@ describe "Monarch.Relations.Selection", ->
           type: 'Equal'
           leftOperand:
             type: 'Column'
-            table: 'BlogPost'
-            name: 'blogId'
+            table: 'blog-posts'
+            name: 'blog-id'
           rightOperand:
             type: 'Scalar'
             value: 2
@@ -154,8 +154,8 @@ describe "Monarch.Relations.Selection", ->
           type: 'Equal'
           leftOperand:
             type: 'Column'
-            table: 'BlogPost'
-            name: 'blogId'
+            table: 'blog-posts'
+            name: 'blog-id'
           rightOperand:
             type: 'Scalar'
             value: null

@@ -277,9 +277,9 @@ describe "Monarch.Relations.InnerJoin", ->
         type: 'Equal',
         leftOperand:
           type: 'Column'
-          table: 'Blog'
+          table: 'blogs'
           name: 'id'
         rightOperand:
           type: 'Column'
-          table: 'BlogPost'
-          name: 'blogId'
+          table: 'blog-posts'
+          name: 'blog-id'

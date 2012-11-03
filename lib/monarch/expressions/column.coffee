@@ -13,8 +13,11 @@ class Monarch.Expressions.Column
 
   wireRepresentation: ->
     type: 'Column',
-    table: @table.name,
-    name: @name
+    table: @table.resourceName(),
+    name: @resourceName()
+
+  resourceName: ->
+    Monarch.Util.Inflection.underscore(@name).replace(/_/g, Monarch.resourceUrlSeparator)
 
   normalizeValue: (value) ->
     if @type == 'datetime' and _.isNumber(value)
