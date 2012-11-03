@@ -129,13 +129,16 @@ Monarch.Util.Inflection =
   convertKeysToSnakeCase: (data) ->
     convertedData = {}
     for key, value of data
-      value = Monarch.Util.Inflection.convertKeysToSnakeCase(value) if _.isObject(value)
+      value = Monarch.Util.Inflection.convertKeysToSnakeCase(value) if isHash(value)
       convertedData[Monarch.Util.Inflection.underscore(key)] = value
     convertedData
 
   convertKeysToCamelCase: (data) ->
     convertedData = {}
     for key, value of data
-      value = Monarch.Util.Inflection.convertKeysToCamelCase(value) if _.isObject(value)
+      value = Monarch.Util.Inflection.convertKeysToCamelCase(value) if isHash(value)
       convertedData[Monarch.Util.Inflection.camelize(key, true)] = value
     convertedData
+
+isHash = (obj) ->
+  _.isObject(obj) and not _.isArray(obj)
