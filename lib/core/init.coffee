@@ -1,4 +1,4 @@
-window.Monarch = (constructor, columnDefinitions) ->
+Monarch = (constructor, columnDefinitions) ->
   constructor extends Monarch.Record
   constructor.extended(constructor)
   constructor.columns(columnDefinitions) if columnDefinitions
@@ -16,3 +16,5 @@ _.extend Monarch,
 
   fetch: (args...) ->
     Monarch.Remote.Server.fetch(args...)
+
+window.Monarch = Monarch
