@@ -4,9 +4,6 @@ class Monarch.Relations.Difference extends Monarch.Relations.Relation
   constructor: (@left, @right) ->
     @orderByExpressions = left.orderByExpressions
 
-  _all: ->
-    _.difference(@left.all(), @right.all())
-
   _activate: ->
     @right.activate()
     @left.activate()

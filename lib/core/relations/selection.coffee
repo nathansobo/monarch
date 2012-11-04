@@ -11,9 +11,6 @@ class Monarch.Relations.Selection extends Monarch.Relations.Relation
   created: (attributes) ->
     @operand.created(_.extend({}, attributes, @predicate.satisfyingAttributes()))
 
-  _all: ->
-    _.filter @operand.all(), (tuple) => @predicate.evaluate(tuple)
-
   _activate: ->
     @operand.activate()
     super

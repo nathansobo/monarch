@@ -4,9 +4,6 @@ class Monarch.Relations.Limit extends Monarch.Relations.Relation
   constructor: (@operand, @count) ->
     @orderByExpressions = operand.orderByExpressions
 
-  _all: ->
-    @operand.all()[0...@count]
-
   _activate: ->
     @operand.activate()
     super

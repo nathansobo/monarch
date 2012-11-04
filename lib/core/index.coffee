@@ -6,6 +6,8 @@
 #= require ./composite_tuple
 #= require ./expressions/predicate
 #= require ./expressions/column
+#= require_tree ./expressions
 #= require ./relations/relation
 #= require ./remote/mutate_request
+#= require_tree ./relations
 #= require_tree .

@@ -29,10 +29,6 @@ class Monarch.Relations.Table extends Monarch.Relations.Relation
 
   defaultOrderBy: ->
     @orderByExpressions = @buildOrderByExpressions(_.toArray(arguments))
-    @_contents = @buildContents()
-
-  buildContents: ->
-    new Monarch.Util.SkipList(@buildComparator())
 
   inferJoinColumns: (columns) ->
     for column in columns
@@ -56,12 +52,6 @@ class Monarch.Relations.Table extends Monarch.Relations.Relation
       else
         localAttributes.id = id
         @recordClass.created(localAttributes)
-
-  clear: ->
-    @_insertNode.clear()
-    @_updateNode.clear()
-    @_removeNode.clear()
-    @_contents = new Monarch.Util.SkipList(@buildComparator())
 
   resourceUrl: ->
     @recordClass.resourceUrl(@name)

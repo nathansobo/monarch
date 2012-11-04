@@ -4,9 +4,6 @@ class Monarch.Relations.Offset extends Monarch.Relations.Relation
   constructor: (@operand, @count) ->
     @orderByExpressions = operand.orderByExpressions
 
-  _all: ->
-    @operand.all()[@count..]
-
   _activate: ->
     @operand.activate()
     super

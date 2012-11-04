@@ -9,6 +9,7 @@ _.extend Monarch,
   resourceUrlSeparator: '-'
   snakeCase: false
 
+  Db: {}
   Expressions: {}
   Relations: {}
   Remote: {}

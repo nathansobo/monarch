@@ -2,7 +2,7 @@
 
 describe "Monarch", ->
   it "takes a constructor and sets it up as a record", ->
-    Blog = ->
+    class Blog
     result = Monarch(Blog, title: 'string', userId: 'integer')
 
     expect(result).toBe Blog

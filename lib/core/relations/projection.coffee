@@ -6,15 +6,6 @@ class Monarch.Relations.Projection extends Monarch.Relations.Relation
     @buildOrderByExpressions()
     @recordCounts = {}
 
-  all: ->
-    if @_contents
-      @_contents.values()
-    else
-      _.uniq(@_all())
-
-  _all: ->
-    @operand.map (composite) => composite.getRecord(@table.name)
-
   buildOrderByExpressions: ->
     @orderByExpressions = _.filter @operand.orderByExpressions, (orderByExpression) =>
       orderByExpression.column.table.name == @table.name
