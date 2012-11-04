@@ -6,9 +6,6 @@ class Monarch.Relations.Union extends Monarch.Relations.Relation
     @right = right
     @orderByExpressions = @left.orderByExpressions
 
-  _all: ->
-    _.union(@left.all(), @right.all()).sort(@buildComparator(true))
-
   _activate: ->
     @left.activate()
     @right.activate()
@@ -34,7 +31,6 @@ class Monarch.Relations.Union extends Monarch.Relations.Relation
 
   handleOperandInsert: (tuple, newKey, oldKey) ->
     @insert(tuple, newKey, oldKey) unless @containsKey(newKey, oldKey)
-
 
   tupleUpdated: (tuple, changeset, newKey, oldKey) ->
     return if @lastUpdate == changeset

@@ -6,9 +6,6 @@ class Monarch.Relations.OrderBy extends Monarch.Relations.Relation
   constructor: (@operand, orderByStrings) ->
     @orderByExpressions = @buildOrderByExpressions(orderByStrings)
 
-  _all: ->
-    @operand.all().sort(@buildComparator(true))
-
   _activate: ->
     @operand.activate()
     super

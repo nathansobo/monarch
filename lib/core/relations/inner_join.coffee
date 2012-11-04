@@ -21,14 +21,6 @@ class Monarch.Relations.InnerJoin extends Monarch.Relations.Relation
   getColumn: (name) ->
     @left.getColumn(name) or @right.getColumn(name)
 
-  _all: ->
-    all = []
-    @left.each (leftTuple) =>
-      @right.each (rightTuple) =>
-        composite = @buildComposite(leftTuple, rightTuple)
-        all.push(composite) if @predicate.evaluate(composite)
-    all
-
   _activate: ->
     @left.activate()
     @right.activate()

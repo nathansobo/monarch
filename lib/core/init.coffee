@@ -13,6 +13,7 @@ _.extend Monarch,
   Relations: {}
   Remote: {}
   Util: {}
+  Visitors: {}
 
   fetch: (args...) ->
     Monarch.Remote.Server.fetch(args...)
