@@ -63,16 +63,5 @@ class Monarch.Relations.Table extends Monarch.Relations.Relation
     type: 'Table'
     name: @resourceName()
 
-  findOrFetch: (id) ->
-    record = @find(id)
-    promise = new Monarch.Util.Promise
-    if record
-      promise.triggerSuccess(record)
-    else
-      Monarch.Remote.Server.fetch(@where({ id })).onSuccess =>
-        record = @find(id)
-        promise.triggerSuccess(record)
-    promise
-
   create: (args...) -> @recordClass.create(args...)
   created: (args...) -> @recordClass.created(args...)

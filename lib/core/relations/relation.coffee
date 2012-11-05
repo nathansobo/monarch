@@ -2,9 +2,6 @@ class Monarch.Relations.Relation extends Monarch.Base
   size: ->
     @all().length
 
-  fetch: ->
-    Monarch.Remote.Server.fetch(this)
-
   isEmpty: ->
     @all().length == 0
 
