@@ -15,7 +15,4 @@ _.extend Monarch,
   Util: {}
   Visitors: {}
 
-  fetch: (args...) ->
-    Monarch.Remote.Server.fetch(args...)
-
 window.Monarch = Monarch

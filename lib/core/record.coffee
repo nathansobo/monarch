@@ -81,7 +81,7 @@ class Monarch.Record
 
   for methodName in ['table', 'wireRepresentation', 'contains', 'onUpdate', 'onInsert', 'onRemove',
     'at', 'indexOf', 'where', 'join', 'union', 'difference', 'limit', 'offset', 'orderBy',
-    'hasSubscriptions', 'find', 'size', 'getColumn', 'all', 'each', 'first', 'last', 'fetch', 'clear', 'findOrFetch']
+    'hasSubscriptions', 'find', 'size', 'getColumn', 'all', 'each', 'first', 'last', 'clear']
     do (methodName) =>
       this[methodName] = (args...) ->
         @table[methodName](args...)
@@ -189,21 +189,6 @@ class Monarch.Record
 
   isEqual: (other) ->
     (@constructor == other.constructor) and (@id() == other.id())
-
-  save: ->
-    if @id()
-      return if @beforeUpdate() == false
-      Monarch.Remote.Server.update(this, @wireRepresentation())
-    else
-      return if @beforeCreate() == false
-      Monarch.Remote.Server.create(this, @wireRepresentation())
-
-  fetch: ->
-    @table.where({ id: @id() }).fetch()
-
-  destroy: ->
-    return if @beforeDestroy() == false
-    Monarch.Remote.Server.destroy(this)
 
   signal: (fieldNames..., transformer) ->
     unless _.isFunction(transformer)

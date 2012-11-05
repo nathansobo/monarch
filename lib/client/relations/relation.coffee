@@ -86,3 +86,6 @@ _.extend Monarch.Relations.Relation.prototype,
         else if lessThan(bValue, aValue)
           return 1 * directionCoefficient
       0
+
+  fetch: ->
+    Monarch.Remote.Server.fetch(this)
