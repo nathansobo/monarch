@@ -16,9 +16,19 @@ task "spec:client", "start server for client-side tests", ->
   console.log "Spec server listening on port 8888"
 
 task "spec:server", "run server-side tests", ->
+  module = require('watch-tree')
+  paths = ["spec/server", "lib/core", "lib/server"]
+  for path in paths
+    fullPath = __dirname + '/' + path
+    module.watchTree(fullPath, 'sample-rate': 10)
+      .on('fileModified', runTests)
+      .on('fileCreated', runTests)
+      .on('fileDeleted', runTests)
+  runTests()
+
+runTests = ->
   { spawn } = require 'child_process'
   bin = "#{__dirname}/node_modules/jasmine-node/bin/jasmine-node"
-  specDir = "#{__dirname}/spec/server"
-  proc = spawn(bin, [ "--coffee", specDir ])
+  proc = spawn(bin, [ "--coffee", "#{__dirname}/spec/server" ])
   proc.stdout.pipe(process.stdout)
   proc.stderr.pipe(process.stderr)
