@@ -2,7 +2,7 @@ var express = require('express'),
     connect = require('connect'),
     ejs = require('ejs'),
     connect_assets = require('connect-assets')({
-      src: __dirname + "/assets"
+      src: __dirname + "/../.."
     });
 
 var app = express()
