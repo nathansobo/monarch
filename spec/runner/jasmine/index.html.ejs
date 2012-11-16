@@ -9,7 +9,7 @@
   <script type="text/javascript" src="lib/jasmine.js"></script>
   <script type="text/javascript" src="lib/jasmine-html.js"></script>
 
-  <%- js("spec/spec") %>
+  <%- js("/spec/spec") %>
 
   <script type="text/javascript">
     (function() {
@@ -36,10 +36,8 @@
       function execJasmine() {
         jasmineEnv.execute();
       }
-
     })();
   </script>
-
 </head>
 
 <body>
