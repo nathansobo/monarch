@@ -26,6 +26,9 @@ task "spec:server", "run server-side tests", ->
       .on('fileDeleted', runTests)
   runTests()
 
+task "spec:setup", "setup database for server-side tests", ->
+  require './spec/server/support/setup'
+
 runTests = ->
   { spawn } = require 'child_process'
   bin = "#{__dirname}/node_modules/jasmine-node/bin/jasmine-node"

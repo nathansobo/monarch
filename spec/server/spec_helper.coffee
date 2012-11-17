@@ -1,3 +1,5 @@
+_ = require 'underscore'
+
 beforeEach ->
   @addMatchers
     toBeLikeQuery: (sql) ->
@@ -8,6 +10,12 @@ normalizeSql = (string) ->
     .replace(/\s+/g, ' ')
     .replace(/[(\s*$)]/g, '')
 
+databaseConfig = require "./support/database"
+Monarch = require "#{__dirname}/../../lib/server/index"
+Monarch.Db.configure(databaseConfig)
+
 module.exports =
-  Monarch: require "#{__dirname}/../../lib/server/index"
-  _: require "underscore"
+  Monarch: Monarch
+  _: _
+  async: require 'async'
+  pg: require 'pg'
