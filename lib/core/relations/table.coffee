@@ -6,7 +6,9 @@ class Monarch.Relations.Table extends Monarch.Relations.Relation
     @columnsByName = {}
     @column('id', 'integer')
     @defaultOrderBy('id')
-    @activate()
+    @initialize()
+
+  initialize: ->
 
   column: (name, type) ->
     @columnsByName[name] = new Monarch.Expressions.Column(this, name, type)
@@ -36,8 +38,6 @@ class Monarch.Relations.Table extends Monarch.Relations.Relation
       match = name.match(/^(.+)Id$/)
       if match and capitalize(match[1]) == @name
         return [@getColumn('id'), column]
-
-  deactivateIfNeeded: -> # no-op
 
   update: (recordsById) ->
     for id, attributes of recordsById

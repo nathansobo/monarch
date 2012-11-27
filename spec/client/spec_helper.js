@@ -9,6 +9,20 @@ beforeEach(function() {
   Monarch.Repository.tables = {};
 });
 
+beforeEach(function() {
+  this.addMatchers({
+    toHaveSubscriptions: function() {
+      var relation = this.actual;
+      if (!relation.isActive) return false;
+      var subscriptionCount =
+        relation._insertNode.size() +
+        relation._updateNode.size() +
+        relation._removeNode.size();
+      return (subscriptionCount > 0);
+    }
+  });
+});
+
 afterEach(function() {
   _.each(Monarch.Record.subclasses, function(recordSubclass) {
     delete window[recordSubclass.displayName];

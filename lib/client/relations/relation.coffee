@@ -1,15 +1,4 @@
 _.extend Monarch.Relations.Relation.prototype,
-  _activate: ->
-    @_insertNode = new Monarch.Util.Node()
-    @_updateNode = new Monarch.Util.Node()
-    @_removeNode = new Monarch.Util.Node()
-    @_insertNode.onEmpty => @deactivateIfNeeded()
-    @_updateNode.onEmpty => @deactivateIfNeeded()
-    @_removeNode.onEmpty => @deactivateIfNeeded()
-    @subscriptions = new Monarch.Util.SubscriptionBundle()
-    @isActive = true
-    @contents(); # cause contents to memoize
-
   contents: ->
     if @isActive
       unless @_contents
@@ -35,15 +24,29 @@ _.extend Monarch.Relations.Relation.prototype,
   retrieveRecords: ->
     Monarch.Db.RecordRetriever.retrieveRecords(this)
 
+  onInsert: (callback, context) ->
+    Monarch.Events.onInsert(this, callback, context)
+
+  onUpdate: (callback, context) ->
+    Monarch.Events.onUpdate(this, callback, context)
+
+  onRemove: (callback, context) ->
+    Monarch.Events.onRemove(this, callback, context)
+
   insert: (tuple, newKey, oldKey) ->
     newKey ?= @buildKey(tuple)
     index = @contents().insert(newKey, tuple)
-    @_insertNode.publish(tuple, index, newKey, oldKey or newKey)
+    Monarch.Events.publishInsert(this, tuple, index, newKey, oldKey or newKey)
 
   tupleUpdated: (tuple, changeset, newKey, oldKey) ->
     oldIndex = @contents().remove(oldKey)
     newIndex = @contents().insert(newKey, tuple)
-    @_updateNode.publish(tuple, changeset, newIndex, oldIndex, newKey, oldKey)
+    Monarch.Events.publishUpdate(this, tuple, changeset, newIndex, oldIndex, newKey, oldKey)
+
+  remove: (tuple, newKey, oldKey, changeset) ->
+    newKey ?= oldKey = @buildKey(tuple)
+    index = @contents().remove(oldKey)
+    Monarch.Events.publishRemove(this, tuple, index, newKey, oldKey, changeset)
 
   indexOf: (tuple) ->
     @contents().indexOf(@buildKey(tuple))
@@ -56,11 +59,6 @@ _.extend Monarch.Relations.Relation.prototype,
 
   findByKey: (key) ->
     @contents().find(key)
-
-  remove: (tuple, newKey, oldKey, changeset) ->
-    newKey ?= oldKey = @buildKey(tuple)
-    index = @contents().remove(oldKey)
-    @_removeNode.publish(tuple, index, newKey, oldKey, changeset)
 
   buildKey: (tuple) ->
     key = {}

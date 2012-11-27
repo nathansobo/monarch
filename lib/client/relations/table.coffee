@@ -1,8 +1,6 @@
 _.extend Monarch.Relations.Table.prototype,
   clear: ->
-    @_insertNode.clear()
-    @_updateNode.clear()
-    @_removeNode.clear()
+    Monarch.Events.clear(this)
     @_contents = @buildContents()
 
   defaultOrderBy: ->
@@ -19,3 +17,6 @@ _.extend Monarch.Relations.Table.prototype,
         record = @find(id)
         promise.triggerSuccess(record)
     promise
+
+  initialize: ->
+    Monarch.Events.activate(this)

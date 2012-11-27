@@ -107,10 +107,10 @@ describe "Monarch.Relations.Selection", ->
     describe "deactivation", ->
       it "destroys subscriptions on the operand when the last of its subscriptions is removed", ->
         expect(selection.isActive).toBeTruthy()
-        expect(BlogPost.hasSubscriptions()).toBeTruthy()
+        expect(BlogPost.table).toHaveSubscriptions()
         subscriptions.destroy()
         expect(selection.isActive).toBeFalsy()
-        expect(BlogPost.hasSubscriptions()).toBeFalsy()
+        expect(BlogPost.table).not.toHaveSubscriptions()
 
   it "supports inequality predicates", ->
     expect(BlogPost.where('blogId <': 3).all()).toEqual([post1, post2, post3])

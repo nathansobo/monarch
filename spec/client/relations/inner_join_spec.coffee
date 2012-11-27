@@ -252,18 +252,18 @@ describe "Monarch.Relations.InnerJoin", ->
 
     describe "deactivation", ->
       it "removes subscriptions on the operands", ->
-        expect(BlogPost.hasSubscriptions()).toBeFalsy()
-        expect(Blog.hasSubscriptions()).toBeFalsy()
+        expect(BlogPost.table).not.toHaveSubscriptions()
+        expect(Blog.table).not.toHaveSubscriptions()
 
         subscribe(Blog.join(BlogPost))
 
-        expect(BlogPost.hasSubscriptions()).toBeTruthy()
-        expect(Blog.hasSubscriptions()).toBeTruthy()
+        expect(BlogPost.table).toHaveSubscriptions()
+        expect(Blog.table).toHaveSubscriptions()
 
         subscriptions.destroy()
 
-        expect(BlogPost.hasSubscriptions()).toBeFalsy()
-        expect(Blog.hasSubscriptions()).toBeFalsy()
+        expect(BlogPost.table).not.toHaveSubscriptions()
+        expect(Blog.table).not.toHaveSubscriptions()
 
   it "has a #wireRepresentation()", ->
     left = Blog.where(userId: 1)

@@ -11,25 +11,6 @@ class Monarch.Relations.Selection extends Monarch.Relations.Relation
   created: (attributes) ->
     @operand.created(_.extend({}, attributes, @predicate.satisfyingAttributes()))
 
-  _activate: ->
-    @operand.activate()
-    super
-
-    @subscribe @operand, 'onInsert', (tuple, _, newKey, oldKey) ->
-      @insert(tuple, newKey, oldKey) if @predicate.evaluate(tuple)
-
-    @subscribe @operand, 'onUpdate', (tuple, changeset, newIndex, oldIndex, newKey, oldKey) ->
-      if @predicate.evaluate(tuple)
-        if @containsKey(oldKey)
-          @tupleUpdated(tuple, changeset, newKey, oldKey)
-        else
-          @insert(tuple, newKey, oldKey)
-      else
-        @remove(tuple, newKey, oldKey, changeset) if (@containsKey(oldKey))
-
-    @subscribe @operand, 'onRemove', (tuple, _, newKey, oldKey) ->
-      @remove(tuple, newKey, oldKey) if (@containsKey(oldKey))
-
   wireRepresentation: ->
     type: 'Selection'
     predicate: @predicate.wireRepresentation()

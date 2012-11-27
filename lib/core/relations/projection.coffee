@@ -10,19 +10,6 @@ class Monarch.Relations.Projection extends Monarch.Relations.Relation
     @orderByExpressions = _.filter @operand.orderByExpressions, (orderByExpression) =>
       orderByExpression.column.table.name == @table.name
 
-  _activate: ->
-    @operand.activate()
-    super
-
-    @subscribe @operand, 'onInsert', (tuple, _, newKey, oldKey) ->
-      @insert(tuple.getRecord(@table.name), newKey, oldKey)
-
-    @subscribe @operand, 'onUpdate', (tuple, changeset, newIndex, oldIndex, newKey, oldKey) ->
-      @tupleUpdated(tuple, changeset, newKey, oldKey)
-
-    @subscribe @operand, 'onRemove', (tuple, _, newKey, oldKey) ->
-      @remove(tuple.getRecord(@table.name), newKey, oldKey)
-
   insert: (record, newKey) ->
     @recordCounts[record.id()] ?= 0
     count = (@recordCounts[record.id()] += 1)

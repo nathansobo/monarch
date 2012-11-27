@@ -6,19 +6,6 @@ class Monarch.Relations.OrderBy extends Monarch.Relations.Relation
   constructor: (@operand, orderByStrings) ->
     @orderByExpressions = @buildOrderByExpressions(orderByStrings)
 
-  _activate: ->
-    @operand.activate()
-    super
-
-    @subscribe @operand, 'onInsert', (tuple) ->
-      @insert(tuple)
-
-    @subscribe @operand, 'onUpdate', (tuple, changeset) ->
-      @tupleUpdated(tuple, changeset, @buildKey(tuple), @buildKey(tuple, changeset))
-
-    @subscribe @operand, 'onRemove', (tuple, index, newKey, oldKey, changeset) ->
-      @remove(tuple, @buildKey(tuple), @buildKey(tuple, changeset))
-
   buildKey: (tuple, changeset) ->
     key = super(tuple)
     if changeset

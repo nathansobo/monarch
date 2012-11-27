@@ -118,7 +118,7 @@ describe "Monarch.Relations.Projection", ->
       operand: Blog.where(userId: 1).join(BlogPost).wireRepresentation()
       table: 'BlogPost'
 
-  describe ".activate()", ->
+  describe "when event handlers are bound", ->
     it "properly increments the recordCounts hash and does not hydrate the memoized contents with duplicate records", ->
       blog1 = Blog.created(id: 1)
       blog2 = Blog.created(id: 2)
@@ -127,7 +127,7 @@ describe "Monarch.Relations.Projection", ->
       BlogPost.created(blogId: 2)
 
       projection = Blog.join(BlogPost).project(Blog)
-      projection.activate()
+      projection.onUpdate(->)
 
       expect(projection.all()).toEqual([blog1, blog2])
       expect(projection.recordCounts[blog1.id()]).toBe(2)

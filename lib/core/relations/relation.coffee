@@ -21,18 +21,6 @@ class Monarch.Relations.Relation extends Monarch.Base
   last: ->
     _.last(@all())
 
-  onInsert: (callback, context) ->
-    @activate()
-    @_insertNode.subscribe(callback, context)
-
-  onUpdate: (callback, context) ->
-    @activate()
-    @_updateNode.subscribe(callback, context)
-
-  onRemove: (callback, context) ->
-    @activate()
-    @_removeNode.subscribe(callback, context)
-
   forEach: (iterator, context) ->
     _.each(@all(), iterator, context)
 
@@ -95,35 +83,3 @@ class Monarch.Relations.Relation extends Monarch.Base
 
     new predicateClass(key, value).resolve(this)
 
-  activate: ->
-    @_activate() unless @isActive
-
-  _activate: ->
-    @_insertNode = new Monarch.Util.Node()
-    @_updateNode = new Monarch.Util.Node()
-    @_removeNode = new Monarch.Util.Node()
-    @_insertNode.onEmpty => @deactivateIfNeeded()
-    @_updateNode.onEmpty => @deactivateIfNeeded()
-    @_removeNode.onEmpty => @deactivateIfNeeded()
-    @subscriptions = new Monarch.Util.SubscriptionBundle()
-    @isActive = true
-
-  deactivateIfNeeded: ->
-    @deactivate() unless @hasSubscriptions()
-
-  deactivate: ->
-    delete @_insertNode
-    delete @_updateNode
-    delete @_removeNode
-    @subscriptions.destroy()
-    @isActive = false
-
-  subscribe: (operand, event, callback) ->
-    @subscriptions.add(operand[event](callback, this))
-
-  subscriptionCount: ->
-    return 0 unless @isActive
-    @_insertNode.size() + @_updateNode.size() + @_removeNode.size()
-
-  hasSubscriptions: ->
-    @subscriptionCount() > 0

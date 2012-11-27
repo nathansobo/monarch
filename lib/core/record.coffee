@@ -81,7 +81,7 @@ class Monarch.Record
 
   for methodName in ['table', 'wireRepresentation', 'contains', 'onUpdate', 'onInsert', 'onRemove',
     'at', 'indexOf', 'where', 'join', 'union', 'difference', 'limit', 'offset', 'orderBy',
-    'hasSubscriptions', 'find', 'size', 'getColumn', 'all', 'each', 'first', 'last', 'clear']
+    'find', 'size', 'getColumn', 'all', 'each', 'first', 'last', 'clear']
     do (methodName) =>
       this[methodName] = (args...) ->
         @table[methodName](args...)

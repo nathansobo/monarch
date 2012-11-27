@@ -58,9 +58,9 @@ describe "Monarch.Relations.Table", ->
       expect(removeCallback.arg(1)).toBe(1)
 
     it "always remains active, even if there are no subscriptions", ->
-      expect(BlogPost.hasSubscriptions()).toBeTruthy()
+      expect(BlogPost.table).toHaveSubscriptions()
       subscriptions.destroy()
-      expect(BlogPost.hasSubscriptions()).toBeFalsy()
+      expect(BlogPost.table).not.toHaveSubscriptions()
       expect(BlogPost.table.isActive).toBeTruthy()
 
   describe ".getColumn(name)", ->
