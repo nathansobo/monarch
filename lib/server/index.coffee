@@ -7,8 +7,11 @@ loader.configure(
   globals: { Monarch, _ }
 )
 
-Monarch.Sql = {}
+_.extend Monarch,
+  Sql: {}
+  resourceUrlSeparator: '_'
 
+loader.require('./sql/literal')
 loader.requireTree('.')
 
 module.exports = Monarch
