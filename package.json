@@ -8,7 +8,8 @@
     "url": "git://github.com/nathansobo/monarch.git"
   },
   "dependencies": {
-    "underscore": "1.4.x"
+    "underscore": "1.4.x",
+    "jasmine-node": "1.0.x"
   },
   "devDependencies": {
     "coffee-script": "1.3.x",

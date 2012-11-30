@@ -1,4 +1,4 @@
-window.Monarch = (constructor, columnDefinitions) ->
+window.Monarch = Monarch = (constructor, columnDefinitions) ->
   constructor extends Monarch.Record
   constructor.extended(constructor)
   constructor.columns(columnDefinitions) if columnDefinitions
