@@ -1,0 +1,1 @@
+class Monarch.LocalSyntheticField extends Monarch.SyntheticField

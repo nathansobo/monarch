@@ -1,0 +1,12 @@
+#= require ./init
+#= require_tree ./util
+#= require ./base
+#= require ./field
+#= require ./synthetic_field
+#= require ./composite_tuple
+#= require ./expressions/predicate
+#= require ./expressions/column
+#= require_tree ./expressions
+#= require ./relations/relation
+#= require_tree ./relations
+#= require_tree .
