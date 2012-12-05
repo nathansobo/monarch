@@ -9,7 +9,7 @@ class Monarch.Util.Node
     @publishArgs(arguments)
 
   publishArgs: (args) ->
-    for subscription in @subscriptions
+    for subscription in new Array(@subscriptions...)
       subscription.publish(args)
 
   subscribe: (callback, context) ->
