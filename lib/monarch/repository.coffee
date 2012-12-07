@@ -45,7 +45,8 @@ Monarch.Repository =
       @update(updateArg) for updateArg in @deferredUpdates
       delete @deferredUpdates
 
-  performCreate: (resourceName, attributes) ->
+  performCreate: (resourceName, attributes, extraDataset) ->
+    @update(extraDataset)
     attributes = convertKeysToCamelCase(attributes) if Monarch.snakeCase
     table = @tableForResourceName(resourceName)
     return if table.find(attributes.id)

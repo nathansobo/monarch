@@ -144,6 +144,30 @@ describe "Monarch.Repository", ->
         expect(Blog.find(2)).toBeUndefined()
         expect(BlogPost.find(2)).toBeUndefined()
 
+      describe "when given a create command with an additional dataset of objects carried along with the creation", ->
+        it "updates the repository with the dataset before executing the command", ->
+          extraDataset = {
+            blogs: {
+              99: { userId: 1, title: "Alpha" }
+            }
+          }
+
+          postInsertCallback = jasmine.createSpy('postInsertCallback').andCallFake ->
+            blog = Blog.find(99)
+            expect(blog.userId()).toBe 1
+            expect(blog.title()).toBe "Alpha"
+          BlogPost.onInsert(postInsertCallback)
+
+          Monarch.Repository.update([
+            ['create', 'blog-posts', {id: 3, blogId: 99, title: "Alpha 1"}, extraDataset]
+          ])
+
+          expect(postInsertCallback).toHaveBeenCalled()
+          post3 = BlogPost.find(3)
+          expect(post3).toBeDefined()
+          expect(post3.title()).toBe("Alpha 1")
+          expect(post3.blogId()).toBe(99)
+
       describe "when Monarch.snakeCase is true", ->
         it "converts keys to camel case", ->
           Monarch.snakeCase = true
