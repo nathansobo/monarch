@@ -1,7 +1,7 @@
 { Monarch } = require "../spec_helper"
 
 describe "Sql.Builder", ->
-  blogs = blogPosts = null
+  blogs = blogPosts = comments = null
 
   class Blog extends Monarch.Record
     @extended(this)
@@ -25,10 +25,10 @@ describe "Sql.Builder", ->
     it "constructs a table query", ->
       expect(blogPosts.toSql()).toBeLikeQuery("""
         SELECT
-          "blog_posts"."id",
-          "blog_posts"."public",
-          "blog_posts"."title",
-          "blog_posts"."blog_id"
+          "blog_posts"."id" as blog_posts__id,
+          "blog_posts"."public" as blog_posts__public,
+          "blog_posts"."title" as blog_posts__title,
+          "blog_posts"."blog_id" as blog_posts__blog_id
         FROM
           "blog_posts"
       """)
@@ -38,10 +38,10 @@ describe "Sql.Builder", ->
       relation = blogPosts.where({ public: true, blogId: 1 })
       expect(relation.toSql()).toBeLikeQuery("""
         SELECT
-          "blog_posts"."id",
-          "blog_posts"."public",
-          "blog_posts"."title",
-          "blog_posts"."blog_id"
+          "blog_posts"."id" as blog_posts__id,
+          "blog_posts"."public" as blog_posts__public,
+          "blog_posts"."title" as blog_posts__title,
+          "blog_posts"."blog_id" as blog_posts__blog_id
         FROM
           "blog_posts"
         WHERE
@@ -53,10 +53,10 @@ describe "Sql.Builder", ->
       relation = blogPosts.where({ title: "Node Fibers and You" })
       expect(relation.toSql()).toBeLikeQuery("""
         SELECT
-          "blog_posts"."id",
-          "blog_posts"."public",
-          "blog_posts"."title",
-          "blog_posts"."blog_id"
+          "blog_posts"."id" as blog_posts__id,
+          "blog_posts"."public" as blog_posts__public,
+          "blog_posts"."title" as blog_posts__title,
+          "blog_posts"."blog_id" as blog_posts__blog_id
         FROM
           "blog_posts"
         WHERE
@@ -68,10 +68,10 @@ describe "Sql.Builder", ->
       relation = blogPosts.orderBy("title desc")
       expect(relation.toSql()).toBeLikeQuery("""
         SELECT
-          "blog_posts"."id",
-          "blog_posts"."public",
-          "blog_posts"."title",
-          "blog_posts"."blog_id"
+          "blog_posts"."id" as blog_posts__id,
+          "blog_posts"."public" as blog_posts__public,
+          "blog_posts"."title" as blog_posts__title,
+          "blog_posts"."blog_id" as blog_posts__blog_id
         FROM
           "blog_posts"
         ORDER BY
@@ -84,10 +84,10 @@ describe "Sql.Builder", ->
       relation = blogPosts.limit(5)
       expect(relation.toSql()).toBeLikeQuery("""
         SELECT
-          "blog_posts"."id",
-          "blog_posts"."public",
-          "blog_posts"."title",
-          "blog_posts"."blog_id"
+          "blog_posts"."id" as blog_posts__id,
+          "blog_posts"."public" as blog_posts__public,
+          "blog_posts"."title" as blog_posts__title,
+          "blog_posts"."blog_id" as blog_posts__blog_id
         FROM
           "blog_posts"
         LIMIT
@@ -98,10 +98,10 @@ describe "Sql.Builder", ->
       relation = blogPosts.limit(5, 2)
       expect(relation.toSql()).toBeLikeQuery("""
         SELECT
-          "blog_posts"."id",
-          "blog_posts"."public",
-          "blog_posts"."title",
-          "blog_posts"."blog_id"
+          "blog_posts"."id" as blog_posts__id,
+          "blog_posts"."public" as blog_posts__public,
+          "blog_posts"."title" as blog_posts__title,
+          "blog_posts"."blog_id" as blog_posts__blog_id
         FROM
           "blog_posts"
         LIMIT 5
@@ -115,20 +115,20 @@ describe "Sql.Builder", ->
       relation = left.union(right)
       expect(relation.toSql()).toBeLikeQuery("""
         SELECT
-          "blog_posts"."id",
-          "blog_posts"."public",
-          "blog_posts"."title",
-          "blog_posts"."blog_id"
+          "blog_posts"."id" as blog_posts__id,
+          "blog_posts"."public" as blog_posts__public,
+          "blog_posts"."title" as blog_posts__title,
+          "blog_posts"."blog_id" as blog_posts__blog_id
         FROM
           "blog_posts"
         WHERE
           "blog_posts"."blog_id" = 5
         UNION
         SELECT
-          "blog_posts"."id",
-          "blog_posts"."public",
-          "blog_posts"."title",
-          "blog_posts"."blog_id"
+          "blog_posts"."id" as blog_posts__id,
+          "blog_posts"."public" as blog_posts__public,
+          "blog_posts"."title" as blog_posts__title,
+          "blog_posts"."blog_id" as blog_posts__blog_id
         FROM
           "blog_posts"
         WHERE
@@ -142,27 +142,27 @@ describe "Sql.Builder", ->
       relation = left.difference(right)
       expect(relation.toSql()).toBeLikeQuery("""
         SELECT
-          "blog_posts"."id",
-          "blog_posts"."public",
-          "blog_posts"."title",
-          "blog_posts"."blog_id"
+          "blog_posts"."id" as blog_posts__id,
+          "blog_posts"."public" as blog_posts__public,
+          "blog_posts"."title" as blog_posts__title,
+          "blog_posts"."blog_id" as blog_posts__blog_id
         FROM
           "blog_posts"
         WHERE
           "blog_posts"."blog_id" = 5
         EXCEPT
         SELECT
-          "blog_posts"."id",
-          "blog_posts"."public",
-          "blog_posts"."title",
-          "blog_posts"."blog_id"
+          "blog_posts"."id" as blog_posts__id,
+          "blog_posts"."public" as blog_posts__public,
+          "blog_posts"."title" as blog_posts__title,
+          "blog_posts"."blog_id" as blog_posts__blog_id
         FROM
           "blog_posts"
         WHERE
           "blog_posts"."public" = true
       """)
 
-  xdescribe "joins", ->
+  describe "joins", ->
     it "constructs a join query", ->
       relation = blogs.join(blogPosts)
       expect(relation.toSql()).toBeLikeQuery("""
@@ -174,7 +174,7 @@ describe "Sql.Builder", ->
           "blog_posts"."id" as blog_posts__id,
           "blog_posts"."public" as blog_posts__public,
           "blog_posts"."title" as blog_posts__title,
-          "blog_posts"."blog_id" as blog_posts__blog_id,
+          "blog_posts"."blog_id" as blog_posts__blog_id
         FROM
           "blogs" INNER JOIN "blog_posts"
         ON
@@ -186,10 +186,10 @@ describe "Sql.Builder", ->
       relation = blogs.joinThrough(blogPosts)
       expect(relation.toSql()).toBeLikeQuery("""
         SELECT
-          "blog_posts"."id",
-          "blog_posts"."public",
-          "blog_posts"."title",
-          "blog_posts"."blog_id"
+          "blog_posts"."id" as blog_posts__id,
+          "blog_posts"."public" as blog_posts__public,
+          "blog_posts"."title" as blog_posts__title,
+          "blog_posts"."blog_id" as blog_posts__blog_id
         FROM
           "blogs"
         INNER JOIN

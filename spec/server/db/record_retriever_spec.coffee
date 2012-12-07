@@ -114,6 +114,32 @@ describe "Db.RecordRetriever", ->
           expect(record.fieldValues()).toEqual(rowHashes[i])
         done()
 
+  describe "joins", ->
+    it "builds composite tuples with the correct left and right records", (done) ->
+      blogs.join(blogPosts).all (err, tuples) ->
+        blogHashes = [
+          { id: 1, public: true, title: 'Public Blog1', authorId: 1 }
+          { id: 1, public: true, title: 'Public Blog1', authorId: 1 }
+          { id: 2, public: true, title: 'Public Blog2', authorId: 1 }
+          { id: 2, public: true, title: 'Public Blog2', authorId: 1 }
+        ]
+
+        blogPostHashes = [
+          { id: 1, public: true, title: 'Public Post1', blogId: 1 }
+          { id: 3, public: false, title: 'Private Post1', blogId: 1 }
+          { id: 2, public: true, title: 'Public Post2', blogId: 2 }
+          { id: 4, public: false, title: 'Private Post2', blogId: 2 }
+        ]
+
+        expect(tuples.length).toBe(4)
+        for tuple, i in tuples
+          expect(tuple).toBeA(Monarch.CompositeTuple)
+          expect(tuple.left).toBeA(Blog)
+          expect(tuple.left.fieldValues()).toEqual(blogHashes[i])
+          expect(tuple.right).toBeA(BlogPost)
+          expect(tuple.right.fieldValues()).toEqual(blogPostHashes[i])
+        done()
+
   describe "projections", ->
     it "builds a the right record class", (done) ->
       blogs.joinThrough(blogPosts).all (err, records) ->

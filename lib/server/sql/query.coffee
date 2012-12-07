@@ -18,7 +18,7 @@ module.exports = ({ Monarch, _ }) ->
       ]).join(' ')
 
     selectClauseSql: ->
-      parts = @select.map (columnRef) -> columnRef.toSql()
+      parts = @select.map (columnRef) -> columnRef.toSelectClauseSql()
       "SELECT " + parts.join(', ')
 
     fromClauseSql: ->

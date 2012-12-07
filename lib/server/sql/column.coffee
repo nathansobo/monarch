@@ -5,3 +5,9 @@ module.exports = ({ Monarch, _ }) ->
 
     toSql: ->
       "\"#{@tableName}\".\"#{@name}\""
+
+    toSelectClauseSql: ->
+      @toSql() + " as " + @qualifiedName()
+
+    qualifiedName: ->
+      "#{@tableName}__#{@name}"
