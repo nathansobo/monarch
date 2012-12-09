@@ -163,23 +163,87 @@ describe "Sql.Builder", ->
       """)
 
   describe "joins", ->
-    it "constructs a join query", ->
-      relation = blogs.join(blogPosts)
-      expect(relation.toSql()).toBeLikeQuery("""
-        SELECT
-          "blogs"."id" as blogs__id,
-          "blogs"."public" as blogs__public,
-          "blogs"."title" as blogs__title,
-          "blogs"."author_id" as blogs__author_id,
-          "blog_posts"."id" as blog_posts__id,
-          "blog_posts"."public" as blog_posts__public,
-          "blog_posts"."title" as blog_posts__title,
-          "blog_posts"."blog_id" as blog_posts__blog_id
-        FROM
-          "blogs" INNER JOIN "blog_posts"
-        ON
-          "blogs"."id" = "blog_posts"."blog_id"
-      """)
+    describe "a join between two tables", ->
+      it "constructs a join query", ->
+        relation = blogs.join(blogPosts)
+        expect(relation.toSql()).toBeLikeQuery("""
+          SELECT
+            "blogs"."id" as blogs__id,
+            "blogs"."public" as blogs__public,
+            "blogs"."title" as blogs__title,
+            "blogs"."author_id" as blogs__author_id,
+            "blog_posts"."id" as blog_posts__id,
+            "blog_posts"."public" as blog_posts__public,
+            "blog_posts"."title" as blog_posts__title,
+            "blog_posts"."blog_id" as blog_posts__blog_id
+          FROM
+            "blogs"
+          INNER JOIN
+            "blog_posts"
+          ON
+            "blogs"."id" = "blog_posts"."blog_id"
+        """)
+
+    describe "a join between a selection and a table", ->
+      it "makes a subquery for a selection on the left", ->
+        relation = blogs.where(public: true).join(blogPosts)
+        expect(relation.toSql()).toBeLikeQuery("""
+          SELECT
+            "t1"."blogs__id",
+            "t1"."blogs__public",
+            "t1"."blogs__title",
+            "t1"."blogs__author_id",
+            "blog_posts"."id" as blog_posts__id,
+            "blog_posts"."public" as blog_posts__public,
+            "blog_posts"."title" as blog_posts__title,
+            "blog_posts"."blog_id" as blog_posts__blog_id
+          FROM
+            (
+              SELECT
+                "blogs"."id" as blogs__id,
+                "blogs"."public" as blogs__public,
+                "blogs"."title" as blogs__title,
+                "blogs"."author_id" as blogs__author_id
+              FROM
+                "blogs"
+              WHERE
+                "blogs"."public" = true
+            ) as "t1"
+          INNER JOIN
+            "blog_posts"
+          ON
+            "t1"."blogs__id" = "blog_posts"."blog_id"
+        """)
+
+      it "makes a subquery for a selection on the right", ->
+        relation = blogs.join(blogPosts.where(public: true))
+        expect(relation.toSql()).toBeLikeQuery("""
+          SELECT
+            "blogs"."id" as blogs__id,
+            "blogs"."public" as blogs__public,
+            "blogs"."title" as blogs__title,
+            "blogs"."author_id" as blogs__author_id,
+            "t1"."blog_posts__id",
+            "t1"."blog_posts__public",
+            "t1"."blog_posts__title",
+            "t1"."blog_posts__blog_id"
+          FROM
+            "blogs"
+          INNER JOIN
+            (
+              SELECT
+                "blog_posts"."id" as blog_posts__id,
+                "blog_posts"."public" as blog_posts__public,
+                "blog_posts"."title" as blog_posts__title,
+                "blog_posts"."blog_id" as blog_posts__blog_id
+              FROM
+                "blog_posts"
+              WHERE
+                "blog_posts"."public" = true
+            ) as "t1"
+          ON
+            "blogs"."id" = "t1"."blog_posts__blog_id"
+        """)
 
   describe "projections", ->
     it "constructs a projected join query", ->

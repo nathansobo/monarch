@@ -38,3 +38,6 @@ module.exports = ({ Monarch, _ }) ->
     offsetClauseSql: ->
       if @offsetCount
         "OFFSET " + @offsetCount
+
+    canHaveJoinAdded: ->
+      !@condition?

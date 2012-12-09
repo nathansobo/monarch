@@ -1,13 +1,33 @@
 module.exports = ({ Monarch, _ }) ->
 
   class Monarch.Sql.Column
-    constructor: (@tableName, @name) ->
+    @qualifyName: (tableName, columnName) ->
+      '"' + tableName + '"."' + columnName + '"'
+
+    @aliasName: (tableName, columnName) ->
+      "#{tableName}__#{columnName}"
+
+    constructor: (@source, @tableName, @name) ->
 
     toSql: ->
-      "\"#{@tableName}\".\"#{@name}\""
+      @sourceName()
 
     toSelectClauseSql: ->
-      @toSql() + " as " + @qualifiedName()
+      if @needsAlias()
+        "#{@sourceName()} as #{@aliasName()}"
+      else
+        @sourceName()
 
-    qualifiedName: ->
-      "#{@tableName}__#{@name}"
+    aliasName: ->
+      { tableName, columnName } = @resolveName()
+      @constructor.aliasName(tableName, columnName)
+
+    sourceName: ->
+      { tableName, columnName } = @resolveName()
+      @constructor.qualifyName(tableName, columnName)
+
+    needsAlias: ->
+      @resolveName().needsAlias
+
+    resolveName: ->
+      @_resolvedName or= @source.resolveColumnName(@tableName, @name)

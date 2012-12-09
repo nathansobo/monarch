@@ -1,20 +1,30 @@
 module.exports = ({ Monarch, _ }) ->
 
+  visitBinaryOperator = (operator) ->
+    (e, args...) ->
+      new Monarch.Sql.BinaryOperator(
+        @visit(e.left, args...),
+        @visit(e.right, args...),
+        operator)
+
   class Monarch.Sql.Builder
+    constructor: ->
+      @subqueryIndex = 0
+
     visit: Monarch.Util.Visitor.visit
 
     visit_Relations_Table: (r) ->
       tableRef = new Monarch.Sql.TableRef(r.resourceName())
-      columns = (@visit(column) for column in r.columns())
+      columns = (@visit(column, tableRef) for column in r.columns())
       new Monarch.Sql.Query(select: columns, from: tableRef)
 
     visit_Relations_Selection: (r) ->
       _.tap(@visit(r.operand), (query) =>
-        query.condition = @visit(r.predicate))
+        query.condition = @visit(r.predicate, query.from))
 
     visit_Relations_OrderBy: (r) ->
       _.tap(@visit(r.operand), (query) =>
-        query.orderByExpressions = r.orderByExpressions.map (e) => @visit(e))
+        query.orderByExpressions = (@visit(e) for e in r.orderByExpressions))
 
     visit_Relations_Limit: (r) ->
       _.tap(@visit(r.operand), (query) =>
@@ -31,30 +41,34 @@ module.exports = ({ Monarch, _ }) ->
       new Monarch.Sql.Difference(@visit(r.left), @visit(r.right))
 
     visit_Relations_InnerJoin: (r) ->
-      leftQuery = @visit(r.left)
-      rightQuery = @visit(r.right)
-      condition = @visit(r.predicate)
+      components = for side in ['left', 'right']
+        query = @visit(r[side])
+        if query.canHaveJoinAdded()
+          from = query.from
+          select = query.select
+        else
+          from = buildSubquery.call(this, query)
+          select = from.selectList()
+        { from, select }
 
-      new Monarch.Sql.Query(
-        select: leftQuery.select.concat(rightQuery.select)
-        from: new Monarch.Sql.JoinTableRef(
-          leftQuery.from,
-          rightQuery.from,
-          condition))
+      select = (components[0].select).concat(components[1].select)
+      join = new Monarch.Sql.JoinTableRef(components[0].from, components[1].from)
+      join.condition = @visit(r.predicate, join)
+      new Monarch.Sql.Query({ select, from: join })
 
     visit_Relations_Projection: (r) ->
-      table = r.table
-      columns = (@visit(column) for column in table.columns())
-      _.tap(@visit(r.operand), (query) -> query.select = columns)
+      _.tap(@visit(r.operand), (query) =>
+        columns = (@visit(column, query.from) for column in r.table.columns())
+        query.select = columns)
 
-    visit_Expressions_And: (e) ->
-      visitBinaryOperator.call(this, e, "AND")
+    visit_Expressions_And: visitBinaryOperator("AND")
+    visit_Expressions_Equal: visitBinaryOperator("=")
 
-    visit_Expressions_Equal: (e) ->
-      visitBinaryOperator.call(this, e, "=")
-
-    visit_Expressions_Column: (e) ->
-      new Monarch.Sql.Column(e.table.resourceName(), e.resourceName())
+    visit_Expressions_Column: (e, tableRef) ->
+      new Monarch.Sql.Column(
+        tableRef,
+        e.table.resourceName()
+        e.resourceName())
 
     visit_Expressions_OrderBy: (e) ->
       new Monarch.Sql.OrderByExpression(
@@ -71,11 +85,8 @@ module.exports = ({ Monarch, _ }) ->
     visit_Number: (e) ->
       new Monarch.Sql.Literal(e)
 
-  visitBinaryOperator = (e, operator) ->
-    new Monarch.Sql.BinaryOperator(
-      @visit(e.left),
-      @visit(e.right),
-      operator)
+  buildSubquery = (query) ->
+    new Monarch.Sql.Subquery(query, ++@subqueryIndex)
 
   directionString = (coefficient) ->
     if (coefficient == -1) then 'DESC' else 'ASC'
