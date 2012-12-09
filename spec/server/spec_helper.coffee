@@ -19,6 +19,42 @@ beforeEach ->
       ]
       normalizedActual == normalizedExpected
 
+    toEqualRecords: (recordClass, attrHashes) ->
+      if message = recordArrayMatcherMessage(@actual, attrHashes.length)
+        @message = -> message
+        return false
+      for record, i in @actual
+        if message = recordMatcherMessage(record, recordClass, attrHashes[i])
+          @message = -> message
+          return false
+      true
+
+    toEqualCompositeTuples: (leftClass, leftAttrHashes, rightClass, rightAttrHashes) ->
+      if (rightAttrHashes.length isnt leftAttrHashes.length)
+        throw new Error("Test error - non-matching number of rows")
+      if message = recordArrayMatcherMessage(@actual, leftAttrHashes.length)
+        @message = -> message
+        return false
+      for tuple, i in @actual
+        { left, right } = tuple
+        if message = recordMatcherMessage(left, leftClass, leftAttrHashes[i])
+          @message = -> message
+          return false
+        if message = recordMatcherMessage(right, rightClass, rightAttrHashes[i])
+          @message = -> message
+          return false
+      true
+
+recordArrayMatcherMessage = (records, n) ->
+  unless (records.length == n)
+    return "\nExpected this:\n\n#{records}\n\nto contain #{n} tuples, not #{records.length}.\n"
+
+recordMatcherMessage = (record, recordClass, attrs) ->
+  unless record instanceof recordClass
+    return "\nExpected this record:  #{record}\nto be an instance of #{recordClass.name}.\n"
+  unless _.isEqual(record.fieldValues(), attrs)
+    return "\nExpected this record:  #{record}\nto have these attributes:  #{JSON.stringify(attrs)}\n"
+
 normalizeSql = (string) ->
   string
     .replace(/\s+/g, ' ')

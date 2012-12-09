@@ -57,125 +57,83 @@ describe "Db.RecordRetriever", ->
   describe "tables", ->
     it "builds the table's record class", (done) ->
       blogPosts.all (err, records) ->
-        rowHashes = [
+        expect(records).toEqualRecords(BlogPost, [
           { id: 1, public: true, title: 'Public Post1', blogId: 1 }
           { id: 2, public: true, title: 'Public Post2', blogId: 2 }
           { id: 3, public: false, title: 'Private Post1', blogId: 1 }
           { id: 4, public: false, title: 'Private Post2', blogId: 2 }
-        ]
-
-        expect(records.length).toBe(4)
-        for record, i in records
-          expect(record).toBeA(BlogPost)
-          expect(record.fieldValues()).toEqual(rowHashes[i])
+        ])
         done()
 
   describe "selections", ->
     it "builds the right record class", (done) ->
       blogPosts.where(public: true).all (err, records) ->
-        rowHashes = [
+        expect(records).toEqualRecords(BlogPost, [
           { id: 1, public: true, title: 'Public Post1', blogId: 1 }
           { id: 2, public: true, title: 'Public Post2', blogId: 2 }
-        ]
-
-        expect(records.length).toBe(2)
-        for record, i in records
-          expect(record).toBeA(BlogPost)
-          expect(record.fieldValues()).toEqual(rowHashes[i])
+        ])
         done()
 
   describe "orderings", ->
     it "builds the right record class", (done) ->
       blogPosts.orderBy('id desc').all (err, records) ->
-        rowHashes = [
+        expect(records).toEqualRecords(BlogPost, [
           { id: 4, public: false, title: 'Private Post2', blogId: 2 }
           { id: 3, public: false, title: 'Private Post1', blogId: 1 }
           { id: 2, public: true, title: 'Public Post2', blogId: 2 }
           { id: 1, public: true, title: 'Public Post1', blogId: 1 }
-        ]
-
-        expect(records.length).toBe(4)
-        for record, i in records
-          expect(record).toBeA(BlogPost)
-          expect(record.fieldValues()).toEqual(rowHashes[i])
+        ])
         done()
 
   describe "offsets", ->
     it "builds the right record class", (done) ->
       blogPosts.offset(2).all (err, records) ->
-        rowHashes = [
+        expect(records).toEqualRecords(BlogPost, [
           { id: 3, public: false, title: 'Private Post1', blogId: 1 }
           { id: 4, public: false, title: 'Private Post2', blogId: 2 }
-        ]
-
-        expect(records.length).toBe(2)
-        for record, i in records
-          expect(record).toBeA(BlogPost)
-          expect(record.fieldValues()).toEqual(rowHashes[i])
+        ])
         done()
 
   describe "joins", ->
     describe "a join between two tables", ->
       it "builds composite tuples with the correct left and right records", (done) ->
         blogs.join(blogPosts).all (err, tuples) ->
-          blogHashes = [
-            { id: 1, public: true, title: 'Public Blog1', authorId: 1 }
-            { id: 1, public: true, title: 'Public Blog1', authorId: 1 }
-            { id: 2, public: true, title: 'Public Blog2', authorId: 1 }
-            { id: 2, public: true, title: 'Public Blog2', authorId: 1 }
-          ]
-
-          blogPostHashes = [
-            { id: 1, public: true, title: 'Public Post1', blogId: 1 }
-            { id: 3, public: false, title: 'Private Post1', blogId: 1 }
-            { id: 2, public: true, title: 'Public Post2', blogId: 2 }
-            { id: 4, public: false, title: 'Private Post2', blogId: 2 }
-          ]
-
-          expect(tuples.length).toBe(4)
-          for tuple, i in tuples
-            expect(tuple).toBeA(Monarch.CompositeTuple)
-            expect(tuple.left).toBeA(Blog)
-            expect(tuple.left.fieldValues()).toEqual(blogHashes[i])
-            expect(tuple.right).toBeA(BlogPost)
-            expect(tuple.right.fieldValues()).toEqual(blogPostHashes[i])
+          expect(tuples).toEqualCompositeTuples(
+            Blog, [
+              { id: 1, public: true, title: 'Public Blog1', authorId: 1 }
+              { id: 1, public: true, title: 'Public Blog1', authorId: 1 }
+              { id: 2, public: true, title: 'Public Blog2', authorId: 1 }
+              { id: 2, public: true, title: 'Public Blog2', authorId: 1 }
+            ],
+            BlogPost, [
+              { id: 1, public: true, title: 'Public Post1', blogId: 1 }
+              { id: 3, public: false, title: 'Private Post1', blogId: 1 }
+              { id: 2, public: true, title: 'Public Post2', blogId: 2 }
+              { id: 4, public: false, title: 'Private Post2', blogId: 2 }
+            ])
           done()
 
     describe "a join between a selection and a table", ->
       it "builds composite tuples with the correct left and right records", (done) ->
         blogs.where(title: 'Public Blog1').join(blogPosts).all (err, tuples) ->
-          blogHashes = [
-            { id: 1, public: true, title: 'Public Blog1', authorId: 1 }
-            { id: 1, public: true, title: 'Public Blog1', authorId: 1 }
-          ]
-
-          blogPostHashes = [
-            { id: 1, public: true, title: 'Public Post1', blogId: 1 }
-            { id: 3, public: false, title: 'Private Post1', blogId: 1 }
-          ]
-
-          expect(tuples.length).toBe(2)
-          for tuple, i in tuples
-            expect(tuple).toBeA(Monarch.CompositeTuple)
-            expect(tuple.left).toBeA(Blog)
-            expect(tuple.left.fieldValues()).toEqual(blogHashes[i])
-            expect(tuple.right).toBeA(BlogPost)
-            expect(tuple.right.fieldValues()).toEqual(blogPostHashes[i])
+          expect(tuples).toEqualCompositeTuples(
+            Blog, [
+              { id: 1, public: true, title: 'Public Blog1', authorId: 1 }
+              { id: 1, public: true, title: 'Public Blog1', authorId: 1 }
+            ],
+            BlogPost, [
+              { id: 1, public: true, title: 'Public Post1', blogId: 1 }
+              { id: 3, public: false, title: 'Private Post1', blogId: 1 }
+            ])
           done()
-
 
   describe "projections", ->
     it "builds a the right record class", (done) ->
       blogs.joinThrough(blogPosts).all (err, records) ->
-        rowHashes = [
+        expect(records).toEqualRecords(BlogPost, [
           { id: 1, public: true, title: 'Public Post1', blogId: 1 }
           { id: 3, public: false, title: 'Private Post1', blogId: 1 }
           { id: 2, public: true, title: 'Public Post2', blogId: 2 }
           { id: 4, public: false, title: 'Private Post2', blogId: 2 }
-        ]
-
-        expect(records.length).toBe(4)
-        for record, i in records
-          expect(record).toBeA(BlogPost)
-          expect(record.fieldValues()).toEqual(rowHashes[i])
+        ])
         done()
