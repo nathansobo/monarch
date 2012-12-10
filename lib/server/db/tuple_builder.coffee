@@ -1,5 +1,8 @@
 module.exports = ({ Monarch, _ }) ->
 
+  visitOperand = (r, rows) ->
+    @visit(r.operand, rows)
+
   Monarch.Db.TupleBuilder =
     visit: Monarch.Util.Visitor.visit
 
@@ -8,20 +11,15 @@ module.exports = ({ Monarch, _ }) ->
       nameMap = buildFieldNameMap(rows[0], r.resourceName())
       new r.recordClass(mapFieldNames(row, nameMap)) for row in rows
 
-    visit_Relations_Selection: (r, rows) ->
-      @visit(r.operand, rows)
-
-    visit_Relations_OrderBy: (r, rows) ->
-      @visit(r.operand, rows)
-
-    visit_Relations_Offset: (r, rows) ->
-      @visit(r.operand, rows)
-
     visit_Relations_InnerJoin: (r, rows) ->
       leftRecords = @visit(r.left, rows)
       rightRecords = @visit(r.right, rows)
       for leftRecord, i in leftRecords
         new Monarch.CompositeTuple(leftRecord, rightRecords[i])
+
+    visit_Relations_Offset: visitOperand
+    visit_Relations_OrderBy: visitOperand
+    visit_Relations_Selection: visitOperand
 
     visit_Relations_Projection: (r, rows) ->
       @visit(r.table, rows)
