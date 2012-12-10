@@ -64,20 +64,47 @@ describe "Sql.Builder", ->
       """)
 
   describe "orderings", ->
-    it "constructs a query with a valid order by clause", ->
-      relation = blogPosts.orderBy("title desc")
-      expect(relation.toSql()).toBeLikeQuery("""
-        SELECT
-          "blog_posts"."id" as blog_posts__id,
-          "blog_posts"."public" as blog_posts__public,
-          "blog_posts"."title" as blog_posts__title,
-          "blog_posts"."blog_id" as blog_posts__blog_id
-        FROM
-          "blog_posts"
-        ORDER BY
-          "blog_posts"."title" DESC,
-          "blog_posts"."id" ASC
-      """)
+    describe "an ordering on a table", ->
+      it "adds the correct order by clause", ->
+        relation = blogPosts.orderBy("title desc")
+        expect(relation.toSql()).toBeLikeQuery("""
+          SELECT
+            "blog_posts"."id" as blog_posts__id,
+            "blog_posts"."public" as blog_posts__public,
+            "blog_posts"."title" as blog_posts__title,
+            "blog_posts"."blog_id" as blog_posts__blog_id
+          FROM
+            "blog_posts"
+          ORDER BY
+            "blog_posts"."title" DESC,
+            "blog_posts"."id" ASC
+        """)
+
+    describe "an ordering on a limit", ->
+      it "adds the correct order by clause", ->
+        relation = blogPosts.limit(2).orderBy("title desc")
+        expect(relation.toSql()).toBeLikeQuery("""
+          SELECT
+            "t1"."blog_posts__id",
+            "t1"."blog_posts__public",
+            "t1"."blog_posts__title",
+            "t1"."blog_posts__blog_id"
+          FROM
+            (
+              SELECT
+                "blog_posts"."id" as blog_posts__id,
+                "blog_posts"."public" as blog_posts__public,
+                "blog_posts"."title" as blog_posts__title,
+                "blog_posts"."blog_id" as blog_posts__blog_id
+              FROM
+                "blog_posts"
+              LIMIT
+                2
+            ) as "t1"
+          ORDER BY
+            "t1"."blog_posts__title" DESC,
+            "t1"."blog_posts__id" ASC
+        """)
 
   describe "limits", ->
     it "constructs a limit query", ->

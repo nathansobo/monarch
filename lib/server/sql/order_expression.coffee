@@ -1,7 +1,7 @@
 module.exports = ({ Monarch, _ }) ->
 
   class Monarch.Sql.OrderExpression
-    constructor: (@tableName, @columnName, @directionString) ->
+    constructor: (@column, @directionString) ->
 
     toSql: ->
-      "\"#{@tableName}\".\"#{@columnName}\" #{@directionString}"
+      "#{@column.toSql()} #{@directionString}"

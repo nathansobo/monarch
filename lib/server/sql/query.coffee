@@ -1,7 +1,7 @@
 module.exports = ({ Monarch, _ }) ->
 
   class Monarch.Sql.Query
-    constructor: ({ select, from }) ->
+    constructor: ({ select, from, condition, orderExpressions, limit, offset}) ->
       @select = select
       @from = from
       @condition = null

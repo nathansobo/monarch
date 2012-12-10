@@ -75,15 +75,25 @@ describe "Db.RecordRetriever", ->
         done()
 
   describe "orderings", ->
-    it "builds the right record class", (done) ->
-      blogPosts.orderBy('id desc').all (err, records) ->
-        expect(records).toEqualRecords(BlogPost, [
-          { id: 4, public: false, title: 'Private Post2', blogId: 2 }
-          { id: 3, public: false, title: 'Private Post1', blogId: 1 }
-          { id: 2, public: true, title: 'Public Post2', blogId: 2 }
-          { id: 1, public: true, title: 'Public Post1', blogId: 1 }
-        ])
-        done()
+    describe "an ordering on a table", ->
+      it "builds the right record class", (done) ->
+        blogPosts.orderBy('id desc').all (err, records) ->
+          expect(records).toEqualRecords(BlogPost, [
+            { id: 4, public: false, title: 'Private Post2', blogId: 2 }
+            { id: 3, public: false, title: 'Private Post1', blogId: 1 }
+            { id: 2, public: true, title: 'Public Post2', blogId: 2 }
+            { id: 1, public: true, title: 'Public Post1', blogId: 1 }
+          ])
+          done()
+
+    describe "an ordering on a limit", ->
+      it "adds the correct order by clause", (done) ->
+        blogPosts.limit(2).orderBy('id desc').all (err, records) ->
+          expect(records).toEqualRecords(BlogPost, [
+            { id: 2, public: true, title: 'Public Post2', blogId: 2 }
+            { id: 1, public: true, title: 'Public Post1', blogId: 1 }
+          ])
+          done()
 
   describe "limits", ->
     it "builds the right record class", (done) ->

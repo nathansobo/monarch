@@ -23,7 +23,14 @@ module.exports = ({ Monarch, _ }) ->
         query.condition = @visit(r.predicate, query.from))
 
     visit_Relations_OrderBy: (r) ->
-      _.tap(@visit(r.operand), (query) =>
+      operandQuery = @visit(r.operand)
+      query = if operandQuery.canHaveOrderByAdded()
+        operandQuery
+      else
+        from = buildSubquery.call(this, operandQuery)
+        select = from.selectList()
+        new Monarch.Sql.Query({ select, from })
+      _.tap(query, (query)  =>
         query.orderExpressions = (@visit(e, query.from) for e in r.orderByExpressions))
 
     visit_Relations_Limit: (r) ->
@@ -66,10 +73,9 @@ module.exports = ({ Monarch, _ }) ->
     visit_Expressions_Column: (e, source) ->
       new Monarch.Sql.Column(source, e.table.resourceName(), e.resourceName())
 
-    visit_Expressions_OrderBy: (e) ->
+    visit_Expressions_OrderBy: (e, source) ->
       new Monarch.Sql.OrderExpression(
-        e.column.table.resourceName(),
-        e.column.resourceName(),
+        @visit(e.column, source),
         directionString(e.directionCoefficient))
 
     visit_String: (e) ->
