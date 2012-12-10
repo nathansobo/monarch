@@ -1,6 +1,6 @@
 module.exports = ({ Monarch, _ }) ->
 
-  class Monarch.Sql.TableRef
+  class Monarch.Sql.Table
     constructor: (@tableName) ->
 
     toSql: ->

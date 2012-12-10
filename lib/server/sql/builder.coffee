@@ -14,9 +14,9 @@ module.exports = ({ Monarch, _ }) ->
     visit: Monarch.Util.Visitor.visit
 
     visit_Relations_Table: (r) ->
-      tableRef = new Monarch.Sql.TableRef(r.resourceName())
-      columns = (@visit(column, tableRef) for column in r.columns())
-      new Monarch.Sql.Query(select: columns, from: tableRef)
+      table = new Monarch.Sql.Table(r.resourceName())
+      columns = (@visit(column, table) for column in r.columns())
+      new Monarch.Sql.Query(select: columns, from: table)
 
     visit_Relations_Selection: (r) ->
       _.tap(@visit(r.operand), (query) =>
@@ -24,15 +24,15 @@ module.exports = ({ Monarch, _ }) ->
 
     visit_Relations_OrderBy: (r) ->
       _.tap(@visit(r.operand), (query) =>
-        query.orderByExpressions = (@visit(e) for e in r.orderByExpressions))
+        query.orderExpressions = (@visit(e, query.from) for e in r.orderByExpressions))
 
     visit_Relations_Limit: (r) ->
       _.tap(@visit(r.operand), (query) =>
-        query.limitCount = r.count)
+        query.limit = r.count)
 
     visit_Relations_Offset: (r) ->
       _.tap(@visit(r.operand), (query) =>
-        query.offsetCount = r.count)
+        query.offset = r.count)
 
     visit_Relations_Union: (r) ->
       new Monarch.Sql.Union(@visit(r.left), @visit(r.right))
@@ -50,9 +50,8 @@ module.exports = ({ Monarch, _ }) ->
           from = buildSubquery.call(this, query)
           select = from.selectList()
         { from, select }
-
       select = (components[0].select).concat(components[1].select)
-      join = new Monarch.Sql.JoinTableRef(components[0].from, components[1].from)
+      join = new Monarch.Sql.Join(components[0].from, components[1].from)
       join.condition = @visit(r.predicate, join)
       new Monarch.Sql.Query({ select, from: join })
 
@@ -64,14 +63,11 @@ module.exports = ({ Monarch, _ }) ->
     visit_Expressions_And: visitBinaryOperator("AND")
     visit_Expressions_Equal: visitBinaryOperator("=")
 
-    visit_Expressions_Column: (e, tableRef) ->
-      new Monarch.Sql.Column(
-        tableRef,
-        e.table.resourceName()
-        e.resourceName())
+    visit_Expressions_Column: (e, source) ->
+      new Monarch.Sql.Column(source, e.table.resourceName(), e.resourceName())
 
     visit_Expressions_OrderBy: (e) ->
-      new Monarch.Sql.OrderByExpression(
+      new Monarch.Sql.OrderExpression(
         e.column.table.resourceName(),
         e.column.resourceName(),
         directionString(e.directionCoefficient))

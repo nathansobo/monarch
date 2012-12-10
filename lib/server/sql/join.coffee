@@ -1,6 +1,6 @@
 module.exports = ({ Monarch, _ }) ->
 
-  class Monarch.Sql.JoinTableRef
+  class Monarch.Sql.Join
     constructor: (@left, @right, @condition) ->
 
     resolveColumnName: (args...) ->

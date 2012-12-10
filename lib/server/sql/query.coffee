@@ -5,7 +5,7 @@ module.exports = ({ Monarch, _ }) ->
       @select = select
       @from = from
       @condition = null
-      @orderByExpressions = []
+      @orderExpressions = []
 
     toSql: ->
       _.compact([
@@ -28,16 +28,19 @@ module.exports = ({ Monarch, _ }) ->
       "WHERE " + @condition.toSql() if @condition
 
     orderByClauseSql: ->
-      if not _.isEmpty(@orderByExpressions)
-        "ORDER BY " + @orderByExpressions.map((e) -> e.toSql()).join(', ')
+      if not _.isEmpty(@orderExpressions)
+        "ORDER BY " + @orderExpressions.map((e) -> e.toSql()).join(', ')
 
     limitClauseSql: ->
-      if @limitCount
-        "LIMIT " + @limitCount
+      if @limit
+        "LIMIT " + @limit
 
     offsetClauseSql: ->
-      if @offsetCount
-        "OFFSET " + @offsetCount
+      if @offset
+        "OFFSET " + @offset
 
     canHaveJoinAdded: ->
-      !(@condition? || @limitCount?)
+      !(@condition? || @limit?)
+
+    canHaveOrderByAdded: ->
+      !(@limit?)
