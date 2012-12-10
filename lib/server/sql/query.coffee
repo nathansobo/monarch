@@ -40,4 +40,4 @@ module.exports = ({ Monarch, _ }) ->
         "OFFSET " + @offsetCount
 
     canHaveJoinAdded: ->
-      !@condition?
+      !(@condition? || @limitCount?)

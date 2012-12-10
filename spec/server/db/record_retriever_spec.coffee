@@ -122,6 +122,20 @@ describe "Db.RecordRetriever", ->
             ])
           done()
 
+    describe "a join between a limit and a table", ->
+      it "builds composite tuples with the correct left and right records", (done) ->
+        blogs.limit(1).join(blogPosts).all (err, tuples) ->
+          expect(tuples).toEqualCompositeTuples(
+            Blog, [
+              { id: 1, public: true, title: 'Public Blog1', authorId: 1 }
+              { id: 1, public: true, title: 'Public Blog1', authorId: 1 }
+            ],
+            BlogPost, [
+              { id: 1, public: true, title: 'Public Post1', blogId: 1 }
+              { id: 3, public: false, title: 'Private Post1', blogId: 1 }
+            ])
+          done()
+
     describe "a join between a selection and a table", ->
       it "builds composite tuples with the correct left and right records", (done) ->
         blogs.where(title: 'Public Blog1').join(blogPosts).all (err, tuples) ->
