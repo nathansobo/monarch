@@ -17,6 +17,7 @@ module.exports = ({ Monarch, _ }) ->
       for leftRecord, i in leftRecords
         new Monarch.CompositeTuple(leftRecord, rightRecords[i])
 
+    visit_Relations_Limit: visitOperand
     visit_Relations_Offset: visitOperand
     visit_Relations_OrderBy: visitOperand
     visit_Relations_Selection: visitOperand

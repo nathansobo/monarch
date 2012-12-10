@@ -85,6 +85,15 @@ describe "Db.RecordRetriever", ->
         ])
         done()
 
+  describe "limits", ->
+    it "builds the right record class", (done) ->
+      blogs.limit(2).all (err, records) ->
+        expect(records).toEqualRecords(Blog, [
+          { id: 1, public: true, title: 'Public Blog1', authorId: 1 }
+          { id: 2, public: true, title: 'Public Blog2', authorId: 1 }
+        ])
+        done()
+
   describe "offsets", ->
     it "builds the right record class", (done) ->
       blogPosts.offset(2).all (err, records) ->
