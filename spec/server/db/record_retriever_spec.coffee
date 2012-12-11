@@ -103,7 +103,8 @@ describe "Db.RecordRetriever", ->
     describe "a join between two tables", ->
       it "builds composite tuples with the correct left and right records", (done) ->
         blogs.join(blogPosts).all (err, tuples) ->
-          expect(tuples).toEqualCompositeTuples(
+          sortedTuples = _.sortBy tuples, (t) -> [t.left.id(), t.right.id()]
+          expect(sortedTuples).toEqualCompositeTuples(
             Blog, [
               { id: 1, public: true, title: 'Public Blog1', authorId: 1 }
               { id: 1, public: true, title: 'Public Blog1', authorId: 1 }
@@ -149,10 +150,11 @@ describe "Db.RecordRetriever", ->
   describe "projections", ->
     it "builds a the right record class", (done) ->
       blogs.joinThrough(blogPosts).all (err, records) ->
-        expect(records).toEqualRecords(BlogPost, [
+        sortedRecords = _.sortBy records, (r) -> r.id()
+        expect(sortedRecords).toEqualRecords(BlogPost, [
           { id: 1, public: true, title: 'Public Post1', blogId: 1 }
-          { id: 3, public: false, title: 'Private Post1', blogId: 1 }
           { id: 2, public: true, title: 'Public Post2', blogId: 2 }
+          { id: 3, public: false, title: 'Private Post1', blogId: 1 }
           { id: 4, public: false, title: 'Private Post2', blogId: 2 }
         ])
         done()
