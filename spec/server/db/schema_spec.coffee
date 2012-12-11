@@ -3,23 +3,23 @@
 describe "Db.Schema", ->
   describe ".createTable", ->
     beforeEach (done) ->
-      async.series([
-        (f) -> Monarch.Db.Schema.dropTable('blogs', f),
-        (f) -> Monarch.Db.Schema.createTable('blogs', {
+      async.series [
+        (f) -> Monarch.Db.Schema.dropTable('things', f),
+        (f) -> Monarch.Db.Schema.createTable('things', {
           id: 'integer',
           title: 'string',
           public: 'boolean',
           createdAt: 'datetime'
         }, f)
-      ], done)
+      ], done
 
     it "creates a table", (done) ->
-      Monarch.Db.query 'SELECT * from blogs', (err, results) ->
+      Monarch.Db.query 'SELECT * from things', (err, results) ->
         expect(results.rowCount).toBe(0)
         done()
 
     it "converts the column names to underscore-style", (done) ->
-      sql = "INSERT INTO blogs (created_at) VALUES ('2012-08-21');"
+      sql = "INSERT INTO things (created_at) VALUES ('2012-08-21');"
       Monarch.Db.query sql, (err, results) ->
         expect(results.rowCount).toBe(1)
         done()
@@ -27,7 +27,7 @@ describe "Db.Schema", ->
     it "gives the columns the correct types", (done) ->
       sql = """
         SELECT column_name, data_type FROM information_schema.columns
-        WHERE table_name = 'blogs';
+        WHERE table_name = 'things';
       """
 
       Monarch.Db.query sql, (err, results) ->
