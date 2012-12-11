@@ -131,8 +131,10 @@ describe "Sql.Builder", ->
           "blog_posts"."blog_id" as blog_posts__blog_id
         FROM
           "blog_posts"
-        LIMIT 5
-        OFFSET 2
+        LIMIT
+          5
+        OFFSET
+          2
       """)
 
   describe "unions", ->
@@ -205,10 +207,8 @@ describe "Sql.Builder", ->
             "blog_posts"."blog_id" as blog_posts__blog_id
           FROM
             "blogs"
-          INNER JOIN
-            "blog_posts"
-          ON
-            "blogs"."id" = "blog_posts"."blog_id"
+            INNER JOIN "blog_posts"
+              ON "blogs"."id" = "blog_posts"."blog_id"
         """)
 
     describe "a join between a table and a limit", ->
@@ -236,10 +236,8 @@ describe "Sql.Builder", ->
               LIMIT
                 10
             ) as "t1"
-          INNER JOIN
-            "blog_posts"
-          ON
-            "t1"."blogs__id" = "blog_posts"."blog_id"
+            INNER JOIN "blog_posts"
+              ON "t1"."blogs__id" = "blog_posts"."blog_id"
         """)
 
       it "makes a subquery for a limit on the right", ->
@@ -256,8 +254,7 @@ describe "Sql.Builder", ->
             "t1"."blog_posts__blog_id"
           FROM
             "blogs"
-          INNER JOIN
-            (
+            INNER JOIN (
               SELECT
                 "blog_posts"."id" as blog_posts__id,
                 "blog_posts"."public" as blog_posts__public,
@@ -268,8 +265,7 @@ describe "Sql.Builder", ->
               LIMIT
                 10
             ) as "t1"
-          ON
-            "blogs"."id" = "t1"."blog_posts__blog_id"
+              ON "blogs"."id" = "t1"."blog_posts__blog_id"
         """)
 
     describe "a join between a selection and a table", ->
@@ -297,10 +293,8 @@ describe "Sql.Builder", ->
               WHERE
                 "blogs"."public" = true
             ) as "t1"
-          INNER JOIN
-            "blog_posts"
-          ON
-            "t1"."blogs__id" = "blog_posts"."blog_id"
+            INNER JOIN "blog_posts"
+              ON "t1"."blogs__id" = "blog_posts"."blog_id"
         """)
 
       it "makes a subquery for a selection on the right", ->
@@ -317,8 +311,7 @@ describe "Sql.Builder", ->
             "t1"."blog_posts__blog_id"
           FROM
             "blogs"
-          INNER JOIN
-            (
+            INNER JOIN (
               SELECT
                 "blog_posts"."id" as blog_posts__id,
                 "blog_posts"."public" as blog_posts__public,
@@ -329,8 +322,7 @@ describe "Sql.Builder", ->
               WHERE
                 "blog_posts"."public" = true
             ) as "t1"
-          ON
-            "blogs"."id" = "t1"."blog_posts__blog_id"
+              ON "blogs"."id" = "t1"."blog_posts__blog_id"
         """)
 
   describe "projections", ->
@@ -344,8 +336,6 @@ describe "Sql.Builder", ->
           "blog_posts"."blog_id" as blog_posts__blog_id
         FROM
           "blogs"
-        INNER JOIN
-          "blog_posts"
-        ON
-          "blogs"."id" = "blog_posts"."blog_id"
+          INNER JOIN "blog_posts"
+            ON "blogs"."id" = "blog_posts"."blog_id"
       """)
