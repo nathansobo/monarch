@@ -60,6 +60,8 @@ recordMatcherMessage = (record, recordClass, attrs) ->
 normalizeSql = (string) ->
   string
     .replace(/\s+/g, ' ')
+    .replace(/\(\s+/g, '(')
+    .replace(/\s+\)/g, ')')
     .replace(/\s$/g, '')
     .replace(/^\s/g, '')
 
