@@ -19,27 +19,25 @@ module.exports = ({ Monarch, _ }) ->
       new Monarch.Sql.Query(select: columns, from: table)
 
     visit_Relations_Selection: (r) ->
-      _.tap(@visit(r.operand), (query) =>
-        query.condition = @visit(r.predicate, query.from))
+      _.tap @visit(r.operand), (query) =>
+        query.condition = @visit(r.predicate, query.from)
 
     visit_Relations_OrderBy: (r) ->
       operandQuery = @visit(r.operand)
       query = if operandQuery.canHaveOrderByAdded()
         operandQuery
       else
-        from = buildSubquery.call(this, operandQuery)
-        select = from.selectList()
-        new Monarch.Sql.Query({ select, from })
-      _.tap(query, (query)  =>
-        query.orderExpressions = (@visit(e, query.from) for e in r.orderByExpressions))
+        wrapQuery(this, operandQuery)
+      _.tap query, (query) =>
+        query.orderExpressions = (@visit(e, query.from) for e in r.orderByExpressions)
 
     visit_Relations_Limit: (r) ->
-      _.tap(@visit(r.operand), (query) =>
-        query.limit = r.count)
+      _.tap @visit(r.operand), (query) ->
+        query.limit = r.count
 
     visit_Relations_Offset: (r) ->
-      _.tap(@visit(r.operand), (query) =>
-        query.offset = r.count)
+      _.tap @visit(r.operand), (query) ->
+        query.offset = r.count
 
     visit_Relations_Union: (r) ->
       new Monarch.Sql.Union(@visit(r.left), @visit(r.right))
@@ -48,24 +46,20 @@ module.exports = ({ Monarch, _ }) ->
       new Monarch.Sql.Difference(@visit(r.left), @visit(r.right))
 
     visit_Relations_InnerJoin: (r) ->
-      components = for side in ['left', 'right']
-        query = @visit(r[side])
-        if query.canHaveJoinAdded()
-          from = query.from
-          select = query.select
+      sideQueries = for side in ['left', 'right']
+        operandQuery = @visit(r[side])
+        if operandQuery.canHaveJoinAdded()
+          operandQuery
         else
-          from = buildSubquery.call(this, query)
-          select = from.selectList()
-        { from, select }
-      select = (components[0].select).concat(components[1].select)
-      join = new Monarch.Sql.Join(components[0].from, components[1].from)
+          wrapQuery(this, operandQuery)
+      select = (sideQueries[0].select).concat(sideQueries[1].select)
+      join = new Monarch.Sql.Join(sideQueries[0].from, sideQueries[1].from)
       join.condition = @visit(r.predicate, join)
       new Monarch.Sql.Query({ select, from: join })
 
     visit_Relations_Projection: (r) ->
-      _.tap(@visit(r.operand), (query) =>
-        columns = (@visit(column, query.from) for column in r.table.columns())
-        query.select = columns)
+      _.tap @visit(r.operand), (query) =>
+        query.select = (@visit(column, query.from) for column in r.table.columns())
 
     visit_Expressions_And: visitBinaryOperator("AND")
     visit_Expressions_Equal: visitBinaryOperator("=")
@@ -87,8 +81,9 @@ module.exports = ({ Monarch, _ }) ->
     visit_Number: (e) ->
       new Monarch.Sql.Literal(e)
 
-  buildSubquery = (query) ->
-    new Monarch.Sql.Subquery(query, ++@subqueryIndex)
+  wrapQuery = (builder, query) ->
+    subquery = new Monarch.Sql.Subquery(query, ++builder.subqueryIndex)
+    new Monarch.Sql.Query(select: subquery.selectList(), from: subquery)
 
   directionString = (coefficient) ->
     if (coefficient == -1) then 'DESC' else 'ASC'
