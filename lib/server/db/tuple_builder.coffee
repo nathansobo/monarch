@@ -2,6 +2,8 @@ module.exports = ({ Monarch, _ }) ->
 
   visitOperand = (r, rows) ->
     @visit(r.operand, rows)
+  visitLeftOperand = (r, rows) ->
+    @visit(r.left, rows)
 
   Monarch.Db.TupleBuilder =
     visit: Monarch.Util.Visitor.visit
@@ -21,6 +23,8 @@ module.exports = ({ Monarch, _ }) ->
     visit_Relations_Offset: visitOperand
     visit_Relations_OrderBy: visitOperand
     visit_Relations_Selection: visitOperand
+    visit_Relations_Union: visitLeftOperand
+    visit_Relations_Difference: visitLeftOperand
 
     visit_Relations_Projection: (r, rows) ->
       @visit(r.table, rows)

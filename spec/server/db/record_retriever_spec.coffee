@@ -231,3 +231,23 @@ describe "Db.RecordRetriever", ->
           { id: 4, public: false, title: 'Private Post2', blogId: 2 }
         ])
         done()
+
+  describe "unions", ->
+    it "builds a the right record class", (done) ->
+      blogs.limit(2).union(blogs.limit(2, 1)).all (err, records) ->
+        sortedRecords = _.sortBy records, (r) -> r.id()
+        expect(sortedRecords).toEqualRecords(Blog, [
+          { id: 1, public: true, title: 'Public Blog1', authorId: 1 }
+          { id: 2, public: true, title: 'Public Blog2', authorId: 1 }
+          { id: 3, public: false, title: 'Private Blog1', authorId: 1 }
+        ])
+        done()
+
+  describe "differences", ->
+    it "builds a the right record class", (done) ->
+      blogs.limit(2).difference(blogs.limit(2, 1)).all (err, records) ->
+        sortedRecords = _.sortBy records, (r) -> r.id()
+        expect(sortedRecords).toEqualRecords(Blog, [
+          { id: 1, public: true, title: 'Public Blog1', authorId: 1 }
+        ])
+        done()

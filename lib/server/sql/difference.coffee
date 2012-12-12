@@ -4,4 +4,8 @@ module.exports = ({ Monarch, _ }) ->
     constructor: (@left, @right) ->
 
     toSql: ->
-      [@left.toSql(), "EXCEPT", @right.toSql()].join(' ')
+      [
+        "(", @left.toSql(), ")",
+        "EXCEPT",
+        "(", @right.toSql(), ")"
+      ].join(' ')

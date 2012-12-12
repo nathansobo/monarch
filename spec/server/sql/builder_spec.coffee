@@ -151,25 +151,29 @@ describe "Sql.Builder", ->
       right = blogPosts.where(public: true)
       relation = left.union(right)
       expect(relation.toSql()).toBeLikeQuery("""
-        SELECT
-          "blog_posts"."id" as blog_posts__id,
-          "blog_posts"."public" as blog_posts__public,
-          "blog_posts"."title" as blog_posts__title,
-          "blog_posts"."blog_id" as blog_posts__blog_id
-        FROM
-          "blog_posts"
-        WHERE
-          "blog_posts"."blog_id" = 5
+        (
+          SELECT
+            "blog_posts"."id" as blog_posts__id,
+            "blog_posts"."public" as blog_posts__public,
+            "blog_posts"."title" as blog_posts__title,
+            "blog_posts"."blog_id" as blog_posts__blog_id
+          FROM
+            "blog_posts"
+          WHERE
+            "blog_posts"."blog_id" = 5
+        )
         UNION
-        SELECT
-          "blog_posts"."id" as blog_posts__id,
-          "blog_posts"."public" as blog_posts__public,
-          "blog_posts"."title" as blog_posts__title,
-          "blog_posts"."blog_id" as blog_posts__blog_id
-        FROM
-          "blog_posts"
-        WHERE
-          "blog_posts"."public" = true
+        (
+          SELECT
+            "blog_posts"."id" as blog_posts__id,
+            "blog_posts"."public" as blog_posts__public,
+            "blog_posts"."title" as blog_posts__title,
+            "blog_posts"."blog_id" as blog_posts__blog_id
+          FROM
+            "blog_posts"
+          WHERE
+            "blog_posts"."public" = true
+        )
       """)
 
   describe "differences", ->
@@ -178,25 +182,29 @@ describe "Sql.Builder", ->
       right = blogPosts.where(public: true)
       relation = left.difference(right)
       expect(relation.toSql()).toBeLikeQuery("""
-        SELECT
-          "blog_posts"."id" as blog_posts__id,
-          "blog_posts"."public" as blog_posts__public,
-          "blog_posts"."title" as blog_posts__title,
-          "blog_posts"."blog_id" as blog_posts__blog_id
-        FROM
-          "blog_posts"
-        WHERE
-          "blog_posts"."blog_id" = 5
+        (
+          SELECT
+            "blog_posts"."id" as blog_posts__id,
+            "blog_posts"."public" as blog_posts__public,
+            "blog_posts"."title" as blog_posts__title,
+            "blog_posts"."blog_id" as blog_posts__blog_id
+          FROM
+            "blog_posts"
+          WHERE
+            "blog_posts"."blog_id" = 5
+        )
         EXCEPT
-        SELECT
-          "blog_posts"."id" as blog_posts__id,
-          "blog_posts"."public" as blog_posts__public,
-          "blog_posts"."title" as blog_posts__title,
-          "blog_posts"."blog_id" as blog_posts__blog_id
-        FROM
-          "blog_posts"
-        WHERE
-          "blog_posts"."public" = true
+        (
+          SELECT
+            "blog_posts"."id" as blog_posts__id,
+            "blog_posts"."public" as blog_posts__public,
+            "blog_posts"."title" as blog_posts__title,
+            "blog_posts"."blog_id" as blog_posts__blog_id
+          FROM
+            "blog_posts"
+          WHERE
+            "blog_posts"."public" = true
+        )
       """)
 
   describe "joins", ->
