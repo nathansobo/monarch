@@ -1,7 +1,7 @@
 { Monarch, async, pg } = require "../spec_helper"
 
 describe "Db.RecordRetriever", ->
-  blogs = blogPosts = null
+  blogs = blogPosts = comments = null
 
   class Blog extends Monarch.Record
     @extended(this)
@@ -17,9 +17,17 @@ describe "Db.RecordRetriever", ->
       blogId: 'integer'
       title: 'string'
 
+  class Comment extends Monarch.Record
+    @extended(this)
+    @columns
+      body: 'string'
+      blogPostId: 'integer'
+      authorId: 'integer'
+
   beforeEach (done) ->
     blogs = Blog.table
     blogPosts = BlogPost.table
+    comments = Comment.table
 
     Monarch.Db.query("""
       TRUNCATE TABLE blogs;
@@ -38,6 +46,13 @@ describe "Db.RecordRetriever", ->
       (2, true, 'Public Post2', 2),
       (3, false, 'Private Post1', 1),
       (4, false, 'Private Post2', 2);
+
+      INSERT INTO comments (id, body, blog_post_id, author_id)
+      VALUES
+      (1, 'Comment1', 1, 1),
+      (2, 'Comment2', 1, 1),
+      (3, 'Comment3', 2, 1),
+      (4, 'Comment4', 2, 1);
     """, done)
 
   describe "tables", ->
@@ -144,6 +159,64 @@ describe "Db.RecordRetriever", ->
             BlogPost, [
               { id: 1, public: true, title: 'Public Post1', blogId: 1 }
               { id: 3, public: false, title: 'Private Post1', blogId: 1 }
+            ])
+          done()
+
+    describe "a left-associative three table join", ->
+      it "builds composite tuples with the correct left and right records", (done) ->
+        blogs.join(blogPosts).join(comments).all (err, tuples) ->
+          sortedTuples = _.sortBy tuples, (t) -> [t.left.left.id(), t.left.right.id()]
+          leftTuples = (t.left for t in sortedTuples)
+          rightTuples = (t.right for t in sortedTuples)
+
+          expect(leftTuples).toEqualCompositeTuples(
+            Blog, [
+              { id: 1, public: true, title: 'Public Blog1', authorId: 1 }
+              { id: 1, public: true, title: 'Public Blog1', authorId: 1 }
+              { id: 2, public: true, title: 'Public Blog2', authorId: 1 }
+              { id: 2, public: true, title: 'Public Blog2', authorId: 1 }
+            ],
+            BlogPost, [
+              { id: 1, public: true, title: 'Public Post1', blogId: 1 }
+              { id: 1, public: true, title: 'Public Post1', blogId: 1 }
+              { id: 2, public: true, title: 'Public Post2', blogId: 2 }
+              { id: 2, public: true, title: 'Public Post2', blogId: 2 }
+            ])
+          expect(rightTuples).toEqualRecords(
+            Comment, [
+              { id: 1, body: 'Comment1', blogPostId: 1, authorId: 1 }
+              { id: 2, body: 'Comment2', blogPostId: 1, authorId: 1 }
+              { id: 3, body: 'Comment3', blogPostId: 2, authorId: 1 }
+              { id: 4, body: 'Comment4', blogPostId: 2, authorId: 1 }
+            ])
+          done()
+
+    describe "a right-associative three table join", ->
+      it "builds composite tuples with the correct left and right records", (done) ->
+        blogs.join(blogPosts.join(comments)).all (err, tuples) ->
+          sortedTuples = _.sortBy tuples, (t) -> [t.left.id(), t.right.left.id()]
+          leftTuples = (t.left for t in sortedTuples)
+          rightTuples = (t.right for t in sortedTuples)
+
+          expect(leftTuples).toEqualRecords(
+            Blog, [
+              { id: 1, public: true, title: 'Public Blog1', authorId: 1 }
+              { id: 1, public: true, title: 'Public Blog1', authorId: 1 }
+              { id: 2, public: true, title: 'Public Blog2', authorId: 1 }
+              { id: 2, public: true, title: 'Public Blog2', authorId: 1 }
+            ])
+          expect(rightTuples).toEqualCompositeTuples(
+            BlogPost, [
+              { id: 1, public: true, title: 'Public Post1', blogId: 1 }
+              { id: 1, public: true, title: 'Public Post1', blogId: 1 }
+              { id: 2, public: true, title: 'Public Post2', blogId: 2 }
+              { id: 2, public: true, title: 'Public Post2', blogId: 2 }
+            ],
+            Comment, [
+              { id: 1, body: 'Comment1', blogPostId: 1, authorId: 1 }
+              { id: 2, body: 'Comment2', blogPostId: 1, authorId: 1 }
+              { id: 3, body: 'Comment3', blogPostId: 2, authorId: 1 }
+              { id: 4, body: 'Comment4', blogPostId: 2, authorId: 1 }
             ])
           done()
 

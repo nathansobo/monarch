@@ -46,6 +46,8 @@ beforeEach ->
       true
 
 recordArrayMatcherMessage = (records, n) ->
+  unless records
+    return "Expected an array of records. Got #{records}."
   unless (records.length == n)
     return "\nExpected this:\n\n#{records}\n\nto contain #{n} tuples, not #{records.length}.\n"
 

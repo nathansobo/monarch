@@ -17,9 +17,17 @@ describe "Sql.Builder", ->
       title: 'string'
       blogId: 'integer'
 
+  class Comment extends Monarch.Record
+    @extended(this)
+    @columns
+      body: 'string'
+      blogPostId: 'integer'
+      authorId: 'integer'
+
   beforeEach ->
     blogs = Blog.table
     blogPosts = BlogPost.table
+    comments = Comment.table
 
   describe "tables", ->
     it "constructs a table query", ->
@@ -323,6 +331,57 @@ describe "Sql.Builder", ->
                 "blog_posts"."public" = true
             ) as "t1"
               ON "blogs"."id" = "t1"."blog_posts__blog_id"
+        """)
+
+    describe "a left-associative three-table join", ->
+      it "generates the right sql", ->
+        relation = blogs.join(blogPosts).join(comments)
+        expect(relation.toSql()).toBeLikeQuery("""
+          SELECT
+            "blogs"."id" as blogs__id,
+            "blogs"."public" as blogs__public,
+            "blogs"."title" as blogs__title,
+            "blogs"."author_id" as blogs__author_id,
+            "blog_posts"."id" as blog_posts__id,
+            "blog_posts"."public" as blog_posts__public,
+            "blog_posts"."title" as blog_posts__title,
+            "blog_posts"."blog_id" as blog_posts__blog_id,
+            "comments"."id" as comments__id,
+            "comments"."body" as comments__body,
+            "comments"."blog_post_id" as comments__blog_post_id,
+            "comments"."author_id" as comments__author_id
+          FROM
+            "blogs"
+            INNER JOIN "blog_posts"
+              ON "blogs"."id" = "blog_posts"."blog_id"
+            INNER JOIN "comments"
+              ON "blog_posts"."id" = "comments"."blog_post_id"
+        """)
+
+    describe "a right-associative three-table join", ->
+      it "generates the right sql", ->
+        relation = blogs.join(blogPosts.join(comments))
+        expect(relation.toSql()).toBeLikeQuery("""
+          SELECT
+            "blogs"."id" as blogs__id,
+            "blogs"."public" as blogs__public,
+            "blogs"."title" as blogs__title,
+            "blogs"."author_id" as blogs__author_id,
+            "blog_posts"."id" as blog_posts__id,
+            "blog_posts"."public" as blog_posts__public,
+            "blog_posts"."title" as blog_posts__title,
+            "blog_posts"."blog_id" as blog_posts__blog_id,
+            "comments"."id" as comments__id,
+            "comments"."body" as comments__body,
+            "comments"."blog_post_id" as comments__blog_post_id,
+            "comments"."author_id" as comments__author_id
+          FROM
+            "blogs"
+            INNER JOIN (
+              "blog_posts"
+              INNER JOIN "comments"
+                ON "blog_posts"."id" = "comments"."blog_post_id" )
+              ON "blogs"."id" = "blog_posts"."blog_id"
         """)
 
   describe "projections", ->

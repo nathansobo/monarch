@@ -10,7 +10,13 @@ module.exports = ({ Monarch, _ }) ->
       [
         @left.toSql(),
         "INNER JOIN",
-        @right.toSql(),
+        @rightSql(),
         "ON",
         @condition.toSql()
       ].join(' ')
+
+    rightSql: ->
+      if @right instanceof Monarch.Sql.Join
+        "( #{@right.toSql()} )"
+      else
+        @right.toSql()
