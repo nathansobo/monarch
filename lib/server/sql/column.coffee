@@ -10,24 +10,17 @@ module.exports = ({ Monarch, _ }) ->
     constructor: (@source, @tableName, @name) ->
 
     toSql: ->
-      @sourceName()
-
-    toSelectClauseSql: ->
-      if @needsAlias()
-        "#{@sourceName()} as #{@aliasName()}"
-      else
-        @sourceName()
-
-    aliasName: ->
-      { tableName, columnName } = @resolveName()
-      @constructor.aliasName(tableName, columnName)
-
-    sourceName: ->
       { tableName, columnName } = @resolveName()
       @constructor.qualifyName(tableName, columnName)
 
-    needsAlias: ->
-      @resolveName().needsAlias
+    toSelectClauseSql: ->
+      { tableName, columnName, needsAlias } = @resolveName()
+      sourceName = @constructor.qualifyName(tableName, columnName)
+      if needsAlias
+        aliasName = @constructor.aliasName(tableName, columnName)
+        "#{sourceName} as #{aliasName}"
+      else
+        sourceName
 
     resolveName: ->
-      @_resolvedName or= @source.resolveColumnName(@tableName, @name)
+      @source.resolveColumnName(@tableName, @name)

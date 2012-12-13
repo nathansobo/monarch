@@ -16,11 +16,11 @@ module.exports = ({ Monarch, _ }) ->
     visit_Relations_Table: (r) ->
       table = new Monarch.Sql.Table(r.resourceName())
       columns = (@visit(column, table) for column in r.columns())
-      new Monarch.Sql.Query(select: columns, from: table)
+      new Monarch.Sql.Query(table, columns)
 
     visit_Relations_Selection: (r) ->
       _.tap @visit(r.operand), (query) =>
-        query.condition = @visit(r.predicate, query.from)
+        query.setCondition(@visit(r.predicate, query.source()))
 
     visit_Relations_OrderBy: (r) ->
       operandQuery = @visit(r.operand)
@@ -29,15 +29,16 @@ module.exports = ({ Monarch, _ }) ->
       else
         wrapQuery(this, operandQuery)
       _.tap query, (query) =>
-        query.orderExpressions = (@visit(e, query.from) for e in r.orderByExpressions)
+        query.setOrderExpressions(
+          @visit(e, query.source()) for e in r.orderByExpressions)
 
     visit_Relations_Limit: (r) ->
       _.tap @visit(r.operand), (query) ->
-        query.limit = r.count
+        query.setLimit(r.count)
 
     visit_Relations_Offset: (r) ->
       _.tap @visit(r.operand), (query) ->
-        query.offset = r.count
+        query.setOffset(r.count)
 
     visit_Relations_Union: (r) ->
       new Monarch.Sql.Union(@visit(r.left), @visit(r.right))
@@ -52,14 +53,15 @@ module.exports = ({ Monarch, _ }) ->
           operandQuery
         else
           wrapQuery(this, operandQuery)
-      select = (sideQueries[0].select).concat(sideQueries[1].select)
-      join = new Monarch.Sql.Join(sideQueries[0].from, sideQueries[1].from)
+      select = (sideQueries[0].columns()).concat(sideQueries[1].columns())
+      join = new Monarch.Sql.Join(sideQueries[0].source(), sideQueries[1].source())
       join.condition = @visit(r.predicate, join)
-      new Monarch.Sql.Query({ select, from: join })
+      new Monarch.Sql.Query(join, select)
 
     visit_Relations_Projection: (r) ->
       _.tap @visit(r.operand), (query) =>
-        query.select = (@visit(column, query.from) for column in r.table.columns())
+        query.setColumns(
+          @visit(column, query.source()) for column in r.table.columns())
 
     visit_Expressions_And: visitBinaryOperator("AND")
     visit_Expressions_Equal: visitBinaryOperator("=")
@@ -83,7 +85,7 @@ module.exports = ({ Monarch, _ }) ->
 
   wrapQuery = (builder, query) ->
     subquery = new Monarch.Sql.Subquery(query, ++builder.subqueryIndex)
-    new Monarch.Sql.Query(select: subquery.selectList(), from: subquery)
+    new Monarch.Sql.Query(subquery, subquery.allColumns())
 
   directionString = (coefficient) ->
     if (coefficient == -1) then 'DESC' else 'ASC'

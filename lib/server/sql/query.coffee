@@ -1,11 +1,14 @@
 module.exports = ({ Monarch, _ }) ->
 
-  class Monarch.Sql.Query
-    constructor: ({ select, from, condition, orderExpressions, limit, offset}) ->
-      @select = select
-      @from = from
-      @condition = null
-      @orderExpressions = []
+  class Monarch.Sql.Query extends Monarch.Base
+    constructor: (source, columns) ->
+      @setSource(source)
+      @setColumns(columns)
+      @setCondition(null)
+      @setOrderExpressions([])
+
+    @accessors 'source', 'columns', 'condition', 'orderExpressions',
+               'limit', 'offset'
 
     toSql: ->
       _.compact([
@@ -18,29 +21,29 @@ module.exports = ({ Monarch, _ }) ->
       ]).join(' ')
 
     selectClauseSql: ->
-      parts = @select.map (columnRef) -> columnRef.toSelectClauseSql()
+      parts = @columns().map (columnRef) -> columnRef.toSelectClauseSql()
       "SELECT " + parts.join(', ')
 
     fromClauseSql: ->
-      "FROM " + @from.toSql()
+      "FROM " + @source().toSql()
 
     whereClauseSql: ->
-      "WHERE " + @condition.toSql() if @condition
+      "WHERE " + @condition().toSql() if @condition()
 
     orderByClauseSql: ->
-      if not _.isEmpty(@orderExpressions)
-        "ORDER BY " + @orderExpressions.map((e) -> e.toSql()).join(', ')
+      if not _.isEmpty(@orderExpressions())
+        "ORDER BY " + @orderExpressions().map((e) -> e.toSql()).join(', ')
 
     limitClauseSql: ->
-      if @limit
-        "LIMIT " + @limit
+      if @limit()
+        "LIMIT " + @limit()
 
     offsetClauseSql: ->
-      if @offset
-        "OFFSET " + @offset
+      if @offset()
+        "OFFSET " + @offset()
 
     canHaveJoinAdded: ->
-      !(@condition? || @limit?)
+      !(@condition()? || @limit()?)
 
     canHaveOrderByAdded: ->
-      !(@limit?)
+      !(@limit()?)

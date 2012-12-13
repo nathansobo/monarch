@@ -5,7 +5,7 @@ module.exports = ({ Monarch, _ }) ->
       @name = "t" + index
 
     resolveColumnName: (tableName, columnName) ->
-      innerNames = @query.from.resolveColumnName(tableName, columnName)
+      innerNames = @query.source().resolveColumnName(tableName, columnName)
       if innerNames
         {
           tableName: @name,
@@ -15,8 +15,8 @@ module.exports = ({ Monarch, _ }) ->
           needsAlias: false,
         }
 
-    selectList: ->
-      for column in @query.select
+    allColumns: ->
+      for column in @query.columns()
         new Monarch.Sql.Column(this, column.tableName, column.name)
 
     toSql: ->

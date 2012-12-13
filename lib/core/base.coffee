@@ -10,3 +10,15 @@ class Monarch.Base
     for methodName in methodNames
       do (methodName) =>
         @prototype[methodName] = (args...) -> this[to][methodName](args...)
+
+  { capitalize } = Monarch.Util.Inflection
+
+  @accessors: (methodNames...) ->
+    for methodName in methodNames
+      do (methodName) =>
+        setterName = "set" + capitalize(methodName)
+        memoizedName = "_#{methodName}"
+        @prototype[methodName] = (value) ->
+          this[memoizedName]
+        @prototype[setterName] = (value) ->
+          this[memoizedName] = value
