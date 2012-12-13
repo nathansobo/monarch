@@ -1,7 +1,9 @@
 module.exports = ({ Monarch, _ }) ->
 
   class Monarch.Sql.Query
-    constructor: (@tableRef) ->
+    constructor: ({ select, from }) ->
+      @select = select
+      @from = from
       @condition = null
       @orderByExpressions = []
 
@@ -16,10 +18,11 @@ module.exports = ({ Monarch, _ }) ->
       ]).join(' ')
 
     selectClauseSql: ->
-      "SELECT *"
+      parts = @select.map (columnRef) -> columnRef.toSql()
+      "SELECT " + parts.join(', ')
 
     fromClauseSql: ->
-      "FROM " + @tableRef.toSql()
+      "FROM " + @from.toSql()
 
     whereClauseSql: ->
       "WHERE " + @condition.toSql() if @condition

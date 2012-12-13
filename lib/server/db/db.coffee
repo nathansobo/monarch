@@ -1,6 +1,6 @@
-pg = require 'pg'
-
 module.exports = ({ Monarch, _ }) ->
+
+  pg = require 'pg'
 
   _.extend Monarch.Db,
     config: {}

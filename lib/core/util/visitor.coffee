@@ -5,4 +5,4 @@ Monarch.Util.Visitor =
     name = constructor.qualifiedName || constructor.name
     method = @['visit_' + name]
     throw new Error("Cannot visit #{name}") unless method
-    method.call(this, object)
+    method.apply(this, arguments)

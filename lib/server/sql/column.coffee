@@ -4,4 +4,4 @@ module.exports = ({ Monarch, _ }) ->
     constructor: (@tableName, @name) ->
 
     toSql: ->
-      """ "#{@tableName}"."#{@name}" """
+      "\"#{@tableName}\".\"#{@name}\""

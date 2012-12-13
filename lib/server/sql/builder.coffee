@@ -4,8 +4,9 @@ module.exports = ({ Monarch, _ }) ->
     visit: Monarch.Util.Visitor.visit
 
     visit_Relations_Table: (r) ->
-      new Monarch.Sql.Query(
-        new Monarch.Sql.TableRef(r.resourceName()))
+      tableRef = new Monarch.Sql.TableRef(r.resourceName())
+      columns = (@visit(column) for column in r.columns())
+      new Monarch.Sql.Query(select: columns, from: tableRef)
 
     visit_Relations_Selection: (r) ->
       _.tap(@visit(r.operand), (query) =>
@@ -35,11 +36,16 @@ module.exports = ({ Monarch, _ }) ->
       condition = @visit(r.predicate)
 
       new Monarch.Sql.Query(
-        new Monarch.Sql.JoinTableRef(
-          leftQuery.tableRef,
-          rightQuery.tableRef,
-          condition
-        ))
+        select: leftQuery.select.concat(rightQuery.select)
+        from: new Monarch.Sql.JoinTableRef(
+          leftQuery.from,
+          rightQuery.from,
+          condition))
+
+    visit_Relations_Projection: (r) ->
+      table = r.table
+      columns = (@visit(column) for column in table.columns())
+      _.tap(@visit(r.operand), (query) -> query.select = columns)
 
     visit_Expressions_And: (e) ->
       visitBinaryOperator.call(this, e, "AND")

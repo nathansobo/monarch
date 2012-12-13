@@ -2,6 +2,13 @@ _ = require 'underscore'
 
 beforeEach ->
   @addMatchers
+    toBeA: (constructor) ->
+      @message = () -> [
+        "Expected #{@actual} to be an instance of #{constructor.name}",
+        "Expected #{@actual} not to be an instance of #{constructor.name}"
+      ]
+      @actual instanceof constructor
+
     toBeLikeQuery: (sql) ->
       normalizeSql(@actual) == normalizeSql(sql)
 
