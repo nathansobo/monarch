@@ -146,35 +146,80 @@ describe "Sql.Builder", ->
       """)
 
   describe "unions", ->
-    it "constructs a set union query", ->
-      left = blogPosts.where(blogId: 5)
-      right = blogPosts.where(public: true)
-      relation = left.union(right)
-      expect(relation.toSql()).toBeLikeQuery("""
-        (
+    describe "a union of two selections", ->
+      it "constructs a set union query", ->
+        left = blogPosts.where(blogId: 5)
+        right = blogPosts.where(public: true)
+        relation = left.union(right)
+        expect(relation.toSql()).toBeLikeQuery("""
+          (
+            SELECT
+              "blog_posts"."id" as blog_posts__id,
+              "blog_posts"."public" as blog_posts__public,
+              "blog_posts"."title" as blog_posts__title,
+              "blog_posts"."blog_id" as blog_posts__blog_id
+            FROM
+              "blog_posts"
+            WHERE
+              "blog_posts"."blog_id" = 5
+          )
+          UNION
+          (
+            SELECT
+              "blog_posts"."id" as blog_posts__id,
+              "blog_posts"."public" as blog_posts__public,
+              "blog_posts"."title" as blog_posts__title,
+              "blog_posts"."blog_id" as blog_posts__blog_id
+            FROM
+              "blog_posts"
+            WHERE
+              "blog_posts"."public" = true
+          )
+        """)
+
+    describe "a union inside of a join", ->
+      it "makes a correct subquery for the union", ->
+        left = blogPosts.where(blogId: 5)
+        right = blogPosts.where(public: true)
+        relation = left.union(right).join(comments)
+        expect(relation.toSql()).toBeLikeQuery("""
           SELECT
-            "blog_posts"."id" as blog_posts__id,
-            "blog_posts"."public" as blog_posts__public,
-            "blog_posts"."title" as blog_posts__title,
-            "blog_posts"."blog_id" as blog_posts__blog_id
+            "t1"."blog_posts__id",
+            "t1"."blog_posts__public",
+            "t1"."blog_posts__title",
+            "t1"."blog_posts__blog_id",
+            "comments"."id" as comments__id,
+            "comments"."body" as comments__body,
+            "comments"."blog_post_id" as comments__blog_post_id,
+            "comments"."author_id" as comments__author_id
           FROM
-            "blog_posts"
-          WHERE
-            "blog_posts"."blog_id" = 5
-        )
-        UNION
-        (
-          SELECT
-            "blog_posts"."id" as blog_posts__id,
-            "blog_posts"."public" as blog_posts__public,
-            "blog_posts"."title" as blog_posts__title,
-            "blog_posts"."blog_id" as blog_posts__blog_id
-          FROM
-            "blog_posts"
-          WHERE
-            "blog_posts"."public" = true
-        )
-      """)
+            ((
+              SELECT
+                "blog_posts"."id" as blog_posts__id,
+                "blog_posts"."public" as blog_posts__public,
+                "blog_posts"."title" as blog_posts__title,
+                "blog_posts"."blog_id" as blog_posts__blog_id
+              FROM
+                "blog_posts"
+              WHERE
+                "blog_posts"."blog_id" = 5
+            )
+            UNION
+            (
+              SELECT
+                "blog_posts"."id" as blog_posts__id,
+                "blog_posts"."public" as blog_posts__public,
+                "blog_posts"."title" as blog_posts__title,
+                "blog_posts"."blog_id" as blog_posts__blog_id
+              FROM
+                "blog_posts"
+              WHERE
+                "blog_posts"."public" = true
+            )) as "t1"
+            INNER JOIN "comments"
+              ON "t1"."blog_posts__id" = "comments"."blog_post_id"
+        """)
+
 
   describe "differences", ->
     it "constructs a set difference query", ->
