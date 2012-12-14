@@ -1,12 +1,5 @@
 module.exports = ({ Monarch, _ }) ->
 
-  visitBinaryOperator = (operator) ->
-    (e, args...) ->
-      new Monarch.Sql.BinaryOperator(
-        @visit(e.left, args...),
-        @visit(e.right, args...),
-        operator)
-
   class Monarch.Sql.Builder
     constructor: ->
       @subqueryIndex = 0
@@ -16,7 +9,7 @@ module.exports = ({ Monarch, _ }) ->
     visit_Relations_Table: (r) ->
       table = new Monarch.Sql.Table(r.resourceName())
       columns = (@visit(column, table) for column in r.columns())
-      new Monarch.Sql.Query(table, columns)
+      new Monarch.Sql.Select(table, columns)
 
     visit_Relations_Selection: (r) ->
       _.tap @visit(r.operand), (query) =>
@@ -49,22 +42,25 @@ module.exports = ({ Monarch, _ }) ->
     visit_Relations_InnerJoin: (r) ->
       sideQueries = for side in ['left', 'right']
         operandQuery = @visit(r[side])
-        if operandQuery.canHaveJoinAdded()
+        if operandQuery.canHaveJoinAdded?()
           operandQuery
         else
           wrapQuery(this, operandQuery)
       select = (sideQueries[0].columns()).concat(sideQueries[1].columns())
       join = new Monarch.Sql.Join(sideQueries[0].source(), sideQueries[1].source())
       join.condition = @visit(r.predicate, join)
-      new Monarch.Sql.Query(join, select)
+      new Monarch.Sql.Select(join, select)
 
     visit_Relations_Projection: (r) ->
       _.tap @visit(r.operand), (query) =>
         query.setColumns(
           @visit(column, query.source()) for column in r.table.columns())
 
-    visit_Expressions_And: visitBinaryOperator("AND")
-    visit_Expressions_Equal: visitBinaryOperator("=")
+    visit_Expressions_And: (e, source) ->
+      new Monarch.Sql.And(@visit(e.left, source), @visit(e.right, source))
+
+    visit_Expressions_Equal: (e, source) ->
+      new Monarch.Sql.Equals(@visit(e.left, source), @visit(e.right, source))
 
     visit_Expressions_Column: (e, source) ->
       new Monarch.Sql.Column(source, e.table.resourceName(), e.resourceName())
@@ -85,7 +81,7 @@ module.exports = ({ Monarch, _ }) ->
 
   wrapQuery = (builder, query) ->
     subquery = new Monarch.Sql.Subquery(query, ++builder.subqueryIndex)
-    new Monarch.Sql.Query(subquery, subquery.allColumns())
+    new Monarch.Sql.Select(subquery, subquery.allColumns())
 
   directionString = (coefficient) ->
     if (coefficient == -1) then 'DESC' else 'ASC'

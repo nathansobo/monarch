@@ -6,17 +6,14 @@ module.exports = ({ Monarch, _ }) ->
     resolveColumnName: (args...) ->
       @left.resolveColumnName(args...) || @right.resolveColumnName(args...)
 
+    operator: "INNER JOIN",
+
     toSql: ->
       [
-        @left.toSql(),
-        "INNER JOIN",
-        @rightSql(),
+        Monarch.Sql.Binary.toSql.call(this),
         "ON",
         @condition.toSql()
       ].join(' ')
 
-    rightSql: ->
-      if @right instanceof Monarch.Sql.Join
-        "( #{@right.toSql()} )"
-      else
-        @right.toSql()
+    operandNeedsParens: (operand) ->
+      (operand is @right) and (operand instanceof Monarch.Sql.Join)

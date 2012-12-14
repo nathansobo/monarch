@@ -22,3 +22,6 @@ class Monarch.Base
           this[memoizedName]
         @prototype[setterName] = (value) ->
           this[memoizedName] = value
+
+  @include: (module) ->
+    _.extend(@prototype, module)

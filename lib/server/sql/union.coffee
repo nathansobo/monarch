@@ -1,15 +1,9 @@
 module.exports = ({ Monarch, _ }) ->
 
   class Monarch.Sql.Union extends Monarch.Base
-    constructor: (@left, @right) ->
-
+    @include Monarch.Sql.Binary
     @delegate 'source', 'columns', to: 'left'
 
-    canHaveJoinAdded: -> false
-
-    toSql: ->
-      [
-        "(", @left.toSql(), ")",
-        "UNION",
-        "(", @right.toSql(), ")"
-      ].join(' ')
+    operator: 'UNION'
+    constructor: (@left, @right) ->
+    operandNeedsParens: -> true

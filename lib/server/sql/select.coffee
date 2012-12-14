@@ -1,14 +1,11 @@
 module.exports = ({ Monarch, _ }) ->
 
-  class Monarch.Sql.Query extends Monarch.Base
+  class Monarch.Sql.Select extends Monarch.Base
     constructor: (source, columns) ->
       @setSource(source)
       @setColumns(columns)
       @setCondition(null)
       @setOrderExpressions([])
-
-    @accessors 'source', 'columns', 'condition', 'orderExpressions',
-               'limit', 'offset'
 
     toSql: ->
       _.compact([
@@ -19,6 +16,9 @@ module.exports = ({ Monarch, _ }) ->
         @limitClauseSql(),
         @offsetClauseSql()
       ]).join(' ')
+
+    @accessors 'source', 'columns', 'condition', 'orderExpressions',
+               'limit', 'offset'
 
     selectClauseSql: ->
       parts = @columns().map (columnRef) -> columnRef.toSelectClauseSql()
@@ -47,3 +47,4 @@ module.exports = ({ Monarch, _ }) ->
 
     canHaveOrderByAdded: ->
       !(@limit()?)
+

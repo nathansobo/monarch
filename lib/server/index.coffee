@@ -12,6 +12,7 @@ _.extend Monarch,
   resourceUrlSeparator: '_'
 
 loader.require('./sql/literal')
+loader.require('./sql/binary')
 loader.requireTree('.')
 
 module.exports = Monarch
