@@ -1,32 +1,40 @@
 { Monarch } = require "../spec_helper"
 
 describe "Util.Visitors", ->
-  class UnqualifiedClass
-  class QualifiedClass
-    @qualifiedName = "SomeModule_QualifiedClass"
   class OtherClass
+  class NonAcceptingClass
+  class AcceptingClass
+    acceptVisitor: (visitor, args...) ->
+      visitor.visit_SomeModule_AcceptingClass(this, args...)
 
   SomeVisitor =
+    name: "Joe-Visitor"
     visit: Monarch.Util.Visitor.visit,
+    visit_SomeModule_AcceptingClass: (obj, arg) ->
+      "#{@name} visited accepting class with #{arg}"
+    visit_NonAcceptingClass: (obj, arg) ->
+      "#{@name} visited non-accepting class with #{arg}"
 
-    visit_UnqualifiedClass: (obj) ->
-      'visited unqualified class'
+  describe "#visit", ->
+    describe "when the visitee has an #acceptVisitor method", ->
+      it "calls that method, passing itself and any other arguments to #visit", ->
+        expect(SomeVisitor.visit(new AcceptingClass, 1)).toBe(
+          'Joe-Visitor visited accepting class with 1')
 
-    visit_SomeModule_QualifiedClass: (obj) ->
-      'visited qualified class'
+    describe "when the visitee has no #acceptVisitor method", ->
+      describe "when the visitor has a visit method for the visitee's class", ->
+        it "calls that method, passing itself and other arguments to #visit", ->
+          expect(SomeVisitor.visit(new NonAcceptingClass, 2)).toBe(
+            'Joe-Visitor visited non-accepting class with 2')
 
-  describe "#visit(visitee)", ->
-    it "calls the visit method for the visitee's class", ->
-      expect(SomeVisitor.visit(new UnqualifiedClass)).toBe('visited unqualified class')
+      describe "when the visitor has no visit method for the visitee's class", ->
+        it "throws an exception", ->
+          expect(->
+            SomeVisitor.visit(new OtherClass)
+          ).toThrow(new Error("Cannot visit OtherClass"))
 
-    it "uses the class's 'qualified name' if it has one", ->
-      expect(SomeVisitor.visit(new QualifiedClass)).toBe('visited qualified class')
+    describe "when no visitee is passed", ->
+      it "throws an exception if no object is passed", ->
+        expect(-> SomeVisitor.visit(undefined)).toThrow(new Error("Cannot visit undefined"))
+        expect(-> SomeVisitor.visit(null)).toThrow(new Error("Cannot visit null"))
 
-    it "throws an exception if no visit method is found", ->
-      expect(->
-        SomeVisitor.visit(new OtherClass)
-      ).toThrow(new Error("Cannot visit OtherClass"))
-
-    it "throws an exception if no object is passed", ->
-      expect(-> SomeVisitor.visit(undefined)).toThrow(new Error("Cannot visit undefined"))
-      expect(-> SomeVisitor.visit(null)).toThrow(new Error("Cannot visit null"))

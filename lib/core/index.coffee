@@ -1,5 +1,12 @@
 #= require ./init
-#= require_tree ./util
+#= require ./util/deferrable
+#= require ./util/inflection
+#= require ./util/node
+#= require ./util/promise
+#= require ./util/signal
+#= require ./util/subscription
+#= require ./util/subscription_bundle
+#= require ./util/underscore_extensions
 #= require ./base
 #= require ./field
 #= require ./synthetic_field
