@@ -29,7 +29,7 @@ describe "Db.RecordRetriever", ->
     blogPosts = BlogPost.table
     comments = Comment.table
 
-    Monarch.Db.query("""
+    Monarch.Db.Connection.query("""
       TRUNCATE TABLE blogs;
       TRUNCATE TABLE blog_posts;
       TRUNCATE TABLE comments;

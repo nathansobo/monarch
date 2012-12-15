@@ -1,8 +1,13 @@
-module.exports = ({ Monarch, _ }) ->
+_ = require "underscore"
+SqlBuilder = require "../sql/builder"
+RecordRetriever = require "../db/record_retriever"
 
-  _.extend Monarch.Relations.Relation.prototype,
+module.exports = (Relation) ->
+
+  _.extend Relation.prototype,
     toSql: ->
-      (new Monarch.Sql.Builder).visit(this).toSql()
+      (new SqlBuilder).visit(this).toSql()
 
     all: (f) ->
-      Monarch.Db.RecordRetriever.all(this, f)
+      RecordRetriever.all(this, f)
+

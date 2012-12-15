@@ -1,8 +1,10 @@
-module.exports = ({ Monarch, _ }) ->
+TupleBuilder = require "./tuple_builder"
+Connection = require "./connection"
 
-  Monarch.Db.RecordRetriever =
-    all: (r, f) ->
-      Monarch.Db.query(r.toSql(), (err, result) ->
-        return f(err, null) if err
-        records = Monarch.Db.TupleBuilder.visit(r, result.rows)
-        f(null, records))
+module.exports =
+  all: (r, f) ->
+    Connection.query(r.toSql(), (err, result) ->
+      return f(err, null) if err
+      records = TupleBuilder.visit(r, result.rows)
+      f(null, records))
+

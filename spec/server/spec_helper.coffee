@@ -67,7 +67,7 @@ normalizeSql = (string) ->
 
 databaseConfig = require "./support/database"
 Monarch = require "#{__dirname}/../../lib/server/index"
-Monarch.Db.configure(databaseConfig)
+Monarch.Db.Connection.configure(databaseConfig)
 
 module.exports =
   Monarch: Monarch
