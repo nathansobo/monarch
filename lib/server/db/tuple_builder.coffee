@@ -2,11 +2,9 @@
 { Inflection, Visitor } = Util
 { camelize } = Inflection
 
-visitOperand = (r, rows) ->
-  @visit(r.operand, rows)
-
-visitLeftOperand = (r, rows) ->
-  @visit(r.left, rows)
+visitProperty = (name) ->
+  (r, rows) ->
+    @visit(r[name], rows)
 
 buildFieldNameMap = (row, thisTableName) ->
   nameMap = {}
@@ -36,13 +34,11 @@ module.exports =
     for leftRecord, i in leftRecords
       new CompositeTuple(leftRecord, rightRecords[i])
 
-  visit_Relations_Limit: visitOperand
-  visit_Relations_Offset: visitOperand
-  visit_Relations_OrderBy: visitOperand
-  visit_Relations_Selection: visitOperand
-  visit_Relations_Union: visitLeftOperand
-  visit_Relations_Difference: visitLeftOperand
-
-  visit_Relations_Projection: (r, rows) ->
-    @visit(r.table, rows)
+  visit_Relations_Limit: visitProperty('operand')
+  visit_Relations_Offset: visitProperty('operand')
+  visit_Relations_OrderBy: visitProperty('operand')
+  visit_Relations_Selection: visitProperty('operand')
+  visit_Relations_Union: visitProperty('left')
+  visit_Relations_Difference: visitProperty('left')
+  visit_Relations_Projection: visitProperty('table')
 
