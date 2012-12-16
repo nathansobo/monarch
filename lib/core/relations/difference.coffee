@@ -1,5 +1,6 @@
 class Monarch.Relations.Difference extends Monarch.Relations.Relation
   @deriveEquality 'left', 'right'
+  @delegate 'getColumn', 'inferJoinColumns', 'columns', to: 'left'
 
   constructor: (@left, @right) ->
     @orderByExpressions = left.orderByExpressions
@@ -8,7 +9,3 @@ class Monarch.Relations.Difference extends Monarch.Relations.Relation
     type: 'Difference',
     leftOperand: @left.wireRepresentation(),
     rightOperand: @right.wireRepresentation()
-
-  getColumn: (args...) -> @left.getColumn(args...)
-  inferJoinColumns: (args...) -> @left.inferJoinColumns(args...)
-  columns: (args...) -> @left.columns(args...)

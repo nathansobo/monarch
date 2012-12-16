@@ -1,5 +1,6 @@
 class Monarch.Relations.Selection extends Monarch.Relations.Relation
   @deriveEquality 'operand', 'predicate'
+  @delegate 'getColumn', 'inferJoinColumns', 'columns', to: 'operand'
 
   constructor: (@operand, predicate) ->
     @predicate = @resolvePredicate(predicate)
@@ -15,7 +16,3 @@ class Monarch.Relations.Selection extends Monarch.Relations.Relation
     type: 'Selection'
     predicate: @predicate.wireRepresentation()
     operand: @operand.wireRepresentation()
-
-  getColumn: (args...) -> @operand.getColumn(args...)
-  inferJoinColumns: (args...) -> @operand.inferJoinColumns(args...)
-  columns: (args...) -> @operand.columns(args...)
