@@ -160,7 +160,7 @@ Monarch.Events =
           if r.containsKey(oldKey)
             r.remove(tuple, newKey, oldKey, changeset)
       onRemove: (tuple, _, newKey, oldKey) ->
-          r.remove(tuple, newKey, oldKey) if (r.containsKey(oldKey))
+        r.remove(tuple, newKey, oldKey) if (r.containsKey(oldKey))
 
   visit_Relations_Union: (r) ->
     subscribeToBothOperands r,
@@ -170,7 +170,7 @@ Monarch.Events =
         r.tupleUpdated(tuple, changeset, newKey, oldKey)
       onRemove: (side, tuple, index, newKey, oldKey) ->
         unless otherOperand(r, side).containsKey(newKey, oldKey)
-          r.remove(tuple, newKey, oldKey) 
+          r.remove(tuple, newKey, oldKey)
 
 subscribeToOperand = (r, callbacks) ->
   Monarch.Events.activate(r.operand)

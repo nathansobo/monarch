@@ -18,7 +18,7 @@ class Monarch.Util.Signal
     @changeNode.publish(newValue, oldValue)
 
   getValue: ->
-     @transformer(@getSourceValues()...)
+    @transformer(@getSourceValues()...)
 
   getSourceValues: ->
     _.map @sources, (source) -> source.getValue()
