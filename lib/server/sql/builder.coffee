@@ -1,3 +1,4 @@
+_ = require "underscore"
 Visitor = require("../core").Util.Visitor
 Nodes = require "./nodes"
 

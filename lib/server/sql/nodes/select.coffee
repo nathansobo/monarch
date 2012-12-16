@@ -1,3 +1,4 @@
+_ = require "underscore"
 { Base } = require "../../core"
 
 module.exports = class Select extends Base
