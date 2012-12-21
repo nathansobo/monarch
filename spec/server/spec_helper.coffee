@@ -1,6 +1,7 @@
 _ = require 'underscore'
 
 beforeEach ->
+  Monarch.Db.Connection.configure(databaseConfig)
   @addMatchers
     toBeA: (constructor) ->
       @message = -> [
@@ -67,7 +68,6 @@ normalizeSql = (string) ->
 
 databaseConfig = require "./support/database"
 Monarch = require "#{__dirname}/../../lib/server/index"
-Monarch.Db.Connection.configure(databaseConfig)
 
 module.exports =
   Monarch: Monarch
