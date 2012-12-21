@@ -1,6 +1,6 @@
 { Monarch } = require "../spec_helper"
 
-describe "Util.Visitors", ->
+describe "Visitor", ->
   class OtherClass
   class NonAcceptingClass
   class AcceptingClass

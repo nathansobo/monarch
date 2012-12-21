@@ -1,11 +1,13 @@
 { Monarch, async, pg, _ } = require "../spec_helper"
 
-describe "Db.Schema", ->
+describe "Schema", ->
+  { Schema } = Monarch.Db
+
   describe ".createTable", ->
     beforeEach (done) ->
       async.series [
-        (f) -> Monarch.Db.Schema.dropTable('things', f),
-        (f) -> Monarch.Db.Schema.createTable('things', {
+        (f) -> Schema.dropTable('things', f),
+        (f) -> Schema.createTable('things', {
           id: 'integer',
           title: 'string',
           public: 'boolean',

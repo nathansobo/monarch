@@ -1,6 +1,6 @@
 { Monarch, async, pg } = require "../spec_helper"
 
-describe "Db.RecordRetriever", ->
+describe "RecordRetriever", ->
   blogs = blogPosts = comments = null
 
   class Blog extends Monarch.Record

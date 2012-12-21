@@ -1,6 +1,6 @@
 { Monarch } = require "../spec_helper"
 
-describe "Sql.Builder", ->
+describe "SqlBuilder", ->
   blogs = blogPosts = comments = null
 
   class Blog extends Monarch.Record
