@@ -15,3 +15,14 @@ module.exports = (Relation) ->
         return f(err) if err
         f(null, TupleBuilder.visit(self, result.rows))
 
+    at: (index, f) ->
+      @offset(index).first(f)
+
+    find: (predicate, f) ->
+      predicate = { id: predicate } unless _.isObject(predicate)
+      @where(predicate).first(f)
+
+    first: (f) ->
+      @limit(1).all (err, results) ->
+        f(err, results?[0])
+

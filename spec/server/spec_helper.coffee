@@ -30,6 +30,13 @@ beforeEach ->
           return false
       true
 
+    toEqualRecord: (recordClass, attrs) ->
+      if message = recordMatcherMessage(@actual, recordClass, attrs)
+        @message = -> message
+        false
+      else
+        true
+
     toEqualCompositeTuples: (leftClass, leftAttrHashes, rightClass, rightAttrHashes) ->
       if (rightAttrHashes.length isnt leftAttrHashes.length)
         throw new Error("Test error - non-matching number of rows")

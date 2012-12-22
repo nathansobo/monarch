@@ -252,3 +252,58 @@ describe "Relation", ->
             { id: 1, public: true, title: 'Public Blog1', authorId: 1 }
           ])
           done()
+
+  describe "#find", ->
+    describe "when a predicate is passed", ->
+      it "retrieves the first record matching the predicate", (done) ->
+        blogs.find {title: "Public Blog2"}, (err, record) ->
+          expect(record).toEqualRecord(Blog,
+            id: 2,
+            public: true,
+            title: 'Public Blog2',
+            authorId: 1
+          )
+          done()
+
+      describe "when no record matches the predicate", ->
+        it "passes null", (done) ->
+          blogs.find { title: "Non-existent Blog" }, (err, record) ->
+            expect(err).toBeNull()
+            expect(record).toBeUndefined()
+            done()
+
+    describe "when an id is passed", ->
+      it "retrieves the record with that id", (done) ->
+        blogs.find 2, (err, record) ->
+          expect(record).toEqualRecord(Blog,
+            id: 2,
+            public: true,
+            title: 'Public Blog2',
+            authorId: 1
+          )
+          done()
+
+  describe "#at", ->
+    describe "when a record exists at the given index", ->
+      it "retrieves the record", (done) ->
+        blogs.at 0, (err, record) ->
+          expect(record.title()).toBe("Public Blog1")
+          blogs.at 1, (err, record) ->
+            expect(record.title()).toBe("Public Blog2")
+            blogs.at 2, (err, record) ->
+              expect(record.title()).toBe("Private Blog1")
+              done()
+
+  describe "#first", ->
+    describe "when the relation has at least one record", ->
+      it "retrieves the first record", (done) ->
+        blogs.first (err, record) ->
+          expect(record.title()).toBe("Public Blog1")
+          done()
+
+    describe "when the relation has no records", ->
+      it "passes undefined", (done) ->
+        blogs.where(title: 'Non-existent Blog').first (err, record) ->
+          expect(err).toBeNull()
+          expect(record).toBeUndefined()
+          done()
