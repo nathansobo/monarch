@@ -2,7 +2,7 @@ _ = require "underscore"
 Visitor = require("../core").Util.Visitor
 Nodes = require "./nodes"
 
-module.exports = class SqlBuilder
+module.exports = class SelectBuilder
   constructor: ->
     @subqueryIndex = 0
 
