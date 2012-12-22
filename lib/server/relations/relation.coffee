@@ -1,6 +1,7 @@
 _ = require "underscore"
 SqlBuilder = require "../sql/builder"
-RecordRetriever = require "../db/record_retriever"
+TupleBuilder = require "../db/tuple_builder"
+Connection = require "../db/connection"
 
 module.exports = (Relation) ->
 
@@ -9,5 +10,8 @@ module.exports = (Relation) ->
       (new SqlBuilder).visit(this).toSql()
 
     all: (f) ->
-      RecordRetriever.all(this, f)
+      self = this
+      Connection.query @toSql(), (err, result) ->
+        return f(err) if err
+        f(null, TupleBuilder.visit(self, result.rows))
 
