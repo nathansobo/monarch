@@ -1,4 +1,4 @@
-{ Monarch, async, pg } = require "../spec_helper"
+{ Monarch, async, pg, _ } = require "../spec_helper"
 
 describe "Relation", ->
   blogs = blogPosts = comments = null
