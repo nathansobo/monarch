@@ -1,5 +1,6 @@
 _ = require "underscore"
 SelectBuilder = require "../sql/select_builder"
+InsertBuilder = require "../sql/insert_builder"
 TupleBuilder = require "../db/tuple_builder"
 Connection = require "../db/connection"
 
@@ -8,6 +9,9 @@ module.exports = (Relation) ->
   _.extend Relation.prototype,
     toSql: ->
       (new SelectBuilder).visit(this).toSql()
+
+    toInsertSql: (args...) ->
+      (new InsertBuilder).visit(this, args...).toSql()
 
     all: (f) ->
       self = this

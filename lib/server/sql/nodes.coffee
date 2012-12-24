@@ -1,13 +1,23 @@
-module.exports =
-  Select: require "./nodes/select"
-  Table: require "./nodes/table"
-  Join: require "./nodes/join"
-  Union: require "./nodes/union"
-  Difference: require "./nodes/difference"
-  Column: require "./nodes/column"
-  And: require "./nodes/and"
-  Equals: require "./nodes/equals"
-  Literal: require "./nodes/literal"
-  StringLiteral: require "./nodes/string_literal"
-  Subquery: require "./nodes/subquery"
-  OrderExpression: require "./nodes/order_expression"
+files = [
+  "select"
+  "table"
+  "join"
+  "union"
+  "difference"
+  "column"
+  "and"
+  "equals"
+  "literal"
+  "string_literal"
+  "subquery"
+  "order_expression"
+  "insert"
+  "insert_column"
+]
+
+{ camelize, capitalize } = require("../core").Util.Inflection
+for file in files
+  klass = require "./nodes/#{file}"
+  klassName = capitalize(camelize(file))
+  module.exports[klassName] = klass
+
