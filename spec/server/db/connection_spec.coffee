@@ -8,7 +8,7 @@ describe "Db.Connection", ->
       beforeEach ->
         Connection.configure(host: null, port: null)
 
-      it "calls the callback with an error", (done) ->
+      it "calls the callback with an error indicating the missing options", (done) ->
         Connection.query 'select 1', (err, result) ->
           expect(err.message).toMatch(/Missing.*host.*port/)
           done()
@@ -17,7 +17,7 @@ describe "Db.Connection", ->
       beforeEach ->
         Connection.configure(host: 'totally-wrong')
 
-      it "calls the callback with an error", (done) ->
+      it "calls the callback with a connection error", (done) ->
         Connection.query 'select 1', (err, result) ->
           expect(err.message).toMatch(/getaddrinfo/)
           done()
