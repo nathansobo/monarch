@@ -23,7 +23,7 @@ task "spec:server", "run server-side tests", (options) ->
   { spawn } = require 'child_process'
   jasmine_bin = "#{__dirname}/node_modules/jasmine-node/bin/jasmine-node"
   runTests = ->
-    proc = spawn(jasmine_bin, [ "--coffee", "#{__dirname}/#{specPath}" ])
+    proc = spawn(jasmine_bin, [ "--coffee", "--nohelpers", "#{__dirname}/#{specPath}" ])
     proc.stdout.pipe(process.stdout)
     proc.stderr.pipe(process.stderr)
 
