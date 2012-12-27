@@ -10,6 +10,8 @@ describe "Visitor", ->
   SomeVisitor =
     name: "Joe-Visitor"
     visit: Monarch.Util.Visitor.visit,
+    visit_null: (obj, arg) ->
+      "#{@name} visited null with #{arg}"
     visit_SomeModule_AcceptingClass: (obj, arg) ->
       "#{@name} visited accepting class with #{arg}"
     visit_NonAcceptingClass: (obj, arg) ->
@@ -33,8 +35,13 @@ describe "Visitor", ->
             SomeVisitor.visit(new OtherClass)
           ).toThrow(new Error("Cannot visit OtherClass"))
 
+    describe "when the visitee is null", ->
+      it "calls the visit_Null method", ->
+        expect(SomeVisitor.visit(null, 2)).toBe(
+          'Joe-Visitor visited null with 2')
+
     describe "when no visitee is passed", ->
       it "throws an exception if no object is passed", ->
-        expect(-> SomeVisitor.visit(undefined)).toThrow(new Error("Cannot visit undefined"))
-        expect(-> SomeVisitor.visit(null)).toThrow(new Error("Cannot visit null"))
+        expect(-> SomeVisitor.visit(undefined)).toThrow(
+          new Error("Cannot visit undefined"))
 
