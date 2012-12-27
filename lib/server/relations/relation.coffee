@@ -8,12 +8,12 @@ Connection = require "../db/connection"
 module.exports = (Relation) ->
 
   reopen Relation, ->
-    toSql: ->
-      (new SelectBuilder).visit(this).toSql()
+    readSql: ->
+      (new SelectBuilder).buildQuery(this).toSql()
 
     all: (f) ->
       self = this
-      Connection.query @toSql(), (err, result) ->
+      Connection.query @readSql(), (err, result) ->
         return f(err) if err
         f(null, TupleBuilder.visit(self, result.rows))
 

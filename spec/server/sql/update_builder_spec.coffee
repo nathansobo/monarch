@@ -11,7 +11,7 @@ describe "UpdateBuilder", ->
   blogs = Blog.table
 
   it "constructs an update statement", ->
-    sql = blogs.toUpdateSql(public: false, title: "Updated Blog")
+    sql = blogs.updateSql(public: false, title: "Updated Blog")
     expect(sql).toBeLikeQuery("""
       UPDATE "blogs"
       SET

@@ -4,7 +4,7 @@ QueryBuilder = require "./query_builder"
 { underscore } = require("../core").Util.Inflection
 
 module.exports = class InsertBuilder extends QueryBuilder
-  visit_Relations_Table: (table, hashes) ->
+  buildQuery: (table, hashes) ->
     hashes = [hashes] unless _.isArray(hashes)
     columnNames = _.union((_.keys(hash) for hash in hashes)...)
     valueLists = for hash in hashes

@@ -31,7 +31,7 @@ describe "SelectBuilder", ->
 
   describe "tables", ->
     it "constructs a table query", ->
-      expect(blogPosts.toSql()).toBeLikeQuery("""
+      expect(blogPosts.readSql()).toBeLikeQuery("""
         SELECT
           "blog_posts"."id" as blog_posts__id,
           "blog_posts"."public" as blog_posts__public,
@@ -44,7 +44,7 @@ describe "SelectBuilder", ->
   describe "selections", ->
     it "constructs a query with the right WHERE clause", ->
       relation = blogPosts.where({ public: true, blogId: 1 })
-      expect(relation.toSql()).toBeLikeQuery("""
+      expect(relation.readSql()).toBeLikeQuery("""
         SELECT
           "blog_posts"."id" as blog_posts__id,
           "blog_posts"."public" as blog_posts__public,
@@ -59,7 +59,7 @@ describe "SelectBuilder", ->
 
     it "quotes string literals correctly", ->
       relation = blogPosts.where({ title: "Node Fibers and You" })
-      expect(relation.toSql()).toBeLikeQuery("""
+      expect(relation.readSql()).toBeLikeQuery("""
         SELECT
           "blog_posts"."id" as blog_posts__id,
           "blog_posts"."public" as blog_posts__public,
@@ -75,7 +75,7 @@ describe "SelectBuilder", ->
     describe "an ordering on a table", ->
       it "adds the correct order by clause", ->
         relation = blogPosts.orderBy("title desc")
-        expect(relation.toSql()).toBeLikeQuery("""
+        expect(relation.readSql()).toBeLikeQuery("""
           SELECT
             "blog_posts"."id" as blog_posts__id,
             "blog_posts"."public" as blog_posts__public,
@@ -91,7 +91,7 @@ describe "SelectBuilder", ->
     describe "an ordering on a limit", ->
       it "adds the correct order by clause", ->
         relation = blogPosts.limit(2).orderBy("title desc")
-        expect(relation.toSql()).toBeLikeQuery("""
+        expect(relation.readSql()).toBeLikeQuery("""
           SELECT
             "t1"."blog_posts__id",
             "t1"."blog_posts__public",
@@ -117,7 +117,7 @@ describe "SelectBuilder", ->
   describe "limits", ->
     it "constructs a limit query", ->
       relation = blogPosts.limit(5)
-      expect(relation.toSql()).toBeLikeQuery("""
+      expect(relation.readSql()).toBeLikeQuery("""
         SELECT
           "blog_posts"."id" as blog_posts__id,
           "blog_posts"."public" as blog_posts__public,
@@ -131,7 +131,7 @@ describe "SelectBuilder", ->
 
     it "constructs a limit query with an offset", ->
       relation = blogPosts.limit(5, 2)
-      expect(relation.toSql()).toBeLikeQuery("""
+      expect(relation.readSql()).toBeLikeQuery("""
         SELECT
           "blog_posts"."id" as blog_posts__id,
           "blog_posts"."public" as blog_posts__public,
@@ -151,7 +151,7 @@ describe "SelectBuilder", ->
         left = blogPosts.where(blogId: 5)
         right = blogPosts.where(public: true)
         relation = left.union(right)
-        expect(relation.toSql()).toBeLikeQuery("""
+        expect(relation.readSql()).toBeLikeQuery("""
           (
             SELECT
               "blog_posts"."id" as blog_posts__id,
@@ -182,7 +182,7 @@ describe "SelectBuilder", ->
         left = blogPosts.where(blogId: 5)
         right = blogPosts.where(public: true)
         relation = left.union(right).join(comments)
-        expect(relation.toSql()).toBeLikeQuery("""
+        expect(relation.readSql()).toBeLikeQuery("""
           SELECT
             "t1"."blog_posts__id",
             "t1"."blog_posts__public",
@@ -226,7 +226,7 @@ describe "SelectBuilder", ->
         left = blogPosts.where(blogId: 5)
         right = blogPosts.where(public: true)
         relation = left.difference(right)
-        expect(relation.toSql()).toBeLikeQuery("""
+        expect(relation.readSql()).toBeLikeQuery("""
           (
             SELECT
               "blog_posts"."id" as blog_posts__id,
@@ -257,7 +257,7 @@ describe "SelectBuilder", ->
         left = blogPosts.where(blogId: 5)
         right = blogPosts.where(public: true)
         relation = left.difference(right).join(comments)
-        expect(relation.toSql()).toBeLikeQuery("""
+        expect(relation.readSql()).toBeLikeQuery("""
           SELECT
             "t1"."blog_posts__id",
             "t1"."blog_posts__public",
@@ -299,7 +299,7 @@ describe "SelectBuilder", ->
     describe "a join between two tables", ->
       it "constructs a join query", ->
         relation = blogs.join(blogPosts)
-        expect(relation.toSql()).toBeLikeQuery("""
+        expect(relation.readSql()).toBeLikeQuery("""
           SELECT
             "blogs"."id" as blogs__id,
             "blogs"."public" as blogs__public,
@@ -318,7 +318,7 @@ describe "SelectBuilder", ->
     describe "a join between a table and a limit", ->
       it "makes a subquery for a limit on the left", ->
         relation = blogs.limit(10).join(blogPosts)
-        expect(relation.toSql()).toBeLikeQuery("""
+        expect(relation.readSql()).toBeLikeQuery("""
           SELECT
             "t1"."blogs__id",
             "t1"."blogs__public",
@@ -346,7 +346,7 @@ describe "SelectBuilder", ->
 
       it "makes a subquery for a limit on the right", ->
         relation = blogs.join(blogPosts.limit(10))
-        expect(relation.toSql()).toBeLikeQuery("""
+        expect(relation.readSql()).toBeLikeQuery("""
           SELECT
             "blogs"."id" as blogs__id,
             "blogs"."public" as blogs__public,
@@ -375,7 +375,7 @@ describe "SelectBuilder", ->
     describe "a join between a selection and a table", ->
       it "makes a subquery for a selection on the left", ->
         relation = blogs.where(public: true).join(blogPosts)
-        expect(relation.toSql()).toBeLikeQuery("""
+        expect(relation.readSql()).toBeLikeQuery("""
           SELECT
             "t1"."blogs__id",
             "t1"."blogs__public",
@@ -403,7 +403,7 @@ describe "SelectBuilder", ->
 
       it "makes a subquery for a selection on the right", ->
         relation = blogs.join(blogPosts.where(public: true))
-        expect(relation.toSql()).toBeLikeQuery("""
+        expect(relation.readSql()).toBeLikeQuery("""
           SELECT
             "blogs"."id" as blogs__id,
             "blogs"."public" as blogs__public,
@@ -432,7 +432,7 @@ describe "SelectBuilder", ->
     describe "a left-associative three-table join", ->
       it "generates the right sql", ->
         relation = blogs.join(blogPosts).join(comments)
-        expect(relation.toSql()).toBeLikeQuery("""
+        expect(relation.readSql()).toBeLikeQuery("""
           SELECT
             "blogs"."id" as blogs__id,
             "blogs"."public" as blogs__public,
@@ -457,7 +457,7 @@ describe "SelectBuilder", ->
     describe "a right-associative three-table join", ->
       it "generates the right sql", ->
         relation = blogs.join(blogPosts.join(comments))
-        expect(relation.toSql()).toBeLikeQuery("""
+        expect(relation.readSql()).toBeLikeQuery("""
           SELECT
             "blogs"."id" as blogs__id,
             "blogs"."public" as blogs__public,
@@ -483,7 +483,7 @@ describe "SelectBuilder", ->
   describe "projections", ->
     it "constructs a projected join query", ->
       relation = blogs.joinThrough(blogPosts)
-      expect(relation.toSql()).toBeLikeQuery("""
+      expect(relation.readSql()).toBeLikeQuery("""
         SELECT
           "blog_posts"."id" as blog_posts__id,
           "blog_posts"."public" as blog_posts__public,

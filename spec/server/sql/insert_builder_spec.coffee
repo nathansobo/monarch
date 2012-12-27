@@ -12,7 +12,7 @@ describe "InsertBuilder", ->
 
   describe "when passed a single hash of attributes", ->
     it "creates an insert statement with a single list of values", ->
-      sql = blogs.toInsertSql({ public: true, title: 'Blog1', authorId: 5 })
+      sql = blogs.createSql({ public: true, title: 'Blog1', authorId: 5 })
       expect(sql).toBeLikeQuery("""
         INSERT INTO "blogs"
           ("public", "title", "author_id")
@@ -22,7 +22,7 @@ describe "InsertBuilder", ->
 
   describe "when passed multiple hashes of attributes", ->
     it "creates an insert statement with a single list of values", ->
-      sql = blogs.toInsertSql([
+      sql = blogs.createSql([
         { public: true, title: 'Blog1', authorId: 11 }
         { public: false, title: 'Blog2', authorId: 12 }
       ])
@@ -35,7 +35,7 @@ describe "InsertBuilder", ->
       """)
 
     it "fills in null values if attributes are missing from some hashes", ->
-      sql = blogs.toInsertSql([
+      sql = blogs.createSql([
         { public: true, title: 'Blog1' }
         { title: 'Blog2', authorId: 12 }
       ])

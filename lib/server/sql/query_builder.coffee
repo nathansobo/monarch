@@ -5,6 +5,7 @@ visitPrimitive = (nodeClass) ->
   (value) -> new nodeClass(value)
 
 module.exports = class QueryBuilder
+  buildQuery: Visitor.visit
   visit: Visitor.visit
 
   visit_Boolean: visitPrimitive(Nodes.Literal)

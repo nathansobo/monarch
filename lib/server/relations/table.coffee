@@ -6,12 +6,16 @@ Connection = require "../db/connection"
 module.exports = (Table) ->
 
   reopen Table, ->
-    toUpdateSql: (args...) ->
-      (new UpdateBuilder).visit(this, args...).toSql()
+    updateSql: (args...) ->
+      (new UpdateBuilder).buildQuery(this, args...).toSql()
 
-    toInsertSql: (args...) ->
-      (new InsertBuilder).visit(this, args...).toSql()
+    createSql: (args...) ->
+      (new InsertBuilder).buildQuery(this, args...).toSql()
 
     create: (args..., f) ->
-      Connection.query(@toInsertSql(args...), f)
+      executeAndGetRowCount(@createSql(args...), f)
 
+executeAndGetRowCount = (sql, f) ->
+  Connection.query sql, (err, result) ->
+    return f(err) if err
+    f(null, result.rowCount)
