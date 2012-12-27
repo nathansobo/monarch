@@ -1,4 +1,4 @@
-_.extend Monarch.Relations.Projection.prototype,
+Monarch.Util.reopen Monarch.Relations.Projection, ->
   all: ->
     if @_contents
       @_contents.values()

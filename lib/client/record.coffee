@@ -1,4 +1,9 @@
-_.extend Monarch.Record.prototype,
+Monarch.Util.reopen Monarch.Record, ->
+  for methodName in ['fetch', 'findOrFetch']
+    do (methodName) =>
+      @[methodName] = ->
+        @table[methodName].apply(this, arguments)
+
   save: ->
     if @id()
       return if @beforeUpdate() == false
@@ -13,8 +18,3 @@ _.extend Monarch.Record.prototype,
   destroy: ->
     return if @beforeDestroy() == false
     Monarch.Remote.Server.destroy(this)
-
-for methodName in ['fetch', 'findOrFetch']
-  do (methodName) =>
-    Monarch.Record[methodName] = (args...) ->
-      @table[methodName](args...)

@@ -1,4 +1,4 @@
-_.extend Monarch.Relations.Relation.prototype,
+Monarch.Util.reopen Monarch.Relations.Relation, ->
   contents: ->
     if @isActive
       unless @_contents

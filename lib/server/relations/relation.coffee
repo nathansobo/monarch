@@ -1,4 +1,5 @@
 _ = require "underscore"
+{ reopen } = require("../core").Util
 SelectBuilder = require "../sql/select_builder"
 InsertBuilder = require "../sql/insert_builder"
 TupleBuilder = require "../db/tuple_builder"
@@ -6,7 +7,7 @@ Connection = require "../db/connection"
 
 module.exports = (Relation) ->
 
-  _.extend Relation.prototype,
+  reopen Relation, ->
     toSql: ->
       (new SelectBuilder).visit(this).toSql()
 

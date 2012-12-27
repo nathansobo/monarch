@@ -1,4 +1,4 @@
-_.extend Monarch.Relations.Table.prototype,
+Monarch.Util.reopen Monarch.Relations.Table, ->
   clear: ->
     Monarch.Events.clear(this)
     @_contents = @buildContents()
