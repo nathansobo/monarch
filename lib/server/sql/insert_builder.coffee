@@ -1,11 +1,9 @@
 _ = require "underscore"
-Visitor = require("../core").Util.Visitor
 Nodes = require "./nodes"
+QueryBuilder = require "./query_builder"
 { underscore } = require("../core").Util.Inflection
 
-module.exports = class InsertBuilder
-  visit: Visitor.visit
-
+module.exports = class InsertBuilder extends QueryBuilder
   visit_Relations_Table: (table, hashes) ->
     hashes = [hashes] unless _.isArray(hashes)
     columnNames = _.keys(hashes[0])
@@ -27,13 +25,3 @@ module.exports = class InsertBuilder
   visitValueLists: (valueLists) ->
     for list in valueLists
       @visit(value) for value in list
-
-  visit_String: (e) ->
-    new Nodes.StringLiteral(e)
-
-  visit_Boolean: (e) ->
-    new Nodes.Literal(e)
-
-  visit_Number: (e) ->
-    new Nodes.Literal(e)
-

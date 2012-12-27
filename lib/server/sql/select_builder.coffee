@@ -1,12 +1,10 @@
 _ = require "underscore"
-Visitor = require("../core").Util.Visitor
 Nodes = require "./nodes"
+QueryBuilder = require "./query_builder"
 
-module.exports = class SelectBuilder
+module.exports = class SelectBuilder extends QueryBuilder
   constructor: ->
     @subqueryIndex = 0
-
-  visit: Visitor.visit
 
   visit_Relations_Table: (r) ->
     table = new Nodes.Table(r.resourceName())
@@ -71,15 +69,6 @@ module.exports = class SelectBuilder
     new Nodes.OrderExpression(
       @visit(e.column, source),
       directionString(e.directionCoefficient))
-
-  visit_String: (e) ->
-    new Nodes.StringLiteral(e)
-
-  visit_Boolean: (e) ->
-    new Nodes.Literal(e)
-
-  visit_Number: (e) ->
-    new Nodes.Literal(e)
 
 wrapQuery = (builder, query) ->
   subquery = new Nodes.Subquery(query, ++builder.subqueryIndex)
