@@ -1,18 +1,18 @@
 files = [
-  "select"
-  "table"
-  "join"
-  "union"
-  "difference"
-  "column"
   "and"
+  "column"
+  "difference"
   "equals"
-  "literal"
-  "string_literal"
-  "subquery"
-  "order_expression"
   "insert"
   "insert_column"
+  "join"
+  "literal"
+  "order_expression"
+  "select"
+  "string_literal"
+  "subquery"
+  "table"
+  "union"
 ]
 
 { camelize, capitalize } = require("../core").Util.Inflection
