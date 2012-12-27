@@ -7,6 +7,7 @@ files = [
   "insert_column"
   "join"
   "literal"
+  "null"
   "order_expression"
   "select"
   "string_literal"
