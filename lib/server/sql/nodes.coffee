@@ -1,5 +1,6 @@
 files = [
   "and"
+  "assignment"
   "column"
   "difference"
   "equals"
@@ -14,6 +15,7 @@ files = [
   "subquery"
   "table"
   "union"
+  "update"
 ]
 
 { camelize, capitalize } = require("../core").Util.Inflection
