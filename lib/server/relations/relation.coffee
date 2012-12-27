@@ -11,9 +11,6 @@ module.exports = (Relation) ->
     toSql: ->
       (new SelectBuilder).visit(this).toSql()
 
-    toInsertSql: (args...) ->
-      (new InsertBuilder).visit(this, args...).toSql()
-
     all: (f) ->
       self = this
       Connection.query @toSql(), (err, result) ->

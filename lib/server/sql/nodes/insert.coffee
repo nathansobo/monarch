@@ -17,7 +17,7 @@ module.exports = class Insert
     lists = for valueList in @valueLists
       sqlValueList = (@sqlize(value) for value in valueList)
       parenthesizedList(sqlValueList)
-    lists.join(' ')
+    lists.join(', ')
 
   sqlize: (value) ->
     value
