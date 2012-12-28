@@ -13,7 +13,7 @@ module.exports = class SelectBuilder extends QueryBuilder
 
   visit_Relations_Selection: (r) ->
     _.tap @visit(r.operand), (query) =>
-      query.setCondition(@visit(r.predicate, query.source()))
+      query.setCondition(@visit(r.predicate, query.table()))
 
   visit_Relations_OrderBy: (r) ->
     operandQuery = @visit(r.operand)
@@ -23,7 +23,7 @@ module.exports = class SelectBuilder extends QueryBuilder
       wrapQuery(this, operandQuery)
     _.tap query, (query) =>
       query.setOrderExpressions(
-        @visit(e, query.source()) for e in r.orderByExpressions)
+        @visit(e, query.table()) for e in r.orderByExpressions)
 
   visit_Relations_Limit: (r) ->
     _.tap @visit(r.operand), (query) ->
@@ -47,18 +47,18 @@ module.exports = class SelectBuilder extends QueryBuilder
       else
         wrapQuery(this, operandQuery)
     select = (sideQueries[0].columns()).concat(sideQueries[1].columns())
-    join = new Nodes.Join(sideQueries[0].source(), sideQueries[1].source())
+    join = new Nodes.Join(sideQueries[0].table(), sideQueries[1].table())
     join.condition = @visit(r.predicate, join)
     new Nodes.Select(join, select)
 
   visit_Relations_Projection: (r) ->
     _.tap @visit(r.operand), (query) =>
       query.setColumns(
-        @visit(column, query.source()) for column in r.table.columns())
+        @visit(column, query.table()) for column in r.table.columns())
 
-  visit_Expressions_OrderBy: (e, source) ->
+  visit_Expressions_OrderBy: (e, table) ->
     new Nodes.OrderExpression(
-      @visit(e.column, source),
+      @visit(e.column, table),
       directionString(e.directionCoefficient))
 
 wrapQuery = (builder, query) ->

@@ -5,7 +5,7 @@ module.exports = class Subquery
     @name = "t" + index
 
   resolveColumnName: (tableName, columnName) ->
-    innerNames = @query.source().resolveColumnName(tableName, columnName)
+    innerNames = @query.table().resolveColumnName(tableName, columnName)
     if innerNames
       {
         tableName: @name,

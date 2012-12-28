@@ -2,8 +2,8 @@ _ = require "underscore"
 { Base } = require "../../core"
 
 module.exports = class Select extends Base
-  constructor: (source, columns) ->
-    @setSource(source)
+  constructor: (table, columns) ->
+    @setTable(table)
     @setColumns(columns)
     @setCondition(null)
     @setOrderExpressions([])
@@ -18,7 +18,7 @@ module.exports = class Select extends Base
       @offsetClauseSql()
     ]).join(' ')
 
-  @accessors 'source', 'columns', 'condition', 'orderExpressions',
+  @accessors 'table', 'columns', 'condition', 'orderExpressions',
              'limit', 'offset'
 
   selectClauseSql: ->
@@ -26,7 +26,7 @@ module.exports = class Select extends Base
     "SELECT " + parts.join(', ')
 
   fromClauseSql: ->
-    "FROM " + @source().toSql()
+    "FROM " + @table().toSql()
 
   whereClauseSql: ->
     "WHERE " + @condition().toSql() if @condition()

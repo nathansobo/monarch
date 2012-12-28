@@ -1,4 +1,6 @@
-module.exports = class Binary
+{ Base } = require("../../core")
+
+module.exports = class Binary extends Base
   constructor: (@left, @right) ->
 
   toSql: ->

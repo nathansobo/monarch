@@ -1,9 +1,7 @@
 Binary = require "./binary"
 
 module.exports = class Difference extends Binary
-  source: -> @left.source()
-  columns: -> @left.columns()
-
+  @delegate 'table', 'columns', to: 'left'
   operator: 'EXCEPT'
   operandNeedsParens: -> true
 
