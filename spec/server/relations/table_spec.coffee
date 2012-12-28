@@ -40,9 +40,10 @@ describe "Relations.Table", ->
             ])
             done()
 
-      it "passes the number of records created", ->
+      it "passes the number of records created", (done) ->
         blogs.create hashes, (err, result) ->
           expect(result).toBe(2)
+          done()
 
   describe "#updateAll", ->
     beforeEach (done) ->
