@@ -3,9 +3,8 @@
 module.exports = (Selection) ->
 
   reopen Selection, ->
-    updateSql: ->
-      @operand.updateSql.apply(this, arguments)
-
-    updateAll: ->
-      @operand.updateAll.apply(this, arguments)
+    for methodName in ['updateSql', 'deleteSql', 'updateAll', 'deleteAll']
+      do (methodName) =>
+        this::[methodName] = ->
+          @operand[methodName].apply(this, arguments)
 

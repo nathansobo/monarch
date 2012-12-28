@@ -2,6 +2,7 @@ files = [
   "and"
   "assignment"
   "column"
+  "delete"
   "difference"
   "equals"
   "insert"

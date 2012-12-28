@@ -65,3 +65,21 @@ describe "Relations.Table", ->
       blogs.updateAll { public: false, authorId: 13 }, (err, result) ->
         expect(result).toBe(2)
         done()
+
+  describe "#deleteAll", ->
+    beforeEach (done) ->
+      blogs.create([
+        { id: 1, public: true, title: "New Blog 1", authorId: 11 }
+        { id: 2, public: true, title: "New Blog 2", authorId: 12 }
+      ], done)
+
+    it "deletes all records in the table", (done) ->
+      blogs.deleteAll ->
+        blogs.all (err, records) ->
+          expect(records).toEqual([])
+          done()
+
+    it "passes the number of records deleted", (done) ->
+      blogs.deleteAll (err, result) ->
+        expect(result).toBe(2)
+        done()
