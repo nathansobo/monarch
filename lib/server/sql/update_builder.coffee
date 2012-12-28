@@ -4,10 +4,14 @@ QueryBuilder = require "./query_builder"
 { underscore } = require("../core").Util.Inflection
 
 module.exports = class UpdateBuilder extends QueryBuilder
-  buildQuery: (table, fieldValues) ->
+  visit_Relations_Table: (table, fieldValues) ->
     new Nodes.Update(
       buildTable(table),
       buildAssignments.call(this, fieldValues))
+
+  visit_Relations_Selection: (relation, fieldValues) ->
+    _.tap @visit(relation.operand, fieldValues), (query) =>
+      query.setCondition @visit(relation.predicate, query.table())
 
 buildTable = (table) ->
   new Nodes.Table(table.resourceName())

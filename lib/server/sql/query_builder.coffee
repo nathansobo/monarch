@@ -12,3 +12,13 @@ module.exports = class QueryBuilder
   visit_Number: visitPrimitive(Nodes.Literal)
   visit_String: visitPrimitive(Nodes.StringLiteral)
   visit_null: visitPrimitive(Nodes.Null)
+
+  visit_Expressions_And: (e, source) ->
+    new Nodes.And(@visit(e.left, source), @visit(e.right, source))
+
+  visit_Expressions_Equal: (e, source) ->
+    new Nodes.Equals(@visit(e.left, source), @visit(e.right, source))
+
+  visit_Expressions_Column: (e, source) ->
+    new Nodes.Column(source, e.table.resourceName(), e.resourceName())
+

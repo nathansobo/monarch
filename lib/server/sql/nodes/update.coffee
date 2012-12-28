@@ -1,13 +1,25 @@
-module.exports = class Update
-  constructor: (@table, @assignments) ->
+_ = require "underscore"
+{ Base } = require "../../core"
+
+module.exports = class Update extends Base
+  constructor: (table, assignments) ->
+    @setTable(table)
+    @setAssignments(assignments)
+
+  @accessors 'table', 'assignments', 'condition'
 
   toSql: ->
-    [
+    _.compact([
       "UPDATE",
-      @table.toSql(),
+      @table().toSql(),
       "SET",
-      @assignmentsClauseSql()
-    ].join(' ')
+      @assignmentsClauseSql(),
+      @whereClauseSql()
+    ]).join(' ')
 
   assignmentsClauseSql: ->
-    (assignment.toSql() for assignment in @assignments).join(', ')
+    (assignment.toSql() for assignment in @assignments()).join(', ')
+
+  whereClauseSql: ->
+    "WHERE " + @condition().toSql() if @condition()
+

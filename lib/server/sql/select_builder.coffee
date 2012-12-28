@@ -56,15 +56,6 @@ module.exports = class SelectBuilder extends QueryBuilder
       query.setColumns(
         @visit(column, query.source()) for column in r.table.columns())
 
-  visit_Expressions_And: (e, source) ->
-    new Nodes.And(@visit(e.left, source), @visit(e.right, source))
-
-  visit_Expressions_Equal: (e, source) ->
-    new Nodes.Equals(@visit(e.left, source), @visit(e.right, source))
-
-  visit_Expressions_Column: (e, source) ->
-    new Nodes.Column(source, e.table.resourceName(), e.resourceName())
-
   visit_Expressions_OrderBy: (e, source) ->
     new Nodes.OrderExpression(
       @visit(e.column, source),
