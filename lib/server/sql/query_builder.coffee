@@ -1,3 +1,4 @@
+_ = require "underscore"
 Nodes = require "./nodes"
 Visitor = require("../core").Util.Visitor
 
@@ -13,12 +14,19 @@ module.exports = class QueryBuilder
   visit_String: visitPrimitive(Nodes.StringLiteral)
   visit_null: visitPrimitive(Nodes.Null)
 
-  visit_Expressions_And: (e, source) ->
-    new Nodes.And(@visit(e.left, source), @visit(e.right, source))
+  visit_Relations_Selection: (r, args...) ->
+    _.tap @visit(r.operand, args...), (query) =>
+      query.setCondition(@visit(r.predicate, query.table()))
 
-  visit_Expressions_Equal: (e, source) ->
-    new Nodes.Equals(@visit(e.left, source), @visit(e.right, source))
+  visit_Expressions_And: (e, table) ->
+    new Nodes.And(@visit(e.left, table), @visit(e.right, table))
 
-  visit_Expressions_Column: (e, source) ->
-    new Nodes.Column(source, e.table.resourceName(), e.resourceName())
+  visit_Expressions_Equal: (e, table) ->
+    new Nodes.Equals(@visit(e.left, table), @visit(e.right, table))
+
+  visit_Expressions_Column: (e, table) ->
+    new Nodes.Column(table, e.table.resourceName(), e.resourceName())
+
+  buildTableNode: (table) ->
+    new Nodes.Table(table.resourceName())
 

@@ -11,17 +11,11 @@ module.exports = class SelectBuilder extends QueryBuilder
     columns = (@visit(column, table) for column in r.columns())
     new Nodes.Select(table, columns)
 
-  visit_Relations_Selection: (r) ->
-    _.tap @visit(r.operand), (query) =>
-      query.setCondition(@visit(r.predicate, query.table()))
-
   visit_Relations_OrderBy: (r) ->
     operandQuery = @visit(r.operand)
-    query = if operandQuery.canHaveOrderByAdded()
-      operandQuery
-    else
-      wrapQuery(this, operandQuery)
-    _.tap query, (query) =>
+    unless operandQuery.canHaveOrderByAdded()
+      operandQuery = wrapQuery(this, operandQuery)
+    _.tap operandQuery, (query) =>
       query.setOrderExpressions(
         @visit(e, query.table()) for e in r.orderByExpressions)
 

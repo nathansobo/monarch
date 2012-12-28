@@ -6,15 +6,8 @@ QueryBuilder = require "./query_builder"
 module.exports = class UpdateBuilder extends QueryBuilder
   visit_Relations_Table: (table, fieldValues) ->
     new Nodes.Update(
-      buildTable(table),
+      @buildTableNode(table),
       buildAssignments.call(this, fieldValues))
-
-  visit_Relations_Selection: (relation, fieldValues) ->
-    _.tap @visit(relation.operand, fieldValues), (query) =>
-      query.setCondition @visit(relation.predicate, query.table())
-
-buildTable = (table) ->
-  new Nodes.Table(table.resourceName())
 
 buildAssignments = (fieldValues) ->
   for key, value of fieldValues
