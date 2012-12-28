@@ -15,6 +15,9 @@ module.exports = (Table) ->
     create: (args..., f) ->
       executeAndGetRowCount(@createSql(args...), f)
 
+    updateAll: (args..., f) ->
+      executeAndGetRowCount(@updateSql(args...), f)
+
 executeAndGetRowCount = (sql, f) ->
   Connection.query sql, (err, result) ->
     return f(err) if err
