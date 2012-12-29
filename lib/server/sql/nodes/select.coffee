@@ -22,7 +22,7 @@ module.exports = class Select extends Base
              'limit', 'offset'
 
   selectClauseSql: ->
-    parts = @columns().map (columnRef) -> columnRef.toSelectClauseSql()
+    parts = (column.toSelectClauseSql() for column in @columns())
     "SELECT " + parts.join(', ')
 
   fromClauseSql: ->
@@ -32,16 +32,15 @@ module.exports = class Select extends Base
     "WHERE " + @condition().toSql() if @condition()
 
   orderByClauseSql: ->
-    if not _.isEmpty(@orderExpressions())
-      "ORDER BY " + @orderExpressions().map((e) -> e.toSql()).join(', ')
+    unless _.isEmpty(@orderExpressions())
+      parts = (e.toSql() for e in @orderExpressions())
+      "ORDER BY " + parts.join(', ')
 
   limitClauseSql: ->
-    if @limit()
-      "LIMIT " + @limit()
+    "LIMIT " + @limit() if @limit()
 
   offsetClauseSql: ->
-    if @offset()
-      "OFFSET " + @offset()
+    "OFFSET " + @offset() if @offset()
 
   canHaveJoinAdded: ->
     !(@condition()? || @limit()?)
