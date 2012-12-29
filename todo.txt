@@ -1,0 +1,33 @@
+TODO
+==========================================================
+
+- DB connections
+  - investigate whether connection pool is being used correctly
+  - ensure database connection code is robust and performant
+  - fix spurious failures in connection spec
+
+- Record, server-side
+  - .hasMany, .belongsTo, etc
+  - #save, #delete, #reload
+
+- relational operations
+  - selection outside limits, offsets, orderings
+  - Table#alias
+    - allow same table to appear on both sides of a join
+  - group by sql
+  - group by in-memory for client-side
+  - aggregation functions
+    - sum, min, max, count, avg
+    - aliasing columns appropriately
+
+- transactions
+
+- escape strings in SQL
+
+- refactor specs
+  - reuse class definitions (Blog, BlogPost, etc)
+
+- support mysql and sqlite
+  - connection adapters
+  - subclasses of query builders
+  - alternative of SQL AST node classes
