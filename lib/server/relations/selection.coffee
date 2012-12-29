@@ -1,8 +1,6 @@
-{ reopen } = require("../core").Util
-
 module.exports = (Selection) ->
 
-  reopen Selection, ->
+  Selection.reopen ->
     for methodName in ['updateSql', 'deleteSql', 'updateAll', 'deleteAll']
       do (methodName) =>
         this::[methodName] = ->

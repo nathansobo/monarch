@@ -1,12 +1,11 @@
 _ = require "underscore"
-{ reopen } = require("../core").Util
 SelectBuilder = require "../sql/select_builder"
 TupleBuilder = require "../db/tuple_builder"
 Connection = require "../db/connection"
 
 module.exports = (Relation) ->
 
-  reopen Relation, ->
+  Relation.reopen ->
     readSql: ->
       (new SelectBuilder).buildQuery(this).toSql()
 

@@ -1,7 +1,7 @@
-Monarch.Util.reopen Monarch.Record, ->
+Monarch.Record.reopen ->
   for methodName in ['fetch', 'findOrFetch']
     do (methodName) =>
-      @[methodName] = ->
+      this[methodName] = ->
         @table[methodName].apply(this, arguments)
 
   save: ->

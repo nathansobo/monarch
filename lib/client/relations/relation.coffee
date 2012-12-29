@@ -1,4 +1,4 @@
-Monarch.Util.reopen Monarch.Relations.Relation, ->
+Monarch.Relations.Relation.reopen ->
   contents: ->
     if @isActive
       unless @_contents

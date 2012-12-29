@@ -22,3 +22,7 @@ class Monarch.Base
           this[memoizedName]
         @prototype[setterName] = (value) ->
           this[memoizedName] = value
+
+  @reopen: (f) ->
+    prototypeProperties = f.call(this)
+    _.extend(this.prototype, prototypeProperties)

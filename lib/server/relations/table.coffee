@@ -1,4 +1,3 @@
-{ reopen } = require("../core").Util
 InsertBuilder = require "../sql/insert_builder"
 UpdateBuilder = require "../sql/update_builder"
 DeleteBuilder = require "../sql/delete_builder"
@@ -6,7 +5,7 @@ Connection = require "../db/connection"
 
 module.exports = (Table) ->
 
-  reopen Table, ->
+  Table.reopen ->
     createSql: -> buildSql(this, InsertBuilder, arguments)
     updateSql: -> buildSql(this, UpdateBuilder, arguments)
     deleteSql: -> buildSql(this, DeleteBuilder, arguments)

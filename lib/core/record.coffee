@@ -1,4 +1,4 @@
-class Monarch.Record
+class Monarch.Record extends Monarch.Base
   { singularize, capitalize, uncapitalize, underscoreAndPluralize } = Monarch.Util.Inflection
 
   @extended: (subclass) ->

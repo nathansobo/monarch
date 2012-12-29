@@ -1,4 +1,4 @@
-Monarch.Util.reopen Monarch.Relations.Table, ->
+Monarch.Relations.Table.reopen ->
   clear: ->
     Monarch.Events.clear(this)
     @_contents = @buildContents()
