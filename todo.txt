@@ -2,13 +2,14 @@ TODO
 ==========================================================
 
 - DB connections
-  - investigate whether connection pool is being used correctly
+  - use node-any-db for supporting multiple DB drivers,
+    and for connection pooling
   - ensure database connection code is robust and performant
   - fix spurious failures in connection spec
 
 - Record, server-side
-  - .hasMany, .belongsTo, etc
-  - #save, #delete, #reload
+  - .hasMany, .belongsTo, .relatesTo
+  - #reload
 
 - relational operations
   - selection outside limits, offsets, orderings
@@ -29,5 +30,4 @@ TODO
 
 - support mysql and sqlite
   - connection adapters
-  - subclasses of query builders
-  - alternative of SQL AST node classes
+  - alternative SQL AST node classes
