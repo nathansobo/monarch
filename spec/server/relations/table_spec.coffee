@@ -11,7 +11,7 @@ describe "Relations.Table", ->
   blogs = Blog.table
 
   beforeEach (done) ->
-    Monarch.Db.Connection.query("TRUNCATE TABLE blogs;", done)
+    blogs.deleteAll(done)
 
   describe "#create", ->
     describe "when a single attribute hash is passed", ->

@@ -13,7 +13,7 @@ describe "Relations.Selection", ->
 
   beforeEach (done) ->
     selection = blogs.where(authorId: 5)
-    Monarch.Db.Connection.query("TRUNCATE TABLE blogs;", done)
+    blogs.deleteAll(done)
 
   describe "#create", ->
     describe "when a single attribute hash is passed", ->

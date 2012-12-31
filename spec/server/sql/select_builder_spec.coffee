@@ -1,7 +1,7 @@
 { Monarch } = require "../spec_helper"
 
 describe "SelectBuilder", ->
-  blogs = blogPosts = comments = null
+  [blogs, blogPosts, comments] = []
 
   class Blog extends Monarch.Record
     @extended(this)

@@ -29,31 +29,28 @@ describe "Relation", ->
     blogPosts = BlogPost.table
     comments = Comment.table
 
-    Monarch.Db.Connection.query("""
-      TRUNCATE TABLE blogs;
-      TRUNCATE TABLE blog_posts;
-      TRUNCATE TABLE comments;
-
-      INSERT INTO blogs (id, public, title, author_id)
-      VALUES
-      (1, true, 'Public Blog1', 1),
-      (2, true, 'Public Blog2', 1),
-      (3, false, 'Private Blog1', 1);
-
-      INSERT INTO blog_posts (id, public, title, blog_id)
-      VALUES
-      (1, true, 'Public Post1', 1),
-      (2, true, 'Public Post2', 2),
-      (3, false, 'Private Post1', 1),
-      (4, false, 'Private Post2', 2);
-
-      INSERT INTO comments (id, body, blog_post_id, author_id)
-      VALUES
-      (1, 'Comment1', 1, 1),
-      (2, 'Comment2', 1, 1),
-      (3, 'Comment3', 2, 1),
-      (4, 'Comment4', 2, 1);
-    """, done)
+    async.series([
+      (f) -> blogs.deleteAll(f),
+      (f) -> blogPosts.deleteAll(f),
+      (f) -> comments.deleteAll(f),
+      (f) -> blogs.create([
+        { id: 1, public: true, title: 'Public Blog1', authorId: 1 }
+        { id: 2, public: true, title: 'Public Blog2', authorId: 1 }
+        { id: 3, public: false, title: 'Private Blog1', authorId: 1 }
+      ], f),
+      (f) -> blogPosts.create([
+        { id: 1, public: true, title: 'Public Post1', blogId: 1 }
+        { id: 2, public: true, title: 'Public Post2', blogId: 2 }
+        { id: 3, public: false, title: 'Private Post1', blogId: 1 }
+        { id: 4, public: false, title: 'Private Post2', blogId: 2 }
+      ], f),
+      (f) -> comments.create([
+        { id: 1, body: 'Comment1', blogPostId: 1, authorId: 1 }
+        { id: 2, body: 'Comment2', blogPostId: 1, authorId: 1 }
+        { id: 3, body: 'Comment3', blogPostId: 2, authorId: 1 }
+        { id: 4, body: 'Comment4', blogPostId: 2, authorId: 1 }
+      ], f),
+    ], done)
 
   describe "#all", ->
     describe "tables", ->

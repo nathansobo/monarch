@@ -1,6 +1,11 @@
 module.exports = (Record) ->
 
   Record.reopen ->
+    for methodName in ['deleteAll', 'create']
+      do (methodName) =>
+        this[methodName] = ->
+          @table[methodName].apply(@table, arguments)
+
     save: ->
       if @isPersisted()
         singletonRelation(this).updateAll(@fieldValues(), arguments...)

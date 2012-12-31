@@ -9,13 +9,11 @@ describe "Record", ->
       authorId: 'integer'
 
   beforeEach (done) ->
-    Monarch.Db.Connection.query("""
-      TRUNCATE TABLE blogs;
-      INSERT INTO blogs (id, public, title, author_id)
-      VALUES
-      (1, true, 'Public Blog1', 1),
-      (NULL, true, 'Public Blog2', 1);
-    """, done)
+    Blog.deleteAll ->
+      Blog.create [
+        { id: 1, public: true, title: 'Public Blog1', authorId: 1 },
+        { id: null, public: true, title: 'Public Blog2', authorId: 1 },
+      ], done
 
   describe "#isPersisted", ->
     it "returns true when the record has an id", ->
