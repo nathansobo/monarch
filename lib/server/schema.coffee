@@ -1,4 +1,4 @@
-CreateTableStatement = require "../sql/nodes/create_table_statement"
+CreateTableStatement = require "./sql/nodes/create_table_statement"
 Connection = require "./connection"
 
 module.exports =

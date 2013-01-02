@@ -1,7 +1,7 @@
 InsertBuilder = require "../sql/insert_builder"
 UpdateBuilder = require "../sql/update_builder"
 DeleteBuilder = require "../sql/delete_builder"
-Connection = require "../db/connection"
+Connection = require "../connection"
 
 module.exports = (Table) ->
 

@@ -1,7 +1,7 @@
 _ = require "underscore"
 SelectBuilder = require "../sql/select_builder"
-TupleBuilder = require "../db/tuple_builder"
-Connection = require "../db/connection"
+TupleBuilder = require "../tuple_builder"
+Connection = require "../connection"
 
 module.exports = (Relation) ->
 

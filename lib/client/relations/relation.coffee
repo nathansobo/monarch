@@ -22,7 +22,7 @@ Monarch.Relations.Relation.reopen ->
       @retrieveRecords()
 
   retrieveRecords: ->
-    Monarch.Db.RecordRetriever.retrieveRecords(this)
+    Monarch.RecordRetriever.retrieveRecords(this)
 
   onInsert: (callback, context) ->
     Monarch.Events.onInsert(this, callback, context)

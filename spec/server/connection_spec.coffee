@@ -1,7 +1,7 @@
-{ Monarch, async, pg } = require "../spec_helper"
+{ Monarch, async, pg } = require "./spec_helper"
 
-describe "Db.Connection", ->
-  { Connection } = Monarch.Db
+describe "Connection", ->
+  { Connection } = Monarch
 
   describe ".query", ->
     describe "when the connection is not configured", ->

@@ -1,4 +1,4 @@
-{ Util, CompositeTuple } = require("../core")
+{ Util, CompositeTuple } = require("./core")
 { Inflection, Visitor } = Util
 { camelize } = Inflection
 
