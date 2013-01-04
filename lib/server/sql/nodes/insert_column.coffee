@@ -1,6 +1,7 @@
-module.exports = class InsertColumn
+class InsertColumn
   constructor: (@name) ->
 
   toSql: ->
     '"' + @name + '"'
 
+module.exports = InsertColumn

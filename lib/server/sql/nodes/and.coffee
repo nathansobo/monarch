@@ -1,5 +1,6 @@
 Binary = require "./binary"
 
-module.exports = class And extends Binary
+class And extends Binary
   operator: "AND"
 
+module.exports = And

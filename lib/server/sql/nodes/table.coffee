@@ -1,4 +1,4 @@
-module.exports = class Table
+class Table
   constructor: (@tableName) ->
 
   toSql: ->
@@ -11,3 +11,5 @@ module.exports = class Table
         columnName: columnName,
         needsAlias: true
       }
+
+module.exports = Table

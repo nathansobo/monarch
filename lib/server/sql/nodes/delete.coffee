@@ -1,7 +1,7 @@
 _ = require "underscore"
 { Base } = require "../../core"
 
-module.exports = class Delete extends Base
+class Delete extends Base
   constructor: (table, assignments) ->
     @setTable(table)
 
@@ -17,3 +17,4 @@ module.exports = class Delete extends Base
   whereClauseSql: ->
     "WHERE " + @condition().toSql() if @condition()
 
+module.exports = Delete

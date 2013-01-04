@@ -1,7 +1,7 @@
 _ = require "underscore"
 { Base } = require "../../core"
 
-module.exports = class Update extends Base
+class Update extends Base
   constructor: (table, assignments) ->
     @setTable(table)
     @setAssignments(assignments)
@@ -23,3 +23,4 @@ module.exports = class Update extends Base
   whereClauseSql: ->
     "WHERE " + @condition().toSql() if @condition()
 
+module.exports = Update

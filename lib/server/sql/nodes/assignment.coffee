@@ -1,5 +1,6 @@
 Binary = require "./binary"
 
-module.exports = class Assignment extends Binary
+class Assignment extends Binary
   operator: "="
 
+module.exports = Assignment

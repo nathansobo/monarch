@@ -1,6 +1,6 @@
 Column = require "./column"
 
-module.exports = class Subquery
+class Subquery
   constructor: (@query, index) ->
     @name = "t" + index
 
@@ -21,3 +21,5 @@ module.exports = class Subquery
 
   toSql: ->
     "( #{@query.toSql()} ) as \"#{@name}\""
+
+module.exports = Subquery

@@ -1,6 +1,6 @@
 Binary = require "./binary"
 
-module.exports = class Join extends Binary
+class Join extends Binary
   constructor: (@left, @right, @condition) ->
 
   resolveColumnName: (args...) ->
@@ -17,3 +17,5 @@ module.exports = class Join extends Binary
 
   operandNeedsParens: (operand) ->
     (operand is @right) and (operand instanceof Join)
+
+module.exports = Join

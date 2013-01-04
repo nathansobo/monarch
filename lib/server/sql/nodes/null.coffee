@@ -1,6 +1,7 @@
-module.exports = class Null
+class Null
   constructor: ->
 
   toSql: ->
     "NULL"
 
+module.exports = Null

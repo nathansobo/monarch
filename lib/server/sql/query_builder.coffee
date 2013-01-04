@@ -5,7 +5,7 @@ Visitor = require("../core").Util.Visitor
 visitPrimitive = (nodeClass) ->
   (value) -> new nodeClass(value)
 
-module.exports = class QueryBuilder
+class QueryBuilder
   buildQuery: Visitor.visit
   visit: Visitor.visit
 
@@ -30,3 +30,4 @@ module.exports = class QueryBuilder
   buildTableNode: (table) ->
     new Nodes.Table(table.resourceName())
 
+module.exports = QueryBuilder

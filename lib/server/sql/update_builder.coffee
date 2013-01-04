@@ -3,7 +3,7 @@ Nodes = require "./nodes"
 QueryBuilder = require "./query_builder"
 { underscore } = require("../core").Util.Inflection
 
-module.exports = class UpdateBuilder extends QueryBuilder
+class UpdateBuilder extends QueryBuilder
   visit_Relations_Table: (table, fieldValues) ->
     new Nodes.Update(
       @buildTableNode(table),
@@ -15,3 +15,4 @@ buildAssignments = (builder, fieldValues) ->
     sqlValue = builder.visit(value)
     new Nodes.Assignment(column, sqlValue)
 
+module.exports = UpdateBuilder

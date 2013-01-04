@@ -2,7 +2,7 @@ _ = require "underscore"
 Nodes = require "./nodes"
 QueryBuilder = require "./query_builder"
 
-module.exports = class SelectBuilder extends QueryBuilder
+class SelectBuilder extends QueryBuilder
   constructor: ->
     @subqueryIndex = 0
 
@@ -61,3 +61,5 @@ wrapQuery = (builder, query) ->
 
 directionString = (coefficient) ->
   if (coefficient == -1) then 'DESC' else 'ASC'
+
+module.exports = SelectBuilder

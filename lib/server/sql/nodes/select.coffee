@@ -1,7 +1,7 @@
 _ = require "underscore"
 { Base } = require "../../core"
 
-module.exports = class Select extends Base
+class Select extends Base
   constructor: (table, columns) ->
     @setTable(table)
     @setColumns(columns)
@@ -47,3 +47,5 @@ module.exports = class Select extends Base
 
   canHaveOrderByAdded: ->
     !(@limit()?)
+
+module.exports = Select

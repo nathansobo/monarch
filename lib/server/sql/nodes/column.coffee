@@ -1,4 +1,4 @@
-module.exports = class Column
+class Column
   @qualifyName: (tableName, columnName) ->
     '"' + tableName + '"."' + columnName + '"'
 
@@ -22,3 +22,5 @@ module.exports = class Column
 
   resolveName: ->
     @source.resolveColumnName(@tableName, @name)
+
+module.exports = Column

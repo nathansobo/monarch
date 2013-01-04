@@ -1,5 +1,6 @@
 Binary = require "./binary"
 
-module.exports = class Equals extends Binary
+class Equals extends Binary
   operator: "="
 
+module.exports = Equals

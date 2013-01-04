@@ -1,7 +1,7 @@
 { underscore } = require("../../core").Util.Inflection
 Types = require "./types"
 
-module.exports = class CreateTableStatement
+class CreateTableStatement
   constructor: (@tableName, @columnDefinitions) ->
 
   toSql: (tableName, done) ->
@@ -14,3 +14,5 @@ module.exports = class CreateTableStatement
 
   databaseType: (type) ->
     Types[type] || throw new Error("Unknown column type '#{type}'")
+
+module.exports = CreateTableStatement

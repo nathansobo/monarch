@@ -1,5 +1,7 @@
-module.exports = class Literal
+class Literal
   constructor: (@value) ->
 
   toSql: ->
     @value.toString()
+
+module.exports = Literal

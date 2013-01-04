@@ -1,4 +1,4 @@
-module.exports = class Insert
+class Insert
   constructor: (@table, @columns, @valueLists) ->
 
   toSql: ->
@@ -30,3 +30,4 @@ parenthesizedList = (elements) ->
     ')'
   ].join(' ')
 
+module.exports = Insert

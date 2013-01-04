@@ -1,6 +1,6 @@
 { Base } = require("../../core")
 
-module.exports = class Binary extends Base
+class Binary extends Base
   constructor: (@left, @right) ->
 
   toSql: ->
@@ -15,3 +15,5 @@ operandSql = (node, operand) ->
     ["(", operand.toSql(), ")"].join(' ')
   else
     operand.toSql()
+
+module.exports = Binary
