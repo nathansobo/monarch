@@ -1,7 +1,7 @@
 _ = require "underscore"
 SelectBuilder = require "../sql/select_builder"
 TupleBuilder = require "../tuple_builder"
-Connection = require "../connection"
+connection = require "../default_connection_pool"
 
 module.exports = (Relation) ->
 
@@ -11,7 +11,7 @@ module.exports = (Relation) ->
 
     all: (f) ->
       self = this
-      Connection.query @readSql(), (err, result) ->
+      @connection().query @readSql(), (err, result) ->
         return f(err) if err
         f(null, TupleBuilder.visit(self, result.rows))
 
@@ -26,3 +26,5 @@ module.exports = (Relation) ->
       @limit(1).all (err, results) ->
         f(err, results?[0])
 
+    connection: ->
+      connection

@@ -1,8 +1,8 @@
-{ Monarch, async, pg, _ } = require "./spec_helper"
+{ root, async, _ } = require "./spec_helper"
+Schema = require "#{root}/schema"
+connection = Schema.connection()
 
 describe "Schema", ->
-  { Schema, Connection } = Monarch
-
   describe ".createTable", ->
     beforeEach (done) ->
       async.series [
@@ -16,13 +16,13 @@ describe "Schema", ->
       ], done
 
     it "creates a table", (done) ->
-      Connection.query 'SELECT * from things', (err, results) ->
+      connection.query 'SELECT * from things', (err, results) ->
         expect(results.rowCount).toBe(0)
         done()
 
     it "converts the column names to underscore-style", (done) ->
       sql = "INSERT INTO things (created_at) VALUES ('2012-08-21');"
-      Connection.query sql, (err, results) ->
+      connection.query sql, (err, results) ->
         expect(results.rowCount).toBe(1)
         done()
 
@@ -32,7 +32,7 @@ describe "Schema", ->
         WHERE table_name = 'things';
       """
 
-      Connection.query sql, (err, results) ->
+      connection.query sql, (err, results) ->
         rows = _.sortBy(results.rows, (row) -> row.column_name)
         expect(rows).toEqual([
           { column_name: "created_at", data_type: "timestamp without time zone" }
