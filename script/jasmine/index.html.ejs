@@ -8,6 +8,7 @@
   <link rel="stylesheet" type="text/css" href="lib/jasmine.css">
   <script type="text/javascript" src="lib/jasmine.js"></script>
   <script type="text/javascript" src="lib/jasmine-html.js"></script>
+  <script type="text/javascript" src="lib/jasmine-fspecs.js"></script>
 
   <%- js("/spec/vendor/index") %>
   <%- js("/lib/client/index") %>
@@ -25,7 +26,7 @@
       jasmineEnv.addReporter(htmlReporter);
 
       jasmineEnv.specFilter = function(spec) {
-        return htmlReporter.specFilter(spec);
+        return fSpecFilter(spec);
       };
 
       var currentWindowOnload = window.onload;
