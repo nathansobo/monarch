@@ -90,15 +90,7 @@ describe "Monarch.Remote.FakeServer", ->
       updateCommand.succeed()
       expect(successCallback).toHaveBeenCalled()
       expect(successCallback.arg(0)).toBe(blog)
-      expect(successCallback.arg(1)).toEqual
-        title:
-          oldValue: "Alpha"
-          newValue: "Bravo"
-          column: Blog.getColumn('title')
-        createdAt:
-          oldValue: new Date(12345)
-          newValue: new Date(54321)
-          column: Blog.getColumn('createdAt')
+      expect(successCallback.arg(1)).toEqual {}
 
       expect(blog.title()).toBe("Bravo")
       expect(blog.createdAt().getTime()).toBe(54321)

@@ -48,17 +48,20 @@ describe "Monarch.Record", ->
         # signals are included in changesets produced during updates
         onSuccessCallback = jasmine.createSpy('onSuccessCallback')
         post.update(title: "Bar").onSuccess(onSuccessCallback)
-        lastAjaxRequest.success(title: "Bar")
+        expect(post.titlePrime()).toBe "Bar Prime"
+
+        lastAjaxRequest.success(title: "Bar+")
         expect(onSuccessCallback).toHaveBeenCalled()
+
         expect(onSuccessCallback.mostRecentCall.args[1]).toEqual(
           title:
-            newValue: "Bar"
-            oldValue: "Foo"
+            newValue: "Bar+"
+            oldValue: "Bar"
             column: BlogPost.getColumn('title')
 
           titlePrime:
-            newValue: "Bar Prime"
-            oldValue: "Foo Prime"
+            newValue: "Bar+ Prime"
+            oldValue: "Bar Prime"
             column: BlogPost.getColumn('titlePrime')
         )
 
@@ -308,8 +311,33 @@ describe "Monarch.Record", ->
 
         post = new BlogPost()
         expect(post.id()).toBeLessThan(0)
-#         expect(insertCallback).toHaveBeenCalledWith(post)
+        expect(insertCallback).toHaveBeenCalled()
+        expect(insertCallback.arg(0)).toBe post
+        expect(insertCallback.arg(1)).toBe 0
         expect(post.afterInitialize).toHaveBeenCalled()
+
+    describe "#localUpdate(attributes)", ->
+      it "updates the local field values and triggers an update event on the record's table", ->
+        post = new BlogPost(id: 1, blogId: 1, title: "Alpha")
+        updateCallback = jasmine.createSpy('updateCallback')
+        BlogPost.onUpdate(updateCallback)
+
+        post.localUpdate(blogId: 2, body: "Beta")
+        expect(post.blogId()).toBe 2
+        expect(post.title()).toBe "Alpha"
+        expect(post.body()).toBe "Beta"
+
+        expect(updateCallback).toHaveBeenCalled()
+        expect(updateCallback.arg(0)).toBe post
+        expect(updateCallback.arg(1)).toEqual
+          blogId:
+            newValue: 2
+            oldValue: 1
+            column: BlogPost.getColumn('blogId')
+          body:
+            newValue: "Beta"
+            oldValue: undefined
+            column: BlogPost.getColumn('body')
 
     describe "#save()", ->
       promise = null
@@ -360,12 +388,8 @@ describe "Monarch.Record", ->
               expect(post.isDirty()).toBeFalsy()
 
               expect(onSuccessCallback.mostRecentCall.args[1]).toEqual
-                blogId:
-                  oldValue: 1
-                  newValue: 2
-                  column: BlogPost.getColumn('blogId')
                 body:
-                  oldValue: "Body"
+                  oldValue: "Body++"
                   newValue: "Body+++"
                   column: BlogPost.getColumn('body')
 
@@ -488,7 +512,7 @@ describe "Monarch.Record", ->
           expect(lastAjaxRequest.data).toEqual(fieldValues: { title: "Good Title", body: "Good Body" })
 
         describe "if the server responds successfully", ->
-          it "inserts the record and clears validation errors", ->
+          it "marks the record as persisted and clears validation errors", ->
             onSuccessCallback = jasmine.createSpy('onSuccessCallback')
             promise.onSuccess(onSuccessCallback)
 

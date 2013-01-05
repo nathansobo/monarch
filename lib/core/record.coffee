@@ -67,7 +67,7 @@ class Monarch.Record extends Monarch.Base
     record.save()
 
   @created: (attributes) ->
-    record = new this()
+    record = new this(attributes)
     record.created(attributes)
     record
 
@@ -98,7 +98,8 @@ class Monarch.Record extends Monarch.Base
       @remoteFields[column.name] = column.buildRemoteField(this)
 
     attributes.id ?= @table.generateTemporaryId()
-    @localUpdate(attributes)
+    @localUpdate(attributes, silent: true)
+    @table.insert(this)
     @afterInitialize()
 
   afterInitialize: _.identity,
@@ -129,9 +130,18 @@ class Monarch.Record extends Monarch.Base
     @localUpdate(attributes)
     @save()
 
-  localUpdate: (attributes) ->
+  localUpdate: (attributes, options={}) ->
+    changeset = @pendingChangeset = {}
+    oldKey = @table.buildKey(this)
+
     for name, value of attributes
       this[name]?(value)
+
+    newKey = @table.buildKey(this)
+    delete @pendingChangeset
+
+    unless options.silent or _.isEmpty(changeset)
+      @table.tupleUpdated(this, changeset, newKey, oldKey)
 
   onUpdate: (callback, context) ->
     @onUpdateNode ?= new Monarch.Util.Node()
@@ -156,11 +166,9 @@ class Monarch.Record extends Monarch.Base
 
   created: (attributes) ->
     @updated(attributes)
-    @table.insert(this)
     @afterCreate()
 
   updated: (attributes) ->
-    newRecord = not @isPersisted()
     changeset = @pendingChangeset = {}
     oldKey = @table.buildKey(this)
 
@@ -170,7 +178,7 @@ class Monarch.Record extends Monarch.Base
     newKey = @table.buildKey(this)
     delete @pendingChangeset
 
-    unless newRecord or _.isEmpty(changeset)
+    unless _.isEmpty(changeset)
       @table.tupleUpdated(this, changeset, newKey, oldKey)
 
     @afterUpdate()
