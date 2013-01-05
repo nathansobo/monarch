@@ -5,8 +5,12 @@ class Monarch.LocalField extends Monarch.Field
   getRemoteValue: ->
     @record.getRemoteField(@name).getValue()
 
+  setValue: (value) ->
+    @record.accrueUpdates =>
+      super(value)
+
   valueChanged: (newValue, oldValue) ->
-    @record.pendingChangeset?[@name] = {
+    @record.pendingChangeset[@name] = {
       newValue: newValue,
       oldValue: oldValue,
       column: @column

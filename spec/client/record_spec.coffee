@@ -411,33 +411,14 @@ describe "Monarch.Record", ->
                 expect(post.body()).toBe("Body+++")
                 expect(post.isDirty()).toBeFalsy()
 
-          describe "update hooks", ->
-            it "invokes beforeUpdate and afterUpdate hooks if present on the record", ->
-              post = BlogPost.created(id: 1, title: "Alpha", body: "Bravo")
-              spyOn(post, 'beforeUpdate')
-              spyOn(post, 'afterUpdate')
-
-              post.title("Beta")
-              post.save()
-
-              expect(post.beforeUpdate).toHaveBeenCalled()
-              expect(post.afterUpdate).not.toHaveBeenCalled()
-
-              lastAjaxRequest.success
-                id: 23,
-                title: "Good Title+",
-                body: "Good Body+"
-
-              expect(post.afterUpdate).toHaveBeenCalled()
-
-            it "does not proceed with the creation if beforeCreate returns 'false'", ->
+            it "does not proceed with the creation if beforeSave returns 'false'", ->
               $.ajax.reset()
               post = BlogPost.created(id: 1, title: "Alpha", body: "Bravo")
-              spyOn(post, 'beforeUpdate').andReturn(false)
+              spyOn(post, 'beforeSave').andReturn(false)
 
               post.save()
 
-              expect(post.beforeUpdate).toHaveBeenCalled()
+              expect(post.beforeSave).toHaveBeenCalled()
               expect($.ajax).not.toHaveBeenCalled()
 
           describe "when the server responds with validation errors", ->
@@ -481,11 +462,11 @@ describe "Monarch.Record", ->
           beforeEach ->
             expect(post.isDirty()).toBeFalsy()
 
-          it "calls the beforeCreate hook, but does not send a request to the server", ->
-            spyOn(post, 'beforeUpdate')
+          it "calls the beforeSave hook, but does not send a request to the server", ->
+            spyOn(post, 'beforeSave')
             post.save().onSuccess(onSuccessCallback)
 
-            expect(post.beforeUpdate).toHaveBeenCalled()
+            expect(post.beforeSave).toHaveBeenCalled()
             expect(lastAjaxRequest).toBeUndefined()
             expect(onSuccessCallback).toHaveBeenCalledWith(post)
 
@@ -531,31 +512,14 @@ describe "Monarch.Record", ->
             expect(post.isValid()).toBeTruthy()
 
         describe "create hooks", ->
-          it "invokes beforeCreate and afterCreate hooks if present on the record", ->
-            post = new BlogPost(title: "Alpha", body: "Bravo")
-            spyOn(post, 'beforeCreate')
-            spyOn(post, 'afterCreate')
-
-            post.save()
-
-            expect(post.beforeCreate).toHaveBeenCalled()
-            expect(post.afterCreate).not.toHaveBeenCalled()
-
-            lastAjaxRequest.success
-              id: 23,
-              title: "Good Title+",
-              body: "Good Body+"
-
-            expect(post.afterCreate).toHaveBeenCalled()
-
-          it "does not proceed with the creation if beforeCreate returns 'false'", ->
+          it "does not proceed with the creation if beforeSave returns 'false'", ->
             $.ajax.reset()
             post = new BlogPost(title: "Alpha", body: "Bravo")
-            spyOn(post, 'beforeCreate').andReturn(false)
+            spyOn(post, 'beforeSave').andReturn(false)
 
             post.save()
 
-            expect(post.beforeCreate).toHaveBeenCalled()
+            expect(post.beforeSave).toHaveBeenCalled()
             expect($.ajax).not.toHaveBeenCalled()
 
     describe "#updated", ->
@@ -663,7 +627,33 @@ describe "Monarch.Record", ->
         expect(post.getField('BlogPost.title').getValue()).toBe("Title")
         expect(post.getField('FooBar.title')).toBeUndefined()
 
-    describe "field access", ->
+    describe "field accessors", ->
+      it "triggers update events when field values are changed via individual accessors", ->
+        post = BlogPost.created(id: 1, title: "Title")
+        tableUpdateCallback = jasmine.createSpy('tableUpdateCallback')
+        recordUpdateCallback = jasmine.createSpy('recordUpdateCallback')
+
+        BlogPost.onUpdate(tableUpdateCallback)
+        post.onUpdate(recordUpdateCallback)
+
+        post.title("Title Prime")
+
+        expect(tableUpdateCallback).toHaveBeenCalled()
+        expect(tableUpdateCallback.arg(0)).toBe post
+        expect(tableUpdateCallback.arg(1)).toEqual
+          title:
+            oldValue: 'Title'
+            newValue: 'Title Prime'
+            column: BlogPost.getColumn('title')
+
+        expect(recordUpdateCallback).toHaveBeenCalled()
+        expect(recordUpdateCallback.arg(0)).toEqual
+          title:
+            oldValue: 'Title'
+            newValue: 'Title Prime'
+            column: BlogPost.getColumn('title')
+
+    describe "type conversion", ->
       it "converts integers to Date objects for fields with the type of 'datetime'", ->
         BlogPost.column('createdAt', 'datetime')
         post = BlogPost.created(id: 1, blogId: 1, createdAt: 12345)

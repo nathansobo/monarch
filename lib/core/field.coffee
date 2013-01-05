@@ -7,6 +7,7 @@ class Monarch.Field
     oldValue = @value
     newValue = @column.normalizeValue(newValue)
     @value = newValue
+
     unless _.isEqual(newValue, oldValue)
       @valueChanged(newValue, oldValue)
       @changeNode.publish(newValue, oldValue)

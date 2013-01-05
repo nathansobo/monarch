@@ -102,10 +102,8 @@ class Monarch.Record extends Monarch.Base
     @table.insert(this)
     @afterInitialize()
 
+  beforeSave: _.identity,
   afterInitialize: _.identity,
-  beforeCreate: _.identity,
-  afterCreate: _.identity,
-  beforeUpdate: _.identity,
   afterUpdate: _.identity,
   beforeDestroy: _.identity,
   afterDestroy: _.identity,
@@ -130,18 +128,33 @@ class Monarch.Record extends Monarch.Base
     @localUpdate(attributes)
     @save()
 
+  accrueUpdates: (args...) ->
+    if args.length > 1
+      options = args.shift()
+    else
+      options = {}
+    fn = args.shift()
+
+    if @pendingChangeset
+      fn()
+    else
+      changeset = @pendingChangeset = {}
+      oldKey = @table.buildKey(this)
+      value = fn()
+      newKey = @table.buildKey(this)
+      delete @pendingChangeset
+
+      unless options.silent or _.isEmpty(changeset)
+        @afterUpdate(changeset)
+        @onUpdateNode?.publish(changeset)
+        @table.tupleUpdated(this, changeset, newKey, oldKey)
+
+      value
+
   localUpdate: (attributes, options={}) ->
-    changeset = @pendingChangeset = {}
-    oldKey = @table.buildKey(this)
-
-    for name, value of attributes
-      this[name]?(value)
-
-    newKey = @table.buildKey(this)
-    delete @pendingChangeset
-
-    unless options.silent or _.isEmpty(changeset)
-      @table.tupleUpdated(this, changeset, newKey, oldKey)
+    @accrueUpdates options, =>
+      for name, value of attributes
+        this[name]?(value)
 
   onUpdate: (callback, context) ->
     @onUpdateNode ?= new Monarch.Util.Node()
@@ -166,24 +179,12 @@ class Monarch.Record extends Monarch.Base
 
   created: (attributes) ->
     @updated(attributes)
-    @afterCreate()
 
   updated: (attributes) ->
-    changeset = @pendingChangeset = {}
-    oldKey = @table.buildKey(this)
-
-    for name, value of attributes
-      @getRemoteField(name)?.setValue(value)
-
-    newKey = @table.buildKey(this)
-    delete @pendingChangeset
-
-    unless _.isEmpty(changeset)
-      @table.tupleUpdated(this, changeset, newKey, oldKey)
-
-    @afterUpdate()
-    @onUpdateNode?.publish(changeset)
-    changeset
+    @accrueUpdates =>
+      for name, value of attributes
+        @getRemoteField(name)?.setValue(value)
+      @pendingChangeset
 
   destroyed: ->
     @table.remove(this)
