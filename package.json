@@ -3,15 +3,16 @@
   "version": "0.0.1",
   "description": "A relational modeling framework for client-centric web applications",
   "main": "index.js",
-  "scripts": {
-    "test": "jasmine-node"
-  },
   "repository": {
     "type": "git",
     "url": "git://github.com/nathansobo/monarch.git"
   },
   "dependencies": {
-    "underscore": "1.4.x"
+    "underscore": "1.4.x",
+    "jasmine-node": "1.0.x",
+    "glob": "3.1.x",
+    "async": "0.1.22",
+    "pg": "0.8.x"
   },
   "devDependencies": {
     "coffee-script": "1.3.x",
@@ -19,7 +20,8 @@
     "connect-assets": "2.3.x",
     "ejs": "0.8.x",
     "express": "3.0.x",
-    "snockets": "1.3.8"
+    "snockets": "1.3.8",
+    "watch-tree": "git://github.com/TrevorBurnham/node-watch-tree.git#node_06"
   },
   "keywords": [
     "relational",

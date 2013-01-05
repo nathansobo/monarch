@@ -1,0 +1,33 @@
+TODO
+==========================================================
+
+- DB connections
+  - use node-any-db for supporting multiple DB drivers,
+    and for connection pooling
+  - ensure database connection code is robust and performant
+  - fix spurious failures in connection spec
+
+- Record, server-side
+  - .hasMany, .belongsTo, .relatesTo
+  - #reload
+
+- relational operations
+  - selection outside limits, offsets, orderings
+  - Table#alias
+    - allow same table to appear on both sides of a join
+  - group by sql
+  - group by in-memory for client-side
+  - aggregation functions
+    - sum, min, max, count, avg
+    - aliasing columns appropriately
+
+- transactions
+
+- escape strings in SQL
+
+- refactor specs
+  - reuse class definitions (Blog, BlogPost, etc)
+
+- support mysql and sqlite
+  - connection adapters
+  - alternative SQL AST node classes
