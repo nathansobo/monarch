@@ -1,3 +1,5 @@
+{ spawn } = require 'child_process'
+
 option '-p', '--path [DIR]', 'path to directory'
 
 task "build", "compile source files", ->
@@ -20,7 +22,6 @@ task "spec:client", "start server for client-side tests", ->
 task "spec:server", "run server-side tests", (options) ->
   specPath = options.path or "spec/server"
 
-  { spawn } = require 'child_process'
   jasmine_bin = "#{__dirname}/node_modules/jasmine-node/bin/jasmine-node"
   runTests = ->
     proc = spawn(jasmine_bin, [ "--coffee", "--nohelpers", "#{__dirname}/#{specPath}" ])
@@ -37,3 +38,8 @@ task "spec:server", "run server-side tests", (options) ->
 
 task "spec:setup", "setup database for server-side tests", ->
   require './spec/server/support/setup'
+
+task "nof", "unfocus all f'd specs", ->
+  proc = spawn "bash", ["script/unfocus.sh"]
+  proc.stdout.pipe(process.stdout)
+  proc.stderr.pipe(process.stderr)
