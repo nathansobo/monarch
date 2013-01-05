@@ -4,11 +4,15 @@ class Monarch.Relations.Table extends Monarch.Relations.Relation
   constructor: (@recordClass) ->
     @name = recordClass.tableName or recordClass.name
     @columnsByName = {}
-    @column('id', 'integer')
+    @column('id', 'key')
     @defaultOrderBy('id')
+    @nextTemporaryId = -1
     @initialize()
 
   initialize: ->
+
+  generateTemporaryId: ->
+    @nextTemporaryId--
 
   column: (name, type) ->
     @columnsByName[name] = new Monarch.Expressions.Column(this, name, type)

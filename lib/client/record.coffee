@@ -5,7 +5,7 @@ Monarch.Record.reopen ->
         @table[methodName].apply(this, arguments)
 
   save: ->
-    if @id()
+    if @isPersisted()
       return if @beforeUpdate() == false
       Monarch.Remote.Server.update(this, @wireRepresentation())
     else
@@ -18,3 +18,6 @@ Monarch.Record.reopen ->
   destroy: ->
     return if @beforeDestroy() == false
     Monarch.Remote.Server.destroy(this)
+
+  isPersisted: ->
+    @id() > 0

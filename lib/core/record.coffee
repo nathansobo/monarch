@@ -86,7 +86,7 @@ class Monarch.Record extends Monarch.Base
       this[methodName] = (args...) ->
         @table[methodName](args...)
 
-  constructor: (attributes) ->
+  constructor: (attributes={}) ->
     @table = @constructor.table
     @errors = new Monarch.Errors()
     @_associations = {}
@@ -97,7 +97,8 @@ class Monarch.Record extends Monarch.Base
       @localFields[column.name] = column.buildLocalField(this)
       @remoteFields[column.name] = column.buildRemoteField(this)
 
-    @localUpdate(attributes) if attributes
+    attributes.id ?= @table.generateTemporaryId()
+    @localUpdate(attributes)
     @afterInitialize()
 
   afterInitialize: _.identity,
@@ -159,7 +160,7 @@ class Monarch.Record extends Monarch.Base
     @afterCreate()
 
   updated: (attributes) ->
-    newRecord = not @id()
+    newRecord = not @isPersisted()
     changeset = @pendingChangeset = {}
     oldKey = @table.buildKey(this)
 

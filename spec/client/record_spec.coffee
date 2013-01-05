@@ -13,8 +13,8 @@ describe "Monarch.Record", ->
         expect(BlogPost.table.name).toBe('BlogPost')
         expect(BlogPost.table).toEqual(Monarch.Repository.tables.BlogPost)
 
-      it "automatically defines an integer-typed id column", ->
-        expect(BlogPost.table.getColumn('id').type).toBe('integer')
+      it "automatically defines an id column", ->
+        expect(BlogPost.table.getColumn('id').type).toBe('key')
 
     describe "@column(name, type)", ->
       it "defines a column on the table", ->
@@ -295,15 +295,20 @@ describe "Monarch.Record", ->
           title: 'string',
           body: 'string'
 
-    describe "#initialize()", ->
+    describe "constructor", ->
       it "builds fields for each of the table's columns", ->
         post = new BlogPost()
         expect(post.getField('title').column).toBe(BlogPost.getColumn('title'))
         expect(post.getField('body').column).toBe(BlogPost.getColumn('body'))
 
-      it "calls afterInitialize", ->
+      it "assigns the record a provisional key and inserts it into its table, then calls afterInitialize", ->
+        insertCallback = jasmine.createSpy('insertCallback')
+        BlogPost.onInsert(insertCallback)
         spyOn(BlogPost.prototype, 'afterInitialize')
+
         post = new BlogPost()
+        expect(post.id()).toBeLessThan(0)
+#         expect(insertCallback).toHaveBeenCalledWith(post)
         expect(post.afterInitialize).toHaveBeenCalled()
 
     describe "#save()", ->

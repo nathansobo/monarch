@@ -28,5 +28,7 @@ class Monarch.Expressions.Column
   valueWireRepresentation: (value) ->
     if @type == 'datetime' and value
       value?.getTime() ? value
+    else if @type == 'key' and value < 0
+      undefined
     else
       value

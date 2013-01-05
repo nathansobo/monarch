@@ -1,6 +1,6 @@
 class Monarch.LocalField extends Monarch.Field
   isDirty: ->
-    not _.isEqual(@getValue(), @getRemoteValue())
+    not _.isEqual(@wireRepresentation(), @record.getRemoteField(@name).wireRepresentation())
 
   getRemoteValue: ->
     @record.getRemoteField(@name).getValue()
