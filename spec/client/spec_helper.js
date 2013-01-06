@@ -1,8 +1,10 @@
 //= require_tree ./support
 
+var ajaxRequests;
 var lastAjaxRequest;
 
 beforeEach(function() {
+  ajaxRequests = []
   lastAjaxRequest = undefined;
   mockXhr();
   this.env.addEqualityTester(_.isEqual);
@@ -39,6 +41,7 @@ function unspy(object, methodName) {
 
 function mockXhr() {
   spyOn($, 'ajax').andCallFake(function(request) {
+    ajaxRequests.push(request);
     lastAjaxRequest = request;
   });
 }

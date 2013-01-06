@@ -294,8 +294,8 @@ describe "Monarch.Record", ->
       class BlogPost extends Monarch.Record
         @extended(this)
         @columns
-          blogId: 'integer',
-          title: 'string',
+          blogId: 'key'
+          title: 'string'
           body: 'string'
 
     describe "constructor", ->
@@ -471,10 +471,11 @@ describe "Monarch.Record", ->
             expect(onSuccessCallback).toHaveBeenCalledWith(post)
 
       describe "when the record has not yet been created", ->
+        post = null
+
         beforeEach ->
-          record = null
-          BlogPost.create({title: "Bad Title", body: "Bad Body"}).onInvalid (r) ->
-            record = r
+          post = new BlogPost({title: "Bad Title", body: "Bad Body"})
+          post.save()
 
           lastAjaxRequest.error
             status: 422,
@@ -482,10 +483,10 @@ describe "Monarch.Record", ->
               title: ["Error message 1"],
               body: ["Error message 2"]
 
-          expect(record.isValid()).toBeFalsy()
+          expect(post.isValid()).toBeFalsy()
 
-          record.localUpdate(title: "Good Title", body: "Good Body")
-          promise = record.save()
+          post.localUpdate(title: "Good Title", body: "Good Body")
+          promise = post.save()
 
         it "sends a create command to the server", ->
           expect(lastAjaxRequest.url).toBe('/blog-posts')
@@ -510,6 +511,26 @@ describe "Monarch.Record", ->
             expect(post.body()).toBe("Good Body+")
             expect(BlogPost.contains(post)).toBeTruthy()
             expect(post.isValid()).toBeTruthy()
+
+          it "updates any records that depend on the record's provisional id", ->
+            class Comment extends Monarch.Record
+              @extended(this)
+              @columns blogPostId: 'key', body: 'string'
+            BlogPost.hasMany 'comments'
+
+            expect(ajaxRequests.length).toBe 2
+            comment = post.comments().build(body: "I like your post")
+            comment.save()
+            expect(comment.blogPostId()).toBeLessThan(0)
+            expect(ajaxRequests.length).toBe 2
+
+            lastAjaxRequest.success
+              id: 23,
+              title: "Good Title+",
+              body: "Good Body+"
+
+            expect(comment.blogPostId()).toBe(23)
+            expect(ajaxRequests.length).toBe 3
 
         describe "create hooks", ->
           it "does not proceed with the creation if beforeSave returns 'false'", ->

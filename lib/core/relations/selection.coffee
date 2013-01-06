@@ -6,6 +6,9 @@ class Monarch.Relations.Selection extends Monarch.Relations.Relation
     @predicate = @resolvePredicate(predicate)
     @orderByExpressions = operand.orderByExpressions
 
+  build: (attributes, args...) ->
+    @operand.build(addSatisfyingAttributes(@predicate, attributes), args...)
+
   create: (attributes, args...) ->
     @operand.create(addSatisfyingAttributes(@predicate, attributes), args...)
 

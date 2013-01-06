@@ -97,7 +97,7 @@ class Monarch.Record extends Monarch.Base
       @localFields[column.name] = column.buildLocalField(this)
       @remoteFields[column.name] = column.buildRemoteField(this)
 
-    attributes.id ?= @table.generateTemporaryId()
+    attributes.id ?= Monarch.Repository.generateTemporaryId()
     @localUpdate(attributes, silent: true)
     @table.insert(this)
     @afterInitialize()
@@ -163,6 +163,25 @@ class Monarch.Record extends Monarch.Base
   onDestroy: (callback, context) ->
     @onDestroyNode ?= new Monarch.Util.Node()
     @onDestroyNode.subscribe(callback, context)
+
+  onResolved: (callback, context) ->
+    if @isResolved()
+      callback.apply(context)
+    else
+      @onResolvedNode ?= new Monarch.Util.Node()
+      @onResolvedNode.subscribe(callback, context)
+
+  isResolved: ->
+    for name, field of @localFields when name != 'id'
+      return false unless field.isResolved()
+    true
+
+  fieldResolved: (name, provisionalKey, newKey) ->
+    if name == 'id'
+      Monarch.Repository.resolveKey(provisionalKey, newKey)
+    if @isResolved()
+      @onResolvedNode?.publish()
+      @onResolvedNode?.clear()
 
   wireRepresentation: (allFields) ->
     @fieldValues(true, allFields)

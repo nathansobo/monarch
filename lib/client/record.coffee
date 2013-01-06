@@ -6,10 +6,11 @@ Monarch.Record.reopen ->
 
   save: ->
     return if @beforeSave() == false
-    if @isPersisted()
-      Monarch.Remote.Server.update(this, @wireRepresentation())
-    else
-      Monarch.Remote.Server.create(this, @wireRepresentation())
+    @onResolved =>
+      if @isPersisted()
+        Monarch.Remote.Server.update(this, @wireRepresentation())
+      else
+        Monarch.Remote.Server.create(this, @wireRepresentation())
 
   fetch: ->
     @table.where({ id: @id() }).fetch()

@@ -2,6 +2,8 @@
 
 Monarch.Repository =
   tables: {}
+  nextTemporaryId: -1
+  callbacksByProvisionalKey: {}
   pauseCount: 0
 
   buildTable: (recordClass) ->
@@ -73,3 +75,14 @@ Monarch.Repository =
     for name, table of @tables
       count += table.subscriptionCount()
     count
+
+  generateTemporaryId: ->
+    @nextTemporaryId--
+
+  awaitKeyResolution: (key, fn) ->
+    @callbacksByProvisionalKey[key] ?= []
+    @callbacksByProvisionalKey[key].push(fn)
+
+  resolveKey: (provisionalKey, realKey) ->
+    callback(realKey) for callback in @callbacksByProvisionalKey[provisionalKey] ? []
+    delete @callbacksByProvisionalKey[provisionalKey]

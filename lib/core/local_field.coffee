@@ -8,6 +8,7 @@ class Monarch.LocalField extends Monarch.Field
   setValue: (value) ->
     @record.accrueUpdates =>
       super(value)
+    @awaitResolution() unless @isResolved()
 
   valueChanged: (newValue, oldValue) ->
     @record.pendingChangeset[@name] = {
@@ -16,3 +17,13 @@ class Monarch.LocalField extends Monarch.Field
       column: @column
     }
     @record.errors.clear(@name)
+
+    if @column.type == 'key' and newValue > 0 > oldValue
+      @record.fieldResolved(@name, oldValue, newValue)
+
+  awaitResolution: ->
+    Monarch.Repository.awaitKeyResolution @value, (resolvedKey) =>
+      @setValue(resolvedKey)
+
+  isResolved: ->
+    @column.type != 'key' or not (@value < 0)

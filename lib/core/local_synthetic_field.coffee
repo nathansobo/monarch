@@ -5,3 +5,5 @@ class Monarch.LocalSyntheticField extends Monarch.SyntheticField
       oldValue: oldValue,
       column: @column
     }
+
+  isResolved: -> true

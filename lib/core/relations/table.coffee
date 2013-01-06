@@ -6,13 +6,9 @@ class Monarch.Relations.Table extends Monarch.Relations.Relation
     @columnsByName = {}
     @column('id', 'key')
     @defaultOrderBy('id')
-    @nextTemporaryId = -1
     @initialize()
 
   initialize: ->
-
-  generateTemporaryId: ->
-    @nextTemporaryId--
 
   column: (name, type) ->
     @columnsByName[name] = new Monarch.Expressions.Column(this, name, type)
@@ -67,5 +63,6 @@ class Monarch.Relations.Table extends Monarch.Relations.Relation
     type: 'Table'
     name: @resourceName()
 
+  build: (args...) -> new @recordClass(args...)
   create: (args...) -> @recordClass.create(args...)
   created: (args...) -> @recordClass.created(args...)
