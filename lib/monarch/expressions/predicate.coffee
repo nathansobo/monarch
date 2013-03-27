@@ -7,6 +7,7 @@ class Monarch.Expressions.Predicate extends Monarch.Base
       '<=': Monarch.Expressions.LessThanOrEqual
       '>': Monarch.Expressions.GreaterThan
       '>=': Monarch.Expressions.GreaterThanOrEqual
+      '!=': Monarch.Expressions.NotEqual
     }[symbol]
 
   constructor: (@left, @right) ->
